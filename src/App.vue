@@ -19,7 +19,7 @@
 <script setup>
 import { ref } from 'vue'
 import sidebarUI from './components/sidebarUI.vue';
-const drawer = ref(null)
+const drawer = ref(false)
 const drawerAction = (val) => {
   drawer.value = val
 }
