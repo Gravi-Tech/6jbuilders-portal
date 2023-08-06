@@ -6,13 +6,13 @@ const counter = useCounterStore()
 onMounted(async () => {
   const users = await getJson()
   console.log('🚀 ~ file: HomeView.vue:6 ~ onMounted ~ users:', users)
-  // if (users.error) {
-  //   console.log('Something went wrong')
-  // }
-  // const names = await users.data.map(user => {
-  //   return { name: `${user.fname} ${user.lname}` }
-  // })
-  // console.log("🚀 ~ file: HomeView.vue:10 ~ names ~ names:", names)
+  if (users.error) {
+    console.log('Something went wrong')
+  }
+  const names = await users.data.map(user => {
+    return { name: `${user.fname} ${user.lname}` }
+  })
+  console.log("🚀 ~ file: HomeView.vue:10 ~ names ~ names:", names)
 })
 
 const coffeeShop = ['Cafe namoo', 'Starbucks', 'Bean Leaf', 'Coffee aby']
