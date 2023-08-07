@@ -21,11 +21,20 @@
             </v-col>
             <v-col cols="auto">
                 <v-row class="d-flex align-center">
-                    <v-icon class="app-icon large-icon">mdi-clock</v-icon>
+                    <v-icon class="app-icon large-icon">mdi-calendar-clock</v-icon>
                     <v-col cols="auto">
                         <strong>Opening Hours:</strong>
                         <p class="small-text">Mon - Sat: 7:00 am - 7:00 pm</p>
                     </v-col>
+                </v-row>
+            </v-col>
+            <v-col>
+                <v-row class="d-flex align-center">
+                    <v-card-text>
+                        <v-text-field :loading="loading" density="compact" variant="underlined" label="Search here..."
+                            append-inner-icon="mdi-magnify" single-line hide-details
+                            @click:append-inner="onClick"></v-text-field>
+                    </v-card-text>
                 </v-row>
             </v-col>
         </v-row>
@@ -35,7 +44,7 @@
                 <v-row class="d-flex justify-center align-center">
                     <v-img src="../src/assets/logo.png" max-height="80"></v-img>
                     <v-col cols="auto" v-for="(link, i) in navLinks" :key="i">
-                        <v-menu v-if="link.route === 'services'">
+                        <v-menu v-if="link.route === 'services'" open-on-hover>
                             <template v-slot:activator="{ props }">
                                 <v-btn color="white" v-bind="props">
                                     Services
@@ -43,7 +52,8 @@
                             </template>
                             <v-list>
                                 <v-list-item v-for="(service, index) in services" :key="index" :value="index">
-                                    <v-list-item-title @click="navigateToService(service)">{{ service.title }}</v-list-item-title>
+                                    <v-list-item-title @click="navigateToService(service)">{{ service.title
+                                    }}</v-list-item-title>
                                 </v-list-item>
                             </v-list>
                         </v-menu>
@@ -92,6 +102,26 @@ const navLinks = [
 const navTo = (to) => {
     router.push({ name: to });
 }
+</script>
+
+<script>
+  export default {
+    data: () => ({
+      loaded: false,
+      loading: false,
+    }),
+
+    methods: {
+      onClick () {
+        this.loading = true
+
+        setTimeout(() => {
+          this.loading = false
+          this.loaded = true
+        }, 2000)
+      },
+    },
+  }
 </script>
 
 <style>

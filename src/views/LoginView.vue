@@ -13,8 +13,8 @@
                     </v-btn>
                 </vue3-google-login>
                 <span>or</span>
-                <v-facebook-login app-id="" variant="text" class="facebook-login-button"
-                    @login-success="onLoginSuccess" @login-error="onLoginError" @click="onFacebookLogin">
+                <v-facebook-login app-id="" variant="text" class="facebook-login-button" @login-success="onLoginSuccess"
+                    @login-error="onLoginError" @click="onFacebookLogin">
                     <span>Log in with Facebook</span>
                 </v-facebook-login>
                 <v-btn v-if="!showAdminPortal" variant="text" size="x-small" color="primary" @click="showAdminModal = true">
@@ -28,14 +28,36 @@
         <div class="modal-content">
             <h2 class="app-title">ADMIN PORTAL</h2>
             <v-form v-model="form" @submit.prevent="onSubmit">
-                <v-text-field label="Admin ID" v-model="adminId" :readonly="loading" :rules="[required]" clearable
-                    placeholder="Enter Admin ID" variant="outlined" v-validate="'required'"></v-text-field>
-                <v-text-field v-model="adminPassword" :readonly="loading" :rules="[required]" clearable label="Password"
-                    type="password" v-validate="'required'"></v-text-field>
+                <v-text-field density="compact" prepend-inner-icon="mdi-account-box-outline" variant="outlined"
+                    label="Admin ID" v-model="adminId" :readonly="loading" :rules="[required]" clearable
+                    placeholder="Enter Admin ID" v-validate="'required'">
+                </v-text-field>
+                <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-end">
+                    <a class="text-caption text-decoration-none text-blue" href="#" rel="noopener noreferrer"
+                        target="_blank">
+                        Forgot login password?</a>
+                </div>
+
+                <v-text-field :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"
+                    variant="outlined" density="compact" placeholder="Enter your password"
+                    prepend-inner-icon="mdi-lock-outline" @click:append-inner="visible = !visible" v-model="adminPassword"
+                    :readonly="loading" :rules="[required]" clearable label="Password" type="password"
+                    v-validate="'required'"></v-text-field>
+
+                <v-card class="mb-12" color="surface-variant" variant="tonal">
+                    <v-card-text class="text-medium-emphasis text-caption">
+                        Warning: After 3 consecutive failed login attempts, you account will be temporarily locked for
+                        three
+                        hours. If you must login now, you can also click "Forgot login password?" below to reset the
+                        login
+                        password.
+                    </v-card-text>
+                </v-card>
 
                 <div class="modal-buttons">
                     <v-btn variant="text" @click="showAdminModal = false">Go Back</v-btn>
-                    <v-btn :loading="loading" @click="loginAsAdmin">Sign In</v-btn>
+                    <v-btn color="blue" variant="tonal" :loading="loading" @click="loginAsAdmin">Sign
+                        In</v-btn>
                 </div>
             </v-form>
         </div>
@@ -60,6 +82,7 @@ export default defineComponent({
             adminPassword: null,
             form: false,
             loading: false,
+            visible: false,
         };
     },
     methods: {
@@ -178,6 +201,7 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 80px;
 }
 
 .modal-content {

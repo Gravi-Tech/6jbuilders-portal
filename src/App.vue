@@ -1,25 +1,27 @@
-<script setup>
-import footerUI from './components/footerUI.vue'
-import navUI from './components/navUI.vue'
-</script>
-
 <template>
   <v-app id="inspire">
     <v-app-bar color="blue darken-2" app height="150" class="pb-1 pt-1">
       <v-navigation>
-        <navUI />
+        <NavUI />
       </v-navigation>
     </v-app-bar>
 
     <v-main>
-      <router-view></router-view>
+      <v-content>
+        <router-view></router-view>
+      </v-content>
     </v-main>
 
-    <v-footer>
-      <footerUI />
-    </v-footer>
+    <!-- <v-footer>
+      <FooterUI />
+    </v-footer> -->
   </v-app>
 </template>
+
+<script setup>
+// import FooterUI from './components/footerUI.vue'
+import NavUI from './components/navUI.vue'
+</script>
 
 <style>
 .v-toolbar__content {
