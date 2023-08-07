@@ -1,3 +1,5 @@
 <template>
-    <h1>Contact</h1>
-</template>
+    <div>
+      <h1 class="bg-red">This is an contact page</h1>
+    </div>
+  </template>
