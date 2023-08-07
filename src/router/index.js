@@ -5,35 +5,41 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: () => import('../views/HomeView.vue')
     },
     {
       path: '/about',
-      name: 'about',
+      name: 'About',
       component: () => import('../views/AboutView.vue')
     },
     {
       path: '/book',
-      name: 'book',
+      name: 'Book Now',
       component: () => import('../views/BookNowView.vue')
     },
     {
       path: '/contact',
-      name: 'contact',
+      name: 'Contact',
       component: () => import('../views/ContactView.vue')
     },
     {
       path: '/dashboard',
-      name: 'dashboard',
+      name: 'Dashboard',
       component: () => import('../views/Dashboard.vue')
     },
     {
       path: '/login',
-      name: 'login',
+      name: 'Login',
       component: () => import('../views/LoginView.vue')
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const routeName = to.name || 'Home';
+  document.title = `6 JBUILDERS - ${routeName}`;
+  next();
+});
 
 export default router

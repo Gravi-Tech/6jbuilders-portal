@@ -1,4 +1,5 @@
 <script setup>
+import footerUI from './components/footerUI.vue'
 import navUI from './components/navUI.vue'
 </script>
 
@@ -13,6 +14,10 @@ import navUI from './components/navUI.vue'
     <v-main>
       <router-view></router-view>
     </v-main>
+
+    <v-footer>
+      <footerUI />
+    </v-footer>
   </v-app>
 </template>
 
