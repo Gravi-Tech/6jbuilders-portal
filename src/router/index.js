@@ -5,39 +5,39 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Home',
+      name: 'home',
       component: () => import('../views/HomeView.vue')
     },
     {
       path: '/about',
-      name: 'About',
+      name: 'about',
       component: () => import('../views/AboutView.vue')
     },
     {
       path: '/book',
-      name: 'Book Now',
+      name: 'book',
       component: () => import('../views/BookNowView.vue')
     },
     {
       path: '/contact',
-      name: 'Contact',
+      name: 'contact',
       component: () => import('../views/ContactView.vue')
     },
     {
       path: '/dashboard',
-      name: 'Dashboard',
+      name: 'dashboard',
       component: () => import('../views/Dashboard.vue')
     },
     {
       path: '/login',
-      name: 'Login',
+      name: 'login',
       component: () => import('../views/LoginView.vue')
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  const routeName = to.name || 'Home';
+  const routeName = to.name ? to.name.charAt(0).toUpperCase() + to.name.slice(1) : 'Home';
   document.title = `6 JBUILDERS - ${routeName}`;
   next();
 });
