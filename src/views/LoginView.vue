@@ -46,11 +46,11 @@
 import { defineComponent } from "vue";
 import { required } from 'vuelidate';
 // import VFacebookLogin from 'vue-facebook-login-component';
-import { Vue3GoogleLogin } from 'vue3-google-login';
+// import { Vue3GoogleLogin } from 'vue3-google-login';
 export default defineComponent({
     components: {
-        Vue3GoogleLogin,
-        VFacebookLogin
+        // Vue3GoogleLogin,
+        // VFacebookLogin
     },
     data() {
         return {
