@@ -30,7 +30,7 @@
             </v-col>
         </v-row>
 
-        <v-row class="d-flex justify-center align-center" width="100%">
+        <v-row class="d-flex justify-center align-center">
             <v-col cols="auto">
                 <v-row class="d-flex justify-center align-center">
                     <v-img src="../src/assets/logo.png" max-height="80"></v-img>
