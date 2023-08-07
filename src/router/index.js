@@ -26,14 +26,80 @@ const router = createRouter({
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('../views/Dashboard.vue')
+      component: () => import('../views/DashboardView.vue')
     },
     {
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue')
-    }
+    },
+    {
+      path: '/services/cabinets',
+      name: 'cabinets',
+      component: () => import('../views/CabinetsServiceView.vue')
+    },
+    {
+      path: '/services/drywall-installation',
+      name: 'drywall-installation',
+      component: () => import('../views/DrywallInstallationServiceView.vue')
+    },
+    {
+      path: '/services/electrical',
+      name: 'electrical',
+      component: () => import('../views/ElectricalServiceView.vue')
+    },
+    {
+      path: '/services/glass-and-aluminum-installation',
+      name: 'glass-and-aluminum-installation',
+      component: () => import('../views/GlassAndAluminumInstallationServiceView.vue')
+    },
+    {
+      path: '/services/home-repair-services',
+      name: 'home-repair-services',
+      component: () => import('../views/HomeRepairServicesView.vue')
+    },
+    {
+      path: '/services/home-renovation',
+      name: 'home-renovation',
+      component: () => import('../views/HomeRenovationServiceView.vue')
+    },
+    {
+      path: '/services/interior-design',
+      name: 'interior-design',
+      component: () => import('../views/InteriorDesignServiceView.vue')
+    },
+    {
+      path: '/services/plumbing',
+      name: 'plumbing',
+      component: () => import('../views/PlumbingServiceView.vue')
+    },
+    {
+      path: '/services/roofing',
+      name: 'roofing',
+      component: () => import('../views/RoofingServiceView.vue')
+    },
+    {
+      path: '/services/tile-installation',
+      name: 'tile-installation',
+      component: () => import('../views/TileInstallationServiceView.vue')
+    },
+    {
+      path: '/services/welding',
+      name: 'welding',
+      component: () => import('../views/WeldingServiceView.vue')
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/NotFoundView.vue'),
+    },
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const routeName = to.name ? to.name.charAt(0).toUpperCase() + to.name.slice(1) : 'Home';
+  document.title = `6 JBUILDERS - ${routeName}`;
+  next();
+});
 
 export default router

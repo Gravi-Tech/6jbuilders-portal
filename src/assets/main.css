@@ -8,16 +8,14 @@
   font-weight: normal;
 }
 
-/* a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-} */
+h3 {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    background-color: hsla(213, 93%, 54%, 0.2);
   }
 }
 
