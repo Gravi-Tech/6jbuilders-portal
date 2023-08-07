@@ -30,43 +30,31 @@
             </v-col>
         </v-row>
 
-        <v-row class="d-flex justify-center align-center">
+        <v-row class="d-flex justify-center align-center" width="100%">
             <v-col cols="auto">
                 <v-row class="d-flex justify-center align-center">
                     <v-img src="../src/assets/logo.png" max-height="80"></v-img>
-                    <v-col cols="auto">
-                        <v-btn><router-link to="/">Home</router-link></v-btn>
-                    </v-col>
-                    <v-col cols="auto">
-                        <v-btn><router-link to="/about">About</router-link></v-btn>
-                    </v-col>
-                    <v-col cols="auto">
-                        <!-- TOTO: DROPDOWN IS NOT WORKING -->
-                        <v-menu offset-y bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn variant="text" v-on="on">Services</v-btn>
+                    <v-col cols="auto" v-for="(link, i) in navLinks" :key="i">
+                        <v-menu v-if="link.route === 'services'">
+                            <template v-slot:activator="{ props }">
+                                <v-btn color="white" v-bind="props">
+                                    Services
+                                </v-btn>
                             </template>
                             <v-list>
-                                <v-list-item v-for="(service, index) in services" :key="index"
-                                    @click="navigateToService(service)">
-                                    <v-list-item-title>{{ service.title }}</v-list-item-title>
+                                <v-list-item v-for="(service, index) in services" :key="index" :value="index">
+                                    <v-list-item-title @click="navigateToService(service)">{{ service.title }}</v-list-item-title>
                                 </v-list-item>
                             </v-list>
                         </v-menu>
-                    </v-col>
-                    <v-col cols="auto">
-                        <v-btn><router-link to="/contact">Contact</router-link></v-btn>
-                    </v-col>
-                    <v-col cols="auto">
-                        <v-btn><router-link to="/login">Login</router-link></v-btn>
+                        <v-btn v-else color="white" variant="text" @click="navTo(link.route)">{{ link.title }}</v-btn>
                     </v-col>
                 </v-row>
             </v-col>
             <v-row class="d-flex justify-end align-center">
                 <v-col cols="auto">
                     <v-row class="d-flex justify-center align-center">
-                        <v-btn variant="evelated" elevation="8" size="large"><router-link to="/book">BOOK
-                                NOW</router-link></v-btn>
+                        <v-btn variant="evelated" elevation="8" size="large" @click="navTo('book')">Book Now</v-btn>
                     </v-row>
                 </v-col>
             </v-row>
@@ -75,6 +63,8 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
+const router = useRouter()
 const services = [
     { title: 'Home Renovation' },
     { title: 'Interior Design' },
@@ -88,9 +78,19 @@ const services = [
     { title: 'Cabinets' },
     { title: 'Home Repair Services' }
 ];
-
 const navigateToService = (service) => {
     router.push(`/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`);
+}
+
+const navLinks = [
+    { route: 'home', title: 'Home' },
+    { route: 'about', title: 'About' },
+    { route: 'services', title: 'Services' },
+    { route: 'contact', title: 'Contact' },
+    { route: 'login', title: 'Login' },
+]
+const navTo = (to) => {
+    router.push({ name: to });
 }
 </script>
 
