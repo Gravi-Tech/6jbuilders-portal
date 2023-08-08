@@ -1,9 +1,7 @@
 <template>
-  <v-content>
-    <Header />
-    <BookNow />
-    <Footer />
-  </v-content>
+  <Header />
+  <BookNow />
+  <Footer />
 </template>
 
 <script scoped>

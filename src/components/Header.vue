@@ -67,7 +67,7 @@
                 <v-row class="d-flex justify-end align-center">
                     <v-col cols="auto">
                         <v-row class="d-flex justify-center align-center">
-                            <v-btn variant="evelated" elevation="8" color="teal-accent-4" size="large"
+                            <v-btn variant="elevated" elevation="8" color="teal-accent-4" size="large"
                                 @click="navTo('book')">Book Now</v-btn>
                         </v-row>
                     </v-col>
@@ -101,7 +101,7 @@ const navigateToService = (service) => {
 
 const navLinks = [
     { route: 'home', title: 'Home' },
-    { route: 'about', title: 'About' },
+    { route: 'about-us', title: 'About' },
     { route: 'services', title: 'Services' },
     { route: 'contact', title: 'Contact' },
     { route: 'login', title: 'Login' },

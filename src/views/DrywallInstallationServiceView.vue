@@ -1,37 +1,35 @@
 <template>
-  <v-content>
-    <Header />
-    <section class="about-section">
-      <h2>Drywall Installation Services</h2>
-      <p>
-        Elevate your living space with our expert drywall installation services. From flawless wall surfaces to seamless
-        room transformations, we are committed to delivering exceptional results that exceed your expectations. Our
-        skilled team of professionals collaborates closely to bring your vision to life, ensuring precision and
-        craftsmanship at every step.
-      </p>
-      <p>
-        With a keen eye for detail and a focus on quality, we specialize in creating smooth and even wall surfaces that
-        provide the perfect canvas for your home decor. Whether you're seeking to enhance the aesthetics of your interiors
-        or improve the structural integrity of your spaces, our drywall installation services are tailored to meet your
-        unique needs.
-      </p>
-      <p>
-        Our experienced craftsmen bring years of expertise to the construction phase, meticulously installing drywall to
-        create uniform and visually pleasing results. We work diligently to ensure that every joint, seam, and corner is
-        seamlessly integrated, providing a flawless backdrop that enhances the beauty of your home.
-      </p>
-      <p>
-        The final inspection is a testament to our commitment to excellence. Our professionals conduct a thorough
-        evaluation, scrutinizing every aspect of the installation to ensure flawless finishes and impeccable workmanship.
-        Your satisfaction is our priority, and we take pride in delivering drywall installations that stand out for their
-        quality and long-lasting appeal.
-      </p>
-    </section>
-    <ProcessSection :steps="cabinetsSteps" :pageTitle="pageTitle" />
-    <Testimonial />
-    <SupportButton :preSelectedService="pageTitle" />
-    <Footer />
-  </v-content>
+  <Header />
+  <section class="about-section">
+    <h2>{{ pageTitle }} Service</h2>
+    <p>
+      Elevate your living space with our expert drywall installation services. From flawless wall surfaces to seamless
+      room transformations, we are committed to delivering exceptional results that exceed your expectations. Our
+      skilled team of professionals collaborates closely to bring your vision to life, ensuring precision and
+      craftsmanship at every step.
+    </p>
+    <p>
+      With a keen eye for detail and a focus on quality, we specialize in creating smooth and even wall surfaces that
+      provide the perfect canvas for your home decor. Whether you're seeking to enhance the aesthetics of your interiors
+      or improve the structural integrity of your spaces, our drywall installation services are tailored to meet your
+      unique needs.
+    </p>
+    <p>
+      Our experienced craftsmen bring years of expertise to the construction phase, meticulously installing drywall to
+      create uniform and visually pleasing results. We work diligently to ensure that every joint, seam, and corner is
+      seamlessly integrated, providing a flawless backdrop that enhances the beauty of your home.
+    </p>
+    <p>
+      The final inspection is a testament to our commitment to excellence. Our professionals conduct a thorough
+      evaluation, scrutinizing every aspect of the installation to ensure flawless finishes and impeccable workmanship.
+      Your satisfaction is our priority, and we take pride in delivering drywall installations that stand out for their
+      quality and long-lasting appeal.
+    </p>
+  </section>
+  <ProcessSection :steps="cabinetsSteps" :pageTitle="pageTitle" />
+  <Testimonial />
+  <SupportButton :preSelectedService="pageTitle" />
+  <Footer />
 </template>
 
 <script scoped>
@@ -83,7 +81,8 @@ export default {
 };
 </script>
 
-<style scoped>.about-section {
+<style scoped>
+.about-section {
   padding: 2rem;
   background-color: #f3f3f3;
 }
@@ -91,4 +90,5 @@ export default {
 .about-section h2 {
   font-size: 24px;
   font-weight: 700;
-}</style>
+}
+</style>

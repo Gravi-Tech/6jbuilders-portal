@@ -1,24 +1,22 @@
 <template>
-    <v-content>
-        <Header />
-        <section class="about-section">
-            <h2>Cabinets Service</h2>
-            <p>
-                Enhance the functionality and aesthetics of your living spaces with our top-tier cabinets service. We
-                specialize in crafting custom cabinetry solutions that seamlessly integrate with your home's design and
-                layout. From modern kitchen overhauls to stylish bathroom upgrades, our cabinets are meticulously designed
-                and expertly crafted to meet your specific needs.
-            </p>
-            <p>
-                Experience the transformation of your living spaces with our cabinets service. Elevate your home's storage
-                and aesthetics with custom-designed cabinetry that reflects your style and enhances your daily living.
-            </p>
-        </section>
-        <ProcessSection :steps="cabinetsSteps" :pageTitle="pageTitle" />
-        <Testimonial />
-        <SupportButton :preSelectedService="pageTitle" />
-        <Footer />
-    </v-content>
+    <Header />
+    <section class="about-section">
+        <h2>{{ pageTitle }}</h2>
+        <p>
+            Enhance the functionality and aesthetics of your living spaces with our top-tier cabinets service. We
+            specialize in crafting custom cabinetry solutions that seamlessly integrate with your home's design and
+            layout. From modern kitchen overhauls to stylish bathroom upgrades, our cabinets are meticulously designed
+            and expertly crafted to meet your specific needs.
+        </p>
+        <p>
+            Experience the transformation of your living spaces with our cabinets service. Elevate your home's storage
+            and aesthetics with custom-designed cabinetry that reflects your style and enhances your daily living.
+        </p>
+    </section>
+    <ProcessSection :steps="cabinetsSteps" :pageTitle="pageTitle" />
+    <Testimonial />
+    <SupportButton :preSelectedService="pageTitle" />
+    <Footer />
 </template>
 
 <script scoped>

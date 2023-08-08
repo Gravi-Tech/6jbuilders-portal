@@ -1,9 +1,7 @@
 <template>
-    <v-content>
-        <SystemHeader />
-        <PageNotFound />
-        <SystemFooter />
-    </v-content>
+    <SystemHeader />
+    <PageNotFound />
+    <SystemFooter />
 </template>
 
 <script scoped>
