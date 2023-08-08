@@ -1,21 +1,19 @@
 <template>
-    <v-content>
-        <Header />
-        <section class="about-section">
-            <h2>Glass And Aluminium Installation</h2>
-            <p>
-                Transform your living space with our expert home renovation services.
-                From modern kitchen remodels to luxurious bathroom upgrades, we are
-                dedicated to delivering stunning results that exceed your expectations.
-                Our experienced team of designers and craftsmen work collaboratively to
-                bring your vision to life.
-            </p>
-        </section>
-        <ProcessSection :steps="renovationSteps" :pageTitle="pageTitle" />
-        <Testimonial />
-        <SupportButton :preSelectedService="pageTitle" />
-        <Footer />
-    </v-content>
+    <Header />
+    <section class="about-section">
+        <h2>{{ pageTitle }} Service</h2>
+        <p>
+            Transform your living space with our expert home renovation services.
+            From modern kitchen remodels to luxurious bathroom upgrades, we are
+            dedicated to delivering stunning results that exceed your expectations.
+            Our experienced team of designers and craftsmen work collaboratively to
+            bring your vision to life.
+        </p>
+    </section>
+    <ProcessSection :steps="renovationSteps" :pageTitle="pageTitle" />
+    <Testimonial />
+    <SupportButton :preSelectedService="pageTitle" />
+    <Footer />
 </template>
   
 <script scoped>
@@ -61,7 +59,7 @@ export default {
                     image: 'https://thefrisky.com/wp-content/uploads/2019/09/AdobeStock_219685148.jpeg',
                 },
             ],
-            pageTitle: 'Glass And Aluminium Installation',
+            pageTitle: 'Glass And Aluminum Installation',
         };
     },
 };

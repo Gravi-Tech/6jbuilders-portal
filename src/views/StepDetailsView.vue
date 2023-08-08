@@ -1,22 +1,20 @@
 <template>
-    <v-content>
-        <Header />
-        <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <h1 class="step-details-title">{{ selectedStep.title }}</h1>
-                    <div class="step-details-header" @click="goBack">
-                        <v-icon class="back-icon">mdi-arrow-left</v-icon>
-                        <p class="go-back-text">Go back to service</p>
-                    </div>
-                    <div class="step-details-description">
-                        <p v-for="(paragraph, index) in selectedStep.description" :key="index">{{ paragraph }}</p>
-                    </div>
-                </v-col>
-            </v-row>
-        </v-container>
-        <Footer />
-    </v-content>
+    <Header />
+    <v-container>
+        <v-row>
+            <v-col cols="12">
+                <h1 class="step-details-title">{{ selectedStep.title }}</h1>
+                <div class="step-details-header" @click="goBack">
+                    <v-icon class="back-icon">mdi-arrow-left</v-icon>
+                    <p class="go-back-text">Go back to service</p>
+                </div>
+                <div class="step-details-description">
+                    <p v-for="(paragraph, index) in selectedStep.description" :key="index">{{ paragraph }}</p>
+                </div>
+            </v-col>
+        </v-row>
+    </v-container>
+    <Footer />
 </template>
 
 <script>

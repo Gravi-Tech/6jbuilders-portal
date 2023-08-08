@@ -1,20 +1,24 @@
 <template>
-  <v-content>
-    <Header />
-    <About />
-    <Footer />
-  </v-content>
+  <Header />
+  <About />
+  <Team />
+  <Testimonial />
+  <Footer />
 </template>
 
 <script scoped>
 import Header from '../components/Header.vue';
 import About from '../components/About.vue';
+import Team from '../components/Team.vue';
+import Testimonial from '../components/Testimonial.vue';
 import Footer from '../components/Footer.vue';
 
 export default {
   components: {
     Header,
     About,
+    Team,
+    Testimonial,
     Footer
   },
   data() {

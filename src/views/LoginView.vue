@@ -1,9 +1,7 @@
 <template>
-    <v-content>
-        <Header />
-        <Portal />
-        <Footer />
-    </v-content>
+    <Header />
+    <Portal />
+    <Footer />
 </template>
   
 <script scoped>
