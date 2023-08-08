@@ -93,6 +93,11 @@ const router = createRouter({
       name: 'not-found',
       component: () => import('../views/PageNotFoundView.vue'),
     },
+    {
+      path: '/step/:stepId',
+      name: 'StepDetails',
+      component: () => import('../views/StepDetailsView.vue'),
+    },
   ]
 })
 
