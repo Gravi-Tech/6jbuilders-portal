@@ -2,6 +2,9 @@
 import { onMounted, ref } from 'vue'
 import { getJson } from '../apirequests/users'
 import { useCounterStore } from '../stores/counter'
+import Header from '../components/Header.vue'
+import Footer from '../components/Footer.vue'
+
 const counter = useCounterStore()
 onMounted(async () => {
   const users = await getJson()
@@ -39,6 +42,7 @@ const submit = () => {
 
 <template>
   <main>
+    <Header />
     <h1 class="text-uppercase text-red">homes: {{ username }} {{ counter.count }}</h1>
     <br />
     <v-btn size="large" class="rounded-e-pill" block>hello</v-btn>
@@ -61,15 +65,11 @@ const submit = () => {
         <div v-else>Good evening</div>
       </div>
       <br />
-      <v-text-field
-        v-model="username"
-        label="Label"
-        variant="outlined"
-        class="full-width"
-      ></v-text-field>
+      <v-text-field v-model="username" label="Label" variant="outlined" class="full-width"></v-text-field>
 
       <v-btn @click="submit" variant="outlined">double</v-btn>
     </v-card>
+    <Footer />
   </main>
 </template>
 

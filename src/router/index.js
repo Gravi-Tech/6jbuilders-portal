@@ -91,13 +91,18 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
-      component: () => import('../views/NotFoundView.vue'),
+      component: () => import('../views/PageNotFoundView.vue'),
     },
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  const routeName = to.name ? to.name.charAt(0).toUpperCase() + to.name.slice(1) : 'Home';
+  const routeName = to.name
+    ? to.name
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+    : 'Home';
   document.title = `6 JBUILDERS - ${routeName}`;
   next();
 });
