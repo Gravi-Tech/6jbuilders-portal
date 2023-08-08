@@ -12,38 +12,38 @@ onMounted(async () => {
   if (users.error) {
     console.log('Something went wrong')
   }
-  const names = await users.data.map(user => {
+  const names = await users.data.map((user) => {
     return { name: `${user.fname} ${user.lname}` }
   })
-  console.log("🚀 ~ file: HomeView.vue:10 ~ names ~ names:", names)
+  console.log('🚀 ~ file: HomeView.vue:10 ~ names ~ names:', names)
 })
 
-const coffeeShop = ['Cafe namoo', 'Starbucks', 'Bean Leaf', 'Coffee aby']
+// const coffeeShop = ['Cafe namoo', 'Starbucks', 'Bean Leaf', 'Coffee aby']
 
-const timeofday = ''
+// const timeofday = ''
 
-const username = ref('redgie')
-const handleUsername = () => {
-  username.value = 'Jasper'
-}
+// const username = ref('redgie')
+// const handleUsername = () => {
+//   username.value = 'Jasper'
+// }
 
-const password = ref('redgie')
-const handlePassword = () => {
-  password.value = 'Jasper'
-}
+// const password = ref('redgie')
+// const handlePassword = () => {
+//   password.value = 'Jasper'
+// }
 
-const firstanme = ref('redgie')
-const lastname = ref('redgie')
+// const firstanme = ref('redgie')
+// const lastname = ref('redgie')
 
-const submit = () => {
-  counter.doubleCount()
-}
+// const submit = () => {
+//   counter.doubleCount()
+// }
 </script>
 
 <template>
   <main>
     <Header />
-    <h1 class="text-uppercase text-red">homes: {{ username }} {{ counter.count }}</h1>
+    <!-- <h1 class="text-uppercase text-red">homes: {{ username }} {{ counter.count }}</h1>
     <br />
     <v-btn size="large" class="rounded-e-pill" block>hello</v-btn>
     <br /><br />
@@ -68,9 +68,64 @@ const submit = () => {
       <v-text-field v-model="username" label="Label" variant="outlined" class="full-width"></v-text-field>
 
       <v-btn @click="submit" variant="outlined">double</v-btn>
-    </v-card>
+    </v-card> -->
+    <v-container class="bg-surface-variant">
+      <v-row no-gutters>
+        <v-hover v-slot="{ isHovering, props }">
+          <v-card class="" max-width="1024" max-height="800" v-bind="props">
+            <v-col class="float-right">
+              <v-sheet class="pa-2 ma-2">
+                <v-img class="rounded-ts-100" src="..//src/assets/images/6jbuilders-bg.jpg"></v-img>
+              </v-sheet>
+            </v-col>
+            <v-col class="w-50">
+              <v-sheet class="pa-2 ma-2">
+                <v-overlay
+                  :model-value="isHovering"
+                  contained
+                  scrim="#036358"
+                  class="align-center justify-center"
+                >
+                  <p id="tag">
+                    We <span id="build" class="font-weight-black"> BUILD </span> and
+                    <span id="build" class="font-weight-black"> REPAIR </span> your Home
+                  </p>
+                </v-overlay>
+              </v-sheet>
+            </v-col>
+          </v-card>
+        </v-hover>
+      </v-row>
+
+      <!-- <v-hover v-slot="{ isHovering, props }">
+        <v-card class="" max-width="1024" max-height="800" v-bind="props">
+          <v-img class="rounded-ts-100" src="..//src/assets/images/6jbuilders-bg.jpg"></v-img>
+          <v-overlay
+            :model-value="isHovering"
+            contained
+            scrim="#036358"
+            class="align-center justify-center">
+            <p id="tag"> We 
+            <span id="build" class="font-weight-black"> BUILD </span> and  
+            <span id="build" class="font-weight-black"> REPAIR </span> your Home </p> 
+          </v-overlay>
+          </v-card>
+      </v-hover> -->
+    </v-container>
+
     <Footer />
   </main>
 </template>
 
-<style></style>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Calistoga&display=swap');
+
+#tag {
+  font-family: 'Calistoga', cursive;
+  font-size: 2rem;
+}
+#build {
+  color: #fdd835;
+  font-size: 4rem;
+}
+</style>
