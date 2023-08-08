@@ -1,5 +1,5 @@
 <template>
-    <section class="bg-blue">
+    <section class="footer-container">
         <div class="d-flex flex-column">
             <div class="bg-blue-lighten-1 d-flex w-100 align-center px-4">
                 <strong>Get connected with us on social networks!</strong>
@@ -9,7 +9,8 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>About Us</h3>
-                    <p><span style="font-weight: 600;">6J Builders.</span><br>Lorem ipsum dolor sit amet. Ut quod consequatur ut cupiditate sint sed aspernatur
+                    <p><span style="font-weight: 600;">6J Builders.</span><br>Lorem ipsum dolor sit amet. Ut quod
+                        consequatur ut cupiditate sint sed aspernatur
                         impedit et eveniet aperiam.</p>
                 </div>
                 <div class="footer-section">
@@ -45,20 +46,26 @@ export default {
             'Terms of Condition',
             'Privacy Policy',
         ],
-        icons: [
-            'mdi-facebook',
-            'mdi-twitter',
-            'mdi-linkedin',
-            'mdi-instagram',
-        ],
+        icons: ['mdi-facebook', 'mdi-twitter', 'mdi-linkedin', 'mdi-instagram'],
     }),
 };
 </script>
   
 <style>
-p{
+
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #2196F3;
+    color: white;
+    margin-top: 50px;
+}
+
+p {
     padding: 5px;
 }
+
 .footer-content {
     display: flex;
     justify-content: space-around;
@@ -68,5 +75,9 @@ p{
 .footer-section {
     flex: 1;
     padding: 0 20px;
+}
+
+.mx-1 {
+    margin: 0.2rem;
 }
 </style>  
