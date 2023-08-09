@@ -69,63 +69,54 @@ onMounted(async () => {
 
       <v-btn @click="submit" variant="outlined">double</v-btn>
     </v-card> -->
-    <v-container class="bg-surface-variant">
-      <v-row no-gutters>
-        <v-hover v-slot="{ isHovering, props }">
-          <v-card class="" max-width="1024" max-height="800" v-bind="props">
-            <v-col class="float-right">
-              <v-sheet class="pa-2 ma-2">
-                <v-img class="rounded-ts-100" src="..//src/assets/images/6jbuilders-bg.jpg"></v-img>
-              </v-sheet>
-            </v-col>
-            <v-col class="w-50">
-              <v-sheet class="pa-2 ma-2">
-                <v-overlay
-                  :model-value="isHovering"
-                  contained
-                  scrim="#036358"
-                  class="align-center justify-center"
-                >
-                  <p id="tag">
-                    We <span id="build" class="font-weight-black"> BUILD </span> and
-                    <span id="build" class="font-weight-black"> REPAIR </span> your Home
-                  </p>
-                </v-overlay>
-              </v-sheet>
-            </v-col>
-          </v-card>
-        </v-hover>
-      </v-row>
+    
 
-      <!-- <v-hover v-slot="{ isHovering, props }">
-        <v-card class="" max-width="1024" max-height="800" v-bind="props">
-          <v-img class="rounded-ts-100" src="..//src/assets/images/6jbuilders-bg.jpg"></v-img>
-          <v-overlay
-            :model-value="isHovering"
-            contained
-            scrim="#036358"
-            class="align-center justify-center">
-            <p id="tag"> We 
-            <span id="build" class="font-weight-black"> BUILD </span> and  
-            <span id="build" class="font-weight-black"> REPAIR </span> your Home </p> 
-          </v-overlay>
-          </v-card>
-      </v-hover> -->
-    </v-container>
+    <div id="banner" class="d-flex w-100 h-100 mt-12">
+      <div class="d-flex w-50 pa-2">
+        <div id="captivated" class="d-block">
+          <p id="tag" class="ml-10 mt-12">
+            We <span id="build" class=""> BUILD </span> and
+            <span id="build" class=""> REPAIR </span> your Home
+          </p>
+          <p class="ml-10">
+            Provide construction and repair services,<br />attaining excellent quality works, timely
+            timetable and cost efficient services.
+          </p>
+        </div>
+      </div>
+      <div class="d-flex w-50">
+        <v-img
+          id="background"
+          class="rounded-ts-pill"
+          src="..//src/assets/images/6jbuilders-bg.jpg"
+          width="50%"
+        ></v-img>
+      </div>
+    </div>
 
     <Footer />
   </main>
 </template>
+
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Calistoga&display=swap');
 
 #tag {
   font-family: 'Calistoga', cursive;
-  font-size: 2rem;
+  font-size: 3rem;
+ 
 }
 #build {
-  color: #fdd835;
-  font-size: 4rem;
+  color:#82B1FF;
+  font-size: 3rem;
+}
+p {
+  align-items: center;
+}
+
+#banner{
+  background-image: linear-gradient(#000000,#FFFF, #90CAF9);
+  border-radius: 95% 0% 0% 0%;
 }
 </style>

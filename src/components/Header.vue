@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar color="#90CAF9" app height="150" class="pb-1 pt-1">
+    <v-app-bar id="bgh" app height="150" class="pb-1 pt-1">
 
         <v-container>
             <v-row class="d-flex justify-center align-center">
@@ -59,14 +59,14 @@
                                     </v-list-item>
                                 </v-list>
                             </v-menu>
-                            <v-btn v-else :color="activeRoute === link.route ? 'black' : 'white'" variant="text"
+                            <v-btn v-else :color="activeRoute === link.route ? '#82B1FF' : 'black'" variant="text"
                                 @click="navTo(link.route)">{{ link.title }}</v-btn>
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-row class="d-flex justify-end align-center">
+                <v-row btn class="d-flex justify-end align-center">
                     <v-col cols="auto">
-                        <v-row class="d-flex justify-center align-center">
+                        <v-row class="d-flex justify-center align-center bg-black">
                             <v-btn variant="evelated" elevation="8" size="large" @click="navTo('book')">Book Now</v-btn>
                         </v-row>
                     </v-col>
@@ -157,4 +157,9 @@ strong {
         font-size: 8px;
     }
 }
+#bgh{
+    background-image: linear-gradient(#90CAF9, #FFFF);
+}
+
+
 </style>
