@@ -5,7 +5,6 @@
             <v-form @submit.prevent="submitForm">
                 <v-select v-model="dataSubjectType" :items="dataSubjectTypes" label="Data Subject Type"
                     variant="outlined"></v-select>
-
                 <div class="d-flex">
                     <v-col cols="8">
                         <v-text-field :rules="[rules.required]" v-model="fullName" label="Full Name"
@@ -44,9 +43,6 @@
                             variant="outlined"></v-text-field>
                     </v-col>
                 </div>
-                <!-- date-picker is not working -->
-                <!-- <v-date-picker v-model="scheduleDate" label="Schedule Date" outlined></v-date-picker> -->
-                <!-- ******************************* -->
                 <v-textarea v-model="note" label="Note"></v-textarea>
                 <v-checkbox v-model="agreeToTerms" color="blue" :rules="[rules.required]"
                     label="Before submitting your form, please make sure to review and agree to our company's terms and conditions. By checking the box, you acknowledge that you have read and understood our policies regarding our construction services. Thank you for choosing 6JBuilders Construction and Home Repair Services."></v-checkbox>

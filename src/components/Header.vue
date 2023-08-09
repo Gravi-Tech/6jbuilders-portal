@@ -1,6 +1,5 @@
 <template>
-    <v-app-bar id="bgh" app height="150" class="pb-1 pt-1">
-
+    <v-app-bar app height="150" class="pb-1 pt-1">
         <v-container>
             <v-row class="d-flex justify-center align-center">
                 <v-col cols="auto">
@@ -48,7 +47,7 @@
                         <v-col cols="auto" v-for="(link, i) in navLinks" :key="i">
                             <v-menu v-if="link.route === 'services'" open-on-hover>
                                 <template v-slot:activator="{ props }">
-                                    <v-btn color="white" v-bind="props">
+                                    <v-btn color="black" v-bind="props">
                                         Services
                                     </v-btn>
                                 </template>
@@ -159,9 +158,4 @@ strong {
         font-size: 8px;
     }
 }
-#bgh{
-    background-image: "";
-}
-
-
 </style>
