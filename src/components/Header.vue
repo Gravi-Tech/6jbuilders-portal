@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar color="blue darken-2" app height="150" class="pb-1 pt-1">
+    <v-app-bar id="bgh" app height="150" class="pb-1 pt-1">
 
         <v-container>
             <v-row class="d-flex justify-center align-center">
@@ -59,16 +59,15 @@
                                     </v-list-item>
                                 </v-list>
                             </v-menu>
-                            <v-btn v-else :color="activeRoute === link.route ? 'black' : 'white'" variant="text"
+                            <v-btn v-else :color="activeRoute === link.route ? '#039BE5' : 'black'" variant="text"
                                 @click="navTo(link.route)">{{ link.title }}</v-btn>
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-row class="d-flex justify-end align-center">
+                <v-row btn class="d-flex justify-end align-center">
                     <v-col cols="auto">
-                        <v-row class="d-flex justify-center align-center">
-                            <v-btn variant="elevated" elevation="8" color="teal-accent-4" size="large"
-                                @click="navTo('book')">Book Now</v-btn>
+                        <v-row class="d-flex justify-center align-center bg-black">
+                            <v-btn variant="evelated" elevation="8" size="large" @click="navTo('book')">Book Now</v-btn>
                         </v-row>
                     </v-col>
                 </v-row>
@@ -160,4 +159,9 @@ strong {
         font-size: 8px;
     }
 }
+#bgh{
+    background-image: "";
+}
+
+
 </style>
