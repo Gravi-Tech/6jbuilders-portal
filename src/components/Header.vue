@@ -44,7 +44,7 @@
             <v-row class="d-flex justify-center align-center">
                 <v-col cols="auto">
                     <v-row class="d-flex justify-center align-center">
-                        <v-img src="../src/assets/logo.png" max-height="80"></v-img>
+                        <v-img src="../assets/img/logo.png" max-height="80"></v-img>
                         <v-col cols="auto" v-for="(link, i) in navLinks" :key="i">
                             <v-menu v-if="link.route === 'services'" open-on-hover>
                                 <template v-slot:activator="{ props }">
