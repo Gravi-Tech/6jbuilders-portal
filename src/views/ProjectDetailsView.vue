@@ -52,7 +52,7 @@ export default {
                     id: 1,
                     title: 'Custom Cabinets',
                     location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/img/project1.jpeg', // not loaded
+                    image: '../assets/img/project1.jpeg', // not loaded
                     rating: 4.5,
                     reviews: 413,
                     date: '08/09/2023',
