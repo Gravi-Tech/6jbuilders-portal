@@ -4,13 +4,10 @@
         <v-row>
             <v-col cols="12">
                 <h1 class="step-details-title">{{ selectedStep.title }}</h1>
-                <div class="step-details-header" @click="goBack">
-                    <v-icon class="back-icon">mdi-arrow-left</v-icon>
-                    <p class="go-back-text">Go back to service</p>
-                </div>
                 <div class="step-details-description">
                     <p v-for="(paragraph, index) in selectedStep.description" :key="index">{{ paragraph }}</p>
                 </div>
+                <v-btn prepend-icon="mdi-arrow-left" color="teal-accent-4" class="mt-4" @click="goBack">Back to Service</v-btn>
             </v-col>
         </v-row>
     </v-container>
@@ -18,8 +15,8 @@
 </template>
 
 <script>
-import Header from '../components/Header.vue';
-import Footer from '../components/Footer.vue';
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
 
 export default {
     components: {

@@ -8,7 +8,7 @@
                 <vue3-google-login client-id="94901716497-5e4cor5er6mbn82s8lv7vtup83hfrv0i.apps.googleusercontent.com"
                     @login-success="onLoginSuccess" @login-error="onLoginError">
                     <v-btn block rounded="sm" size="x-large" class="google-login-button">
-                        <img src="../assets/google-icon.png" alt="Google Logo" />
+                        <img src="../assets/images/google-icon.png" alt="Google Logo" />
                         <span>Log in with Google</span>
                     </v-btn>
                 </vue3-google-login>
