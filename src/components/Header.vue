@@ -59,7 +59,7 @@
                                     </v-list-item>
                                 </v-list>
                             </v-menu>
-                            <v-btn v-else :color="activeRoute === link.route ? '#82B1FF' : 'black'" variant="text"
+                            <v-btn v-else :color="activeRoute === link.route ? '#039BE5' : 'black'" variant="text"
                                 @click="navTo(link.route)">{{ link.title }}</v-btn>
                         </v-col>
                     </v-row>
@@ -158,7 +158,7 @@ strong {
     }
 }
 #bgh{
-    background-image: linear-gradient(#90CAF9, #FFFF);
+    background-image: "";
 }
 
 

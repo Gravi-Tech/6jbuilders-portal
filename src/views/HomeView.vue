@@ -93,6 +93,28 @@ onMounted(async () => {
         ></v-img>
       </div>
     </div>
+    <v-container class="">
+    <v-row no-gutters>
+      <v-col>
+        <v-sheet id="" class="pa-2 ma-6">
+          Looking for a quality and affordable constructor for your home?
+        </v-sheet>
+      </v-col>
+      <v-col>
+        <v-sheet class="pa-2 ma-2">
+          <v-row justify="center">
+            <v-col cols="4">
+        <v-btn block rounded="lg" size="x-large">Get a Qoute</v-btn>
+      </v-col>
+      <v-col cols="6">
+        <v-btn block rounded="lg" size="x-large">Check our Projects</v-btn>
+      </v-col>
+        </v-row>
+        </v-sheet>
+      </v-col>
+    
+    </v-row>
+    </v-container>
 
     <Footer />
   </main>
@@ -108,7 +130,7 @@ onMounted(async () => {
  
 }
 #build {
-  color:#82B1FF;
+  color:#039BE5;
   font-size: 3rem;
 }
 p {
@@ -116,7 +138,7 @@ p {
 }
 
 #banner{
-  background-image: linear-gradient(#000000,#FFFF, #90CAF9);
+  background-image: linear-gradient(#FBC02D,#FFFF, #039BE5);
   border-radius: 95% 0% 0% 0%;
 }
 </style>
