@@ -79,26 +79,28 @@
 <script setup>
 import { useRouter } from 'vue-router';
 const router = useRouter()
+
 const services = [
+    { title: 'Cabinets' },
+    { title: 'Drywall Installation' },
+    { title: 'Electrical' },
+    { title: 'Glass and Aluminum Installation' },
     { title: 'Home Renovation' },
+    { title: 'Home Repair Services' },
     { title: 'Interior Design' },
     { title: 'Plumbing' },
-    { title: 'Electrical' },
-    { title: 'Drywall Installation' },
-    { title: 'Tile Installation' },
-    { title: 'Glass and Aluminum Installation' },
-    { title: 'Welding' },
     { title: 'Roofing' },
-    { title: 'Cabinets' },
-    { title: 'Home Repair Services' }
+    { title: 'Tile Installation' },
+    { title: 'Welding' }
 ];
+
 const navigateToService = (service) => {
     router.push(`/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`);
 }
 
 const navLinks = [
     { route: 'home', title: 'Home' },
-    { route: 'about', title: 'About' },
+    { route: 'about-us', title: 'About' },
     { route: 'services', title: 'Services' },
     { route: 'contact', title: 'Contact' },
     { route: 'login', title: 'Login' },

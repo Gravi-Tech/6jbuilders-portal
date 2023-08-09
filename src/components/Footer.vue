@@ -22,9 +22,9 @@
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
-                    <v-btn v-for="link in quickLinks" :key="link" color="white" variant="text" class="mx-1" rounded="xl">
-                        {{ link }}
-                    </v-btn>
+                    <p v-for="link in quickLinks" :key="link" class="quick-link">
+                        <router-link :to="getLinkRoute(link)" class="no-text-decoration">{{ link }}</router-link>
+                    </p>
                 </div>
             </div>
         </div>
@@ -48,11 +48,21 @@ export default {
         ],
         icons: ['mdi-facebook', 'mdi-twitter', 'mdi-linkedin', 'mdi-instagram'],
     }),
+    methods: {
+        getLinkRoute(link) {
+            if (link === 'Terms of Condition' || link === 'Privacy Policy') {
+                const routeName = link === 'Terms of Condition' ? 'terms-of-service' : 'privacy-policy';
+                return { name: 'legal', params: { page: routeName } };
+            } else {
+                const formattedRoute = link.toLowerCase().replace(/\s+/g, '-');
+                return { name: formattedRoute };
+            }
+        },
+    },
 };
 </script>
   
 <style>
-
 .footer-container {
     display: flex;
     flex-direction: column;
@@ -60,6 +70,10 @@ export default {
     background-color: #2196F3;
     color: white;
     margin-top: 50px;
+}
+.no-text-decoration {
+    text-decoration: none;
+    color: white;
 }
 
 p {

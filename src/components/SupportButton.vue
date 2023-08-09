@@ -2,7 +2,7 @@
     <div class="text-center mt-6">
         <v-dialog v-model="showModal" max-width="600">
             <template v-slot:activator="{ on }">
-                <v-btn @click="openBookingModal" v-on="on">{{ buttonText }}</v-btn>
+                <v-btn color="blue-lighten-1" size="large" @click="openBookingModal" v-bind="on">{{ buttonText }}</v-btn>
             </template>
             <v-card>
                 <BookingForm :preSelectedService="preSelectedService" @close="closeBookingModal" />
@@ -41,4 +41,3 @@ export default {
     },
 };
 </script>
-  

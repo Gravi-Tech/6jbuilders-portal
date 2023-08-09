@@ -25,8 +25,16 @@
                     <v-col cols="4"><v-text-field :rules="[rules.required]" v-model="zipCode" label="ZIP Code"
                             placeholder="6000" variant="outlined"></v-text-field></v-col>
                 </div>
-                <v-select :rules="[rules.required]" v-model="serviceType" :items="serviceTypes" label="Type of Service"
-                    variant="outlined"></v-select>
+                <div>
+                    <v-row>
+                        <v-col cols="auto">
+                            <v-btn variant="text" size="x-small" color="success">Add Additional Service </v-btn>
+                        </v-col>
+                    </v-row>
+                    <v-select :rules="[rules.required]" v-model="serviceType" :items="serviceTypes" label="Type of Service"
+                        variant="outlined" :disabled="isDisabledService">
+                    </v-select>
+                </div>
                 <div class="d-flex">
                     <v-col cols="6">
                         <v-file-input v-model="attachment" label="Attachment" variant="outlined"></v-file-input>
@@ -55,6 +63,11 @@ export default {
     props: {
         preSelectedService: String,
     },
+    computed: {
+        isDisabledService() {
+            return this.preSelectedService === this.serviceType;
+        },
+    },
     data() {
         return {
             dataSubjectTypes: ['Commercial', 'Contractor', 'Architect', 'Engineer'],
@@ -62,18 +75,19 @@ export default {
             fullName: null,
             contactNumber: null,
             siteLocation: null,
+            zipCode: null,
             email: null,
             serviceTypes: [
+                'Cabinets',
+                'Drywall Installation',
+                'Electrical',
+                'Glass and Aluminum Installation',
                 'Home Renovation',
                 'Interior Design',
                 'Plumbing',
-                'Electrical',
-                'Drywall Installation',
-                'Tile Installation',
-                'Glass and Aluminum Installation',
-                'Welding',
                 'Roofing',
-                'Cabinets',
+                'Tile Installation',
+                'Welding',
             ],
             serviceType: this.preSelectedService || "Home Repair Services",
             attachment: null,
