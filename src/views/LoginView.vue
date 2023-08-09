@@ -1,24 +1,19 @@
 <template>
     <Header />
-    <Portal />
+    <UserPortal />
     <Footer />
 </template>
   
 <script scoped>
 import Header from '../components/Header.vue';
-import Portal from '../components/Portal.vue';
+import UserPortal from '../components/UserPortal.vue';
 import Footer from '../components/Footer.vue';
 
 export default {
     components: {
         Header,
-        Portal,
+        UserPortal,
         Footer
-    },
-    data() {
-        return {
-
-        };
     },
 };
 </script>

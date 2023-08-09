@@ -1,7 +1,7 @@
 <template>
     <div class="about-us">
         <v-parallax src="https://th.bing.com/th/id/OIP.1fnhZ9plz0-a9Hx-tGTNDQHaEU?w=297&h=180&c=7&r=0&o=5&dpr=2&pid=1.7"
-            height="400">
+            height="350">
             <v-row class="fill-height ma-0 text-white">
                 <v-col cols="12" class="text-center white--text align-self-center">
                     <h1 class="text-h4 font-weight-thin mb-4">About Us</h1>

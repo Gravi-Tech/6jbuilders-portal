@@ -4,7 +4,7 @@
             <h1> PROJECTS</h1>
         </section>
         <v-row>
-            <v-col v-for="(project, index) in projects" :key="index" class="d-flex child-flex" cols="4">
+            <v-col v-for="(project, index) in filteredProjects" :key="index" class="d-flex child-flex" cols="4">
                 <v-card class="mx-auto my-4" max-width="374">
                     <v-img cover :src="project.image" :width="400" :height="200"></v-img>
                     <v-card-item>
@@ -25,7 +25,7 @@
 
                         <div class="my-4 text-subtitle-1">{{ project.date }}</div>
 
-                        <div>{{ project.description }}</div>
+                        <div>{{ Array.isArray(project.description) ? project.description.join(' ').split('.')[0] + '...' : project.description }}</div>
                     </v-card-text>
 
                     <v-card-actions>
@@ -40,108 +40,28 @@
 </template>
   
 <script>
+import { projects } from '../utils/projectData.js';
 
 export default {
     data() {
         return {
-            projects: [
-                {
-                    id: 1,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project1.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: 'lorem ipsum.',
-                },
-                {
-                    id: 2,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project2.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: 'lorem ipsum.',
-                },
-                {
-                    id: 3,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project3.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: 'lorem ipsum.',
-                },
-                {
-                    id: 4,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project4.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: 'lorem ipsum.',
-                },
-                {
-                    id: 5,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project5.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: 'lorem ipsum.',
-                },
-                {
-                    id: 6,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project6.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: 'lorem ipsum.',
-                },
-                {
-                    id: 7,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project7.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: 'lorem ipsum.',
-                },
-                {
-                    id: 8,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project8.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: 'lorem ipsum.',
-                },
-                {
-                    id: 9,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project9.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: 'lorem ipsum.',
-                },
-            ],
+            projects: projects,
+            selectedService: 'All',
         };
+    },
+    computed: {
+        filteredProjects() {
+            if (this.selectedService === 'All') {
+                return this.projects;
+            } else {
+                return this.projects.filter(project => project.service === this.selectedService);
+            }
+        },
     },
     methods: {
         navigateToProject(id) {
             this.$router.push({ name: 'project-details', params: { id: id } });
-        }
+        },
     },
 };
 </script>

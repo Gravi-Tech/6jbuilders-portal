@@ -12,11 +12,13 @@
 <script scoped>
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
+import { legalData } from '../utils/legalData.js';
+
 export default {
     name: 'LegalPage',
     components: {
         Header,
-        Footer
+        Footer,
     },
     data() {
         return {
@@ -30,12 +32,9 @@ export default {
     methods: {
         loadPageContent() {
             const page = this.$route.params.page;
-            if (page === 'terms-of-service') {
-                this.pageTitle = 'Terms of Service';
-                this.pageContent = 'Content for Terms of Service...';
-            } else if (page === 'privacy-policy') {
-                this.pageTitle = 'Privacy Policy';
-                this.pageContent = 'Content for Privacy Policy...';
+            if (legalData.hasOwnProperty(page)) {
+                this.pageTitle = legalData[page].title;
+                this.pageContent = legalData[page].content;
             }
         },
     },

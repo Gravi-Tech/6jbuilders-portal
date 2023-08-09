@@ -28,11 +28,13 @@
                 </div>
             </div>
         </div>
-        <v-row no-gutters>
-            <v-col class="text-center mt-4" cols="12">
-                Copyright ©{{ new Date().getFullYear() }} All Rights Reserved | 6J Builders Cebu Philippines
-            </v-col>
-        </v-row>
+        <div class="footer-bottom">
+            <v-row no-gutters>
+                <v-col class="text-center mt-4" cols="12">
+                    Copyright ©{{ new Date().getFullYear() }} All Rights Reserved | 6J Builders Cebu Philippines
+                </v-col>
+            </v-row>
+        </div>
     </section>
 </template>
   
@@ -69,8 +71,13 @@ export default {
     justify-content: space-between;
     background-color: #2196F3;
     color: white;
-    margin-top: 50px;
+    margin-top: auto;
 }
+
+.footer-bottom {
+    flex-shrink: 0;
+}
+
 .no-text-decoration {
     text-decoration: none;
     color: white;

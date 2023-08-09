@@ -7,13 +7,13 @@
   <Footer />
 </template>
 
-<script scoped>
-import Header from '@/components/Header.vue';
-import About from '@/components/About.vue';
-import Team from '@/components/Team.vue'; 
-import Projects from '@/components/Project.vue';
-import Testimonial from '@/components/Testimonial.vue';
-import Footer from '@/components/Footer.vue';
+<script>
+import Header from '../components/Header.vue';
+import About from '../components/About.vue';
+import Team from '../components/Team.vue';
+import Projects from '../components/Project.vue';
+import Testimonial from '../components/Testimonial.vue';
+import Footer from '../components/Footer.vue';
 
 export default {
   components: {
@@ -23,11 +23,6 @@ export default {
     Projects,
     Testimonial,
     Footer
-  },
-  data() {
-    return {
-
-    };
   },
 };
 </script>

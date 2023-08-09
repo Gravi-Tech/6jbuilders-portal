@@ -1,6 +1,13 @@
 <template>
     <Header />
-    <v-img cover height="300" :src="project.image"></v-img>
+    <div class="parallax-container">
+        <v-parallax :src="project.image" height="350">
+            <div class="parallax-overlay"></div>
+            <div class="parallax-content">
+                <p>Let Us Build and Repair your Home</p>
+            </div>
+        </v-parallax>
+    </div>
     <v-container>
         <v-row class="mt-4">
             <v-col cols="12" md="6">
@@ -27,6 +34,7 @@
 </template>
   
 <script>
+import { projects } from '../utils/projectData.js';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 
@@ -46,125 +54,7 @@ export default {
     },
     methods: {
         fetchProjectDetails(projectId) {
-            const projects = [
-                {
-                    id: 1,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project1.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: [
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-                        'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
-                        'Tortor consequat id porta nibh venenatis cras sed felis eget. Libero enim sed faucibus turpis. Lorem mollis aliquam ut porttitor leo a diam sollicitudin. Est ultricies integer quis auctor elit. Odio eu feugiat pretium nibh ipsum consequat nisl vel pretium. At quis risus sed vulputate odio ut enim blandit. Turpis tincidunt id aliquet risus feugiat.'],
-                },
-                {
-                    id: 2,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project2.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: [
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-                        'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
-                        'Tortor consequat id porta nibh venenatis cras sed felis eget. Libero enim sed faucibus turpis. Lorem mollis aliquam ut porttitor leo a diam sollicitudin. Est ultricies integer quis auctor elit. Odio eu feugiat pretium nibh ipsum consequat nisl vel pretium. At quis risus sed vulputate odio ut enim blandit. Turpis tincidunt id aliquet risus feugiat.'],
-                },
-                {
-                    id: 3,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project3.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: [
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-                        'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
-                        'Tortor consequat id porta nibh venenatis cras sed felis eget. Libero enim sed faucibus turpis. Lorem mollis aliquam ut porttitor leo a diam sollicitudin. Est ultricies integer quis auctor elit. Odio eu feugiat pretium nibh ipsum consequat nisl vel pretium. At quis risus sed vulputate odio ut enim blandit. Turpis tincidunt id aliquet risus feugiat.'],
-                },
-                {
-                    id: 4,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project4.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: [
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-                        'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
-                        'Tortor consequat id porta nibh venenatis cras sed felis eget. Libero enim sed faucibus turpis. Lorem mollis aliquam ut porttitor leo a diam sollicitudin. Est ultricies integer quis auctor elit. Odio eu feugiat pretium nibh ipsum consequat nisl vel pretium. At quis risus sed vulputate odio ut enim blandit. Turpis tincidunt id aliquet risus feugiat.'],
-                },
-                {
-                    id: 5,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project5.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: [
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-                        'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
-                        'Tortor consequat id porta nibh venenatis cras sed felis eget. Libero enim sed faucibus turpis. Lorem mollis aliquam ut porttitor leo a diam sollicitudin. Est ultricies integer quis auctor elit. Odio eu feugiat pretium nibh ipsum consequat nisl vel pretium. At quis risus sed vulputate odio ut enim blandit. Turpis tincidunt id aliquet risus feugiat.'],
-                },
-                {
-                    id: 6,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project6.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: [
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-                        'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
-                        'Tortor consequat id porta nibh venenatis cras sed felis eget. Libero enim sed faucibus turpis. Lorem mollis aliquam ut porttitor leo a diam sollicitudin. Est ultricies integer quis auctor elit. Odio eu feugiat pretium nibh ipsum consequat nisl vel pretium. At quis risus sed vulputate odio ut enim blandit. Turpis tincidunt id aliquet risus feugiat.'],
-                },
-                {
-                    id: 7,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project7.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: [
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-                        'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
-                        'Tortor consequat id porta nibh venenatis cras sed felis eget. Libero enim sed faucibus turpis. Lorem mollis aliquam ut porttitor leo a diam sollicitudin. Est ultricies integer quis auctor elit. Odio eu feugiat pretium nibh ipsum consequat nisl vel pretium. At quis risus sed vulputate odio ut enim blandit. Turpis tincidunt id aliquet risus feugiat.'],
-                },
-                {
-                    id: 8,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project8.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: [
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-                        'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
-                        'Tortor consequat id porta nibh venenatis cras sed felis eget. Libero enim sed faucibus turpis. Lorem mollis aliquam ut porttitor leo a diam sollicitudin. Est ultricies integer quis auctor elit. Odio eu feugiat pretium nibh ipsum consequat nisl vel pretium. At quis risus sed vulputate odio ut enim blandit. Turpis tincidunt id aliquet risus feugiat.'],
-                },
-                {
-                    id: 9,
-                    title: 'Custom Cabinets',
-                    location: 'Mandaue, Cebu City, Cebu',
-                    image: '../src/assets/images/project9.jpeg',
-                    rating: 4.5,
-                    reviews: 413,
-                    date: '08/09/2023',
-                    description: [
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-                        'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
-                        'Tortor consequat id porta nibh venenatis cras sed felis eget. Libero enim sed faucibus turpis. Lorem mollis aliquam ut porttitor leo a diam sollicitudin. Est ultricies integer quis auctor elit. Odio eu feugiat pretium nibh ipsum consequat nisl vel pretium. At quis risus sed vulputate odio ut enim blandit. Turpis tincidunt id aliquet risus feugiat.'],
-                },
-            ];
+
             return projects.find(project => project.id === Number(projectId));
         },
         goBack() {
@@ -175,6 +65,31 @@ export default {
 </script>
   
 <style scoped>
+.parallax-container {
+  position: relative;
+}
+
+.parallax-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.parallax-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  font-family: 'Calistoga', cursive;
+  font-size: 1.5rem;
+}
+
+
 .description-content {
     font-size: 16px;
     line-height: 1.6;

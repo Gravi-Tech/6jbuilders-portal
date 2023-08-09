@@ -2,7 +2,8 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
-import Vuelidate from 'vuelidate';
+import Vuelidate from 'vuelidate'
+import useGoogleLogin from 'vue3-google-login'
 import router from './router'
 import './assets/main.css'
 
@@ -11,6 +12,7 @@ import { vuetify } from './plugins/vuetify'
 
 const app = createApp(App)
 app.use(Vuelidate); 
+app.use(useGoogleLogin);
 app.use(createPinia())
 app.use(router)
 app.use(vuetify)

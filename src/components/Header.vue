@@ -31,11 +31,7 @@
                 </v-col>
                 <v-col>
                     <v-row class="d-flex align-center">
-                        <v-card-text>
-                            <v-text-field :loading="loading" density="compact" variant="underlined" label="Search here..."
-                                append-inner-icon="mdi-magnify" single-line hide-details
-                                @click:append-inner="onClick"></v-text-field>
-                        </v-card-text>
+                        <SearchBar />
                     </v-row>
                 </v-col>
             </v-row>
@@ -43,7 +39,9 @@
             <v-row class="d-flex justify-center align-center">
                 <v-col cols="auto">
                     <v-row class="d-flex justify-center align-center">
-                        <v-img src="../src/assets/logo.png" max-height="80"></v-img>
+                        <a to="/home">
+                            <v-img src="/src/assets/logo.png" max-height="80" alt="Logo"></v-img>
+                        </a>
                         <v-col cols="auto" v-for="(link, i) in navLinks" :key="i">
                             <v-menu v-if="link.route === 'services'" open-on-hover>
                                 <template v-slot:activator="{ props }">
@@ -110,10 +108,13 @@ const navTo = (to) => {
 </script>
 
 <script>
+import SearchBar from './SearchBar.vue';
+
 export default {
+    components: {
+        SearchBar,
+    },
     data: () => ({
-        loaded: false,
-        loading: false,
         activeRoute: null,
     }),
     created() {
@@ -122,16 +123,6 @@ export default {
         this.$watch('$route', (to, from) => {
             this.activeRoute = to.name;
         });
-    },
-    methods: {
-        onClick() {
-            this.loading = true
-
-            setTimeout(() => {
-                this.loading = false
-                this.loaded = true
-            }, 2000)
-        },
     },
 }
 </script>

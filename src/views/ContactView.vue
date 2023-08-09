@@ -15,10 +15,5 @@ export default {
     Contact,
     Footer
   },
-  data() {
-    return {
-
-    };
-  },
 };
 </script>
