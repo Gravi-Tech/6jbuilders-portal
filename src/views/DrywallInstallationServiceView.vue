@@ -33,11 +33,11 @@
 </template>
 
 <script scoped>
-import Header from '../components/Header.vue';
-import ProcessSection from '../components/ProcessSection.vue';
-import Testimonial from '../components/Testimonial.vue';
-import SupportButton from '../components/SupportButton.vue';
-import Footer from '../components/Footer.vue';
+import Header from '@/components/Header.vue';
+import ProcessSection from '@/components/ProcessSection.vue';
+import Testimonial from '@/components/Testimonial.vue';
+import SupportButton from '@/components/SupportButton.vue';
+import Footer from '@/components/Footer.vue';
 
 export default {
   components: {
