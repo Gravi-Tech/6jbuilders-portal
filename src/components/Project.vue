@@ -24,8 +24,8 @@
                         </v-row>
 
                         <div class="my-4 text-subtitle-1">{{ project.date }}</div>
-
-                        <div>{{ Array.isArray(project.description) ? project.description.join(' ').split('.')[0] + '...' : project.description }}</div>
+                        <div>{{ Array.isArray(project.description) ? project.description.join(' ').split('.')[0] + '...' :
+                            project.description }}</div>
                     </v-card-text>
 
                     <v-card-actions>

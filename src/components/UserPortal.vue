@@ -17,51 +17,49 @@
                     @login-error="onLoginError" @click="onFacebookLogin">
                     <span>Log in with Facebook</span>
                 </v-facebook-login>
-                <v-btn v-if="!showAdminPortal" variant="text" size="x-small" color="primary" @click="showAdminModal = true">
+                <v-btn v-if="!showAdminPortal" variant="text" size="x-small" color="success" @click="showAdminModal = true">
                     <span>Admin?</span>
                 </v-btn>
             </div>
         </div>
     </div>
 
-    <div v-if="showAdminModal" class="admin-modal">
-        <div class="modal-content">
-            <h2 class="app-title">ADMIN PORTAL</h2>
-            <v-form v-model="form" @submit.prevent="onSubmit">
-                <v-text-field density="compact" prepend-inner-icon="mdi-account-box-outline" variant="outlined"
-                    label="Admin ID" v-model="adminId" :readonly="loading" :rules="[required]" clearable
-                    placeholder="Enter Admin ID" v-validate="'required'">
-                </v-text-field>
-                <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-end">
-                    <a class="text-caption text-decoration-none text-blue" href="#" rel="noopener noreferrer"
-                        target="_blank">
-                        Forgot login password?</a>
-                </div>
-
-                <v-text-field :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"
-                    variant="outlined" density="compact" placeholder="Enter your password"
-                    prepend-inner-icon="mdi-lock-outline" @click:append-inner="visible = !visible" v-model="adminPassword"
-                    :readonly="loading" :rules="[required]" clearable label="Password" type="password"
-                    v-validate="'required'"></v-text-field>
-
-                <v-card class="mb-12" color="surface-variant" variant="tonal">
-                    <v-card-text class="text-medium-emphasis text-caption">
-                        Warning: After 3 consecutive failed login attempts, you account will be temporarily locked for
-                        three
-                        hours. If you must login now, you can also click "Forgot login password?" below to reset the
-                        login
-                        password.
-                    </v-card-text>
-                </v-card>
-
-                <div class="modal-buttons">
-                    <v-btn variant="text" @click="showAdminModal = false">Go Back</v-btn>
-                    <v-btn color="blue" variant="tonal" :loading="loading" @click="loginAsAdmin">Sign
-                        In</v-btn>
-                </div>
-            </v-form>
-        </div>
-    </div>
+    <v-dialog v-model="showAdminModal" max-width="400">
+        <v-card>
+            <v-card-title class="text-center">ADMIN PORTAL</v-card-title>
+            <v-card-text>
+                <v-form v-model="form" @submit.prevent="onSubmit">
+                    <v-text-field density="compact" prepend-inner-icon="mdi-account-box-outline" variant="outlined"
+                        label="Admin ID" v-model="adminId" :readonly="loading" :rules="[required]" clearable
+                        placeholder="Enter Admin ID" v-validate="'required'"></v-text-field>
+                    <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-end">
+                        <router-link to="/password-recovery" class="text-caption text-decoration-none text-blue"
+                            @click="initiatePasswordRecovery">
+                            Forgot password?
+                        </router-link>
+                    </div>
+                    <v-text-field :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                        :type="visible ? 'text' : 'password'" variant="outlined" density="compact"
+                        placeholder="Enter your password" prepend-inner-icon="mdi-lock-outline"
+                        @click:append-inner="visible = !visible" v-model="adminPassword" :readonly="loading"
+                        :rules="[required]" clearable label="Password" type="password"
+                        v-validate="'required'"></v-text-field>
+                    <v-card class="mb-12" color="surface-variant" variant="tonal">
+                        <v-card-text class="text-medium-emphasis text-caption">
+                            Warning: After 3 consecutive failed login attempts, your account will be temporarily locked for
+                            three hours.
+                            If you must login now, you can also click "Forgot login password?" below to reset the login
+                            password.
+                        </v-card-text>
+                    </v-card>
+                </v-form>
+            </v-card-text>
+            <v-card-actions class="justify-space-around">
+                <v-btn text @click="showAdminModal = false">Go Back</v-btn>
+                <v-btn color="success" variant="tonal" :loading="loading" @click="loginAsAdmin">Sign In</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
@@ -121,6 +119,9 @@ export default defineComponent({
         },
         required(v) {
             return !!v || 'Field is required'
+        },
+        initiatePasswordRecovery() {
+            this.$router.push('/password-recovery');
         },
     },
 });
@@ -190,33 +191,5 @@ export default defineComponent({
 .facebook-login-button {
     color: #0961b9;
     font-size: 12px !important;
-}
-
-.admin-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 80px;
-}
-
-.modal-content {
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 400px;
-}
-
-.modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
 }
 </style>

@@ -7,7 +7,7 @@
                         <v-icon class="app-icon large-icon">mdi-phone</v-icon>
                         <v-col cols="auto">
                             <strong>Phone:</strong>
-                            <p class="small-text">+6394 000 3243</p>
+                            <p class="small-text">0926 123 7672</p>
                         </v-col>
                     </v-row>
                 </v-col>

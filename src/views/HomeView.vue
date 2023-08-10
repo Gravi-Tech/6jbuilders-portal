@@ -18,16 +18,16 @@
         <v-img id="background" class="rounded-ts-pill" src="../src/assets/images/6jbuilders-bg.jpg" width="50%"></v-img>
       </div>
     </div>
-    <section class="justify-center align-center" style="background-color: #E0E0E0;">
+    <section class="justify-center align-center" style="background-color: #E9E9E9;">
       <v-col cols="auto" class="d-flex">
         <div id="heading" class="pa-3" >
           Looking for a quality and affordable constructor for your home?
         </div>
         <div class="pa-1">
-          <v-btn size="large" variant="tonal" color="grey" class="mr-4">Get a Quote</v-btn>
+          <v-btn size="large" variant="flat" color="blue" class="mr-4">Get a Quote</v-btn>
         </div>
         <div class="pa-1">
-          <v-btn size="large" variant="tonal" color="grey">Check Our Projects</v-btn>
+          <v-btn size="large" variant="outlined" color="blue">Check Our Projects</v-btn>
         </div>
       </v-col>
     </section>
@@ -54,8 +54,8 @@ export default {
 }
 
 #heading{
-  color: #616161;
-  font-weight: 900;
+  color: #9E9E9E;
+  font-weight: 700;
   font-style: italic;
   margin-right: auto;
 }

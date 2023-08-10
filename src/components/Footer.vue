@@ -16,8 +16,8 @@
                 <div class="footer-section">
                     <h3>Contact Us</h3>
                     <p><v-icon>mdi-map-marker</v-icon> Canduman, Mandaue Cebu City</p>
-                    <p><v-icon>mdi-phone</v-icon> 0912-345-2134</p>
-                    <p><v-icon>mdi-email</v-icon> 6jbuildersph@gmail.com</p>
+                    <p><v-icon>mdi-phone</v-icon> 0926 123 7672</p>
+                    <p><v-icon>mdi-email</v-icon> 6jbrothers.construction@gmail.com</p>
                     <p><v-icon>mdi-calendar-clock</v-icon> Mon-Fri 7:00 am - 7:00 pm</p>
                 </div>
                 <div class="footer-section">

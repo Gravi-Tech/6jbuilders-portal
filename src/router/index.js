@@ -39,6 +39,12 @@ const router = createRouter({
       component: () => import('../views/LoginView.vue')
     },
     {
+      path: '/password-recovery',
+      name: 'password-recovery',
+      meta: { requiresAuth: false },
+      component: () => import('../views/PasswordRecoveryView.vue')
+    },
+    {
       path: '/project/details/:id',
       name: 'project-details',
       component: () => import('../views/ProjectDetailsView.vue')
