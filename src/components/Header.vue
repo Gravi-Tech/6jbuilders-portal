@@ -34,6 +34,12 @@
                         <SearchBar />
                     </v-row>
                 </v-col>
+                <v-col cols="auto">
+                    <Notification />
+                </v-col>
+                <v-col cols="auto">
+                    <Profile />
+                </v-col>
             </v-row>
 
             <v-row class="d-flex justify-center align-center">
@@ -76,6 +82,8 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import Profile from './Profile.vue';
+import Notification from './Notification.vue';
 const router = useRouter()
 
 const services = [
@@ -115,6 +123,8 @@ import SearchBar from './SearchBar.vue';
 export default {
     components: {
         SearchBar,
+        Profile,
+        Notification,
     },
     data: () => ({
         activeRoute: null,

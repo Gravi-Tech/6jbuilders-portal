@@ -27,7 +27,7 @@
           <v-card-title class="mb-4">Information</v-card-title>
           <v-card-text class="d-flex align-center">
             <v-icon class="info-icon" color="blue">mdi-phone</v-icon>
-            <span class="info-label">Phone:</span> +6394 000 3243
+            <span class="info-label">Phone:</span> 0926 123 7672
           </v-card-text>
           <v-card-text class="d-flex align-center">
             <v-icon class="info-icon" color="blue">mdi-map-marker</v-icon>
