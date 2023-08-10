@@ -11,7 +11,7 @@
         </p>
     </section>
     <ProcessSection :steps="renovationSteps" :pageTitle="pageTitle" />
-    <Feedback />
+    <Testimonial />
     <SupportButton :preSelectedService="pageTitle" />
     <Footer />
 </template>
@@ -19,7 +19,7 @@
 <script scoped>
 import Header from '../components/Header.vue';
 import ProcessSection from '../components/ProcessSection.vue';
-import Feedback from '../components/Feedback.vue';
+import Testimonial from '../components/Testimonial.vue';
 import SupportButton from '../components/SupportButton.vue';
 import Footer from '../components/Footer.vue';
 
@@ -27,7 +27,7 @@ export default {
     components: {
         Header,
         ProcessSection,
-        Feedback,
+        Testimonial,
         SupportButton,
         Footer,
     },

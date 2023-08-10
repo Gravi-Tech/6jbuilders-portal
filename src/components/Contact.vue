@@ -7,9 +7,9 @@
         <v-card class="contact-card">
           <v-card-title class="mb-4">Get in Touch</v-card-title>
           <v-form @submit.prevent="submitForm">
-            <v-text-field v-model="name" :rules="[rules.required]" label="Name" outlined></v-text-field>
-            <v-text-field :rules="[rules.email]" v-model="email" label="Email" outlined></v-text-field>
-            <v-textarea v-model="message" :rules="[rules.required]" label="Message" outlined></v-textarea>
+            <v-text-field v-model="name" :rules="[rules.required]" label="Name" outlined clearable></v-text-field>
+            <v-text-field :rules="[rules.email]" v-model="email" label="Email" outlined clearable></v-text-field>
+            <v-textarea v-model="message" :rules="[rules.required]" label="Message" outlined clearable></v-textarea>
             <v-checkbox v-model="agreement" :rules="[rules.required]" color="blue">
               <template v-slot:label>
                 I agree to the&nbsp;

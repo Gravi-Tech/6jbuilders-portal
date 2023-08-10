@@ -1,5 +1,5 @@
 <template>
-    <div class="booking-form">
+    <div class="booking-form mb-6">
         <v-card class="form-card">
             <v-card-title class="form-title">Book a Service</v-card-title>
             <v-form @submit.prevent="submitForm">
