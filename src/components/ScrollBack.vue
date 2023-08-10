@@ -1,7 +1,7 @@
 <template>
     <div v-show="showButton" class="support-button">
         <v-col cols="auto">
-            <v-btn size="large" color="teal-accent-4" @click="scrollToTop">
+            <v-btn size="large" color="#FBC02D" @click="scrollToTop">
                 <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
         </v-col>
@@ -41,5 +41,6 @@ export default {
     bottom: 20px;
     right: 20px;
     z-index: 1000;
+   
 }
 </style>  
