@@ -1,7 +1,7 @@
 <template>
     <section class="footer-container">
         <div class="d-flex flex-column">
-            <div class="bg-blue-lighten-1 d-flex w-100 align-center px-4">
+            <div class="bg-orange-lighten-2 d-flex w-100 align-center px-4">
                 <strong>Get connected with us on social networks!</strong>
                 <v-spacer></v-spacer>
                 <v-btn v-for="icon in icons" :key="icon" class="mx-4" :icon="icon" variant="text" size="small"></v-btn>
@@ -15,10 +15,10 @@
                 </div>
                 <div class="footer-section">
                     <h3>Contact Us</h3>
-                    <p><v-icon>mdi-map-marker</v-icon> Canduman, Mandaue Cebu City</p>
-                    <p><v-icon>mdi-phone</v-icon> 0926 123 7672</p>
-                    <p><v-icon>mdi-email</v-icon> 6jbrothers.construction@gmail.com</p>
-                    <p><v-icon>mdi-calendar-clock</v-icon> Mon-Fri 7:00 am - 7:00 pm</p>
+                    <p><v-icon color="#fbc02d">mdi-map-marker</v-icon> Canduman, Mandaue Cebu City</p>
+                    <p><v-icon color="#fbc02d">mdi-phone</v-icon> 0926 123 7672</p>
+                    <p><v-icon color="#fbc02d">mdi-email</v-icon> 6jbrothers.construction@gmail.com</p>
+                    <p><v-icon color="#fbc02d">mdi-calendar-clock</v-icon> Mon-Fri 7:00 am - 7:00 pm</p>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
