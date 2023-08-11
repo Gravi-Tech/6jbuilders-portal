@@ -27,12 +27,18 @@
                 <div>
                     <v-row>
                         <v-col cols="auto">
-                            <v-btn variant="text" size="x-small" color="success">Add Additional Service </v-btn>
+                            <v-btn variant="text" size="x-small" color="success">Add Additional Service</v-btn>
                         </v-col>
                     </v-row>
-                    <v-select :rules="[rules.required]" v-model="serviceType" :items="serviceTypes" label="Type of Service"
-                        variant="outlined" :disabled="isDisabledService">
+                    <v-select v-model="serviceType" :items="serviceTypes" label="Type of Service" variant="outlined"
+                        :readonly="isReadOnlyService" multiple chips deletable-chips>
                     </v-select>
+                    <v-row v-if="isReadOnlyService">
+                        <v-col cols="12">
+                            <v-alert closable outlined color="grey" icon="mdi-information-outline" elevation="2"
+                                text="Service Type is read-only due to the pre-selected service. You can add an additional service."></v-alert>
+                        </v-col>
+                    </v-row>
                 </div>
                 <div class="d-flex">
                     <v-col cols="6">
@@ -60,7 +66,7 @@ export default {
         preSelectedService: String,
     },
     computed: {
-        isDisabledService() {
+        isReadOnlyService() {
             return this.preSelectedService === this.serviceType;
         },
     },
@@ -85,7 +91,7 @@ export default {
                 'Tile Installation',
                 'Welding',
             ],
-            serviceType: this.preSelectedService || "Home Repair Services",
+            serviceType: [this.preSelectedService || "Home Repair Services"],
             attachment: null,
             scheduleDate: new Date().toISOString().substr(0, 10),
             note: null,

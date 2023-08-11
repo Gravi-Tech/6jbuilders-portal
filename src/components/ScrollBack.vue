@@ -43,4 +43,9 @@ export default {
     z-index: 1000;
    
 }
+
+.circular-button {
+
+    border-radius: 50%;
+}
 </style>  

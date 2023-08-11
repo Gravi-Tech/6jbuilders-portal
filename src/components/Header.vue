@@ -7,7 +7,7 @@
                         <v-icon class="app-icon large-icon">mdi-phone</v-icon>
                         <v-col cols="auto">
                             <strong>Phone:</strong>
-                            <p class="small-text">+6394 000 3243</p>
+                            <p class="small-text">0926 123 7672</p>
                         </v-col>
                     </v-row>
                 </v-col>
@@ -34,6 +34,12 @@
                         <SearchBar />
                     </v-row>
                 </v-col>
+                <v-col cols="auto">
+                    <Notification />
+                </v-col>
+                <v-col cols="auto">
+                    <Profile />
+                </v-col>
             </v-row>
 
             <v-row class="d-flex justify-center align-center">
@@ -45,19 +51,20 @@
                         <v-col cols="auto" v-for="(link, i) in navLinks" :key="i">
                             <v-menu v-if="link.route === 'services'" open-on-hover>
                                 <template v-slot:activator="{ props }">
-                                    <v-btn color="black" v-bind="props">
+                                    <v-btn size="small" color="black" v-bind="props">
                                         Services
                                     </v-btn>
                                 </template>
                                 <v-list>
-                                    <v-list-item v-for="(service, index) in services" :key="index" :value="index">
+                                    <v-list-item v-for="(service, index) in services" :key="index" :value="index"
+                                        class="dense">
                                         <v-list-item-title @click="navigateToService(service)">{{ service.title
                                         }}</v-list-item-title>
                                     </v-list-item>
                                 </v-list>
                             </v-menu>
                             <v-btn v-else :color="activeRoute === link.route ? '#039BE5' : 'black'" variant="text"
-                                @click="navTo(link.route)">{{ link.title }}</v-btn>
+                                size="small" @click="navTo(link.route)">{{ link.title }}</v-btn>
                         </v-col>
                     </v-row>
                 </v-col>
@@ -75,6 +82,8 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import Profile from './Profile.vue';
+import Notification from './Notification.vue';
 const router = useRouter()
 
 const services = [
@@ -92,13 +101,14 @@ const services = [
 ];
 
 const navigateToService = (service) => {
-    router.push(`/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`);
+    router.push(`/6jbuilders/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`);
 }
 
 const navLinks = [
     { route: 'home', title: 'Home' },
     { route: 'about-us', title: 'About' },
     { route: 'services', title: 'Services' },
+    { route: 'projects', title: 'Projects' },
     { route: 'contact', title: 'Contact' },
     { route: 'login', title: 'Login' },
 ]
@@ -113,6 +123,8 @@ import SearchBar from './SearchBar.vue';
 export default {
     components: {
         SearchBar,
+        Profile,
+        Notification,
     },
     data: () => ({
         activeRoute: null,
