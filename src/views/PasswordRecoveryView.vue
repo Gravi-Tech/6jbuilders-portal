@@ -1,31 +1,29 @@
 <template>
+    <Header />
     <v-container>
-        <SystemHeader />
-
         <v-form v-model="form" @submit.prevent="submitRequest">
-            <v-text-field v-model="adminIdentifier" label="Admin ID or Email" dense outlined required
-                :rules="adminIdentifierRules"></v-text-field>
-
-            <v-btn color="primary" type="submit">Submit Request</v-btn>
+            <v-text-field v-model="adminIdentifier" label="Admin ID or Email" dense variant="outlined" required
+                :rules="adminIdentifierRules" placeholer="Enter you admin ID/email">
+            </v-text-field>
+            <v-btn color="blue-lighten-2" type="submit">Submit Request</v-btn>
+            <p></p>
         </v-form>
-
-        <SystemFooter />
-
-        <v-snackbar v-model="showSnackbar" color="info" top>
+        <v-snackbar v-model="showSnackbar" color="success" max-width="400" class="mb-5">
             Please check your email or contact the Super Admin for your password reset.
-            <v-btn color="white" text @click="showSnackbar = false">Close</v-btn>
+            <v-btn color="white" size="small" text @click="showSnackbar = false">Close</v-btn>
         </v-snackbar>
     </v-container>
+    <Footer />
 </template>
 
 <script>
-import SystemHeader from '../components/SystemHeader.vue';
-import SystemFooter from '../components/SystemFooter.vue';
+import Header from '../components/Header.vue';
+import Footer from '../components/Footer.vue';
 
 export default {
     components: {
-        SystemHeader,
-        SystemFooter,
+        Header,
+        Footer,
     },
     data() {
         return {

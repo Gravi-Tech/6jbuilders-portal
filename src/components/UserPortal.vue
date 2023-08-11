@@ -33,7 +33,7 @@
                         label="Admin ID" v-model="adminId" :readonly="loading" :rules="[required]" clearable
                         placeholder="Enter Admin ID" v-validate="'required'"></v-text-field>
                     <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-end">
-                        <router-link to="/password-recovery" class="text-caption text-decoration-none text-blue"
+                        <router-link to="/6jbuilders/password-recovery" class="text-caption text-decoration-none text-blue"
                             @click="initiatePasswordRecovery">
                             Forgot password?
                         </router-link>
@@ -78,7 +78,7 @@ export default defineComponent({
             showAdminModal: false,
             adminId: null,
             adminPassword: null,
-            form: false,
+            form: {},
             loading: false,
             visible: false,
         };
@@ -121,7 +121,7 @@ export default defineComponent({
             return !!v || 'Field is required'
         },
         initiatePasswordRecovery() {
-            this.$router.push('/password-recovery');
+            this.$router.push('/6jbuilders/password-recovery');
         },
     },
 });

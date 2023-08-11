@@ -78,8 +78,8 @@ export default {
         const routeName = link === 'Terms of Condition' ? 'terms-of-service' : 'privacy-policy';
         return { name: 'legal', params: { page: routeName } };
       } else {
-        const formattedRoute = link.toLowerCase().replace(/\s+/g, '-');
-        return { name: formattedRoute };
+        const legalRoute = link.toLowerCase().replace(/\s+/g, '-');
+        return { name: legalRoute };
       }
     },
   },

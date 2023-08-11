@@ -31,7 +31,7 @@
                         </v-col>
                     </v-row>
                     <v-select v-model="serviceType" :items="serviceTypes" label="Type of Service" variant="outlined"
-                        :readonly="isReadOnlyService" multiple chips deletable-chips>
+                        :readonly="isReadOnlyService" chips deletable-chips>
                     </v-select>
                     <v-row v-if="isReadOnlyService">
                         <v-col cols="12">
@@ -91,7 +91,7 @@ export default {
                 'Tile Installation',
                 'Welding',
             ],
-            serviceType: [this.preSelectedService || "Home Repair Services"],
+            serviceType: this.preSelectedService || "Home Repair Services",
             attachment: null,
             scheduleDate: new Date().toISOString().substr(0, 10),
             note: null,
