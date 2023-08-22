@@ -1,29 +1,20 @@
 <template>
     <div class="booking-form">
-        <v-card class="form-card">
+        <v-card variant="text" class="form-card">
             <v-card-title class="form-title">Book a Service</v-card-title>
             <v-form @submit.prevent="submitForm">
                 <v-select v-model="dataSubjectType" :items="dataSubjectTypes" label="Data Subject Type"
                     variant="outlined"></v-select>
-                <div class="d-flex">
-                    <v-col cols="8">
-                        <v-text-field :rules="[rules.required]" v-model="fullName" label="Full Name"
-                            placeholder="Juan Dela Cruz" variant="outlined"></v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-text-field :rules="[rules.required]" v-model="contactNumber" label="Contact Number"
-                            placeholder="09123456789" variant="outlined"></v-text-field>
-                    </v-col>
-                </div>
+                <v-text-field :rules="[rules.required]" v-model="fullName" label="Full Name" placeholder="Juan Dela Cruz"
+                    variant="outlined"></v-text-field>
+                <v-text-field :rules="[rules.required]" v-model="contactNumber" label="Contact Number"
+                    placeholder="09123456789" variant="outlined"></v-text-field>
                 <v-text-field :rules="[rules.email]" v-model="email" label="Email" variant="outlined"
                     placeholder="juan.delacruz@gmail.com"></v-text-field>
-                <div class="d-flex">
-                    <v-col cols="8"><v-text-field :rules="[rules.required]" v-model="siteLocation" label="Site Location"
-                            placeholder="Street/Barangay/Municipality/City/Province"
-                            variant="outlined"></v-text-field></v-col>
-                    <v-col cols="4"><v-text-field :rules="[rules.required]" v-model="zipCode" label="ZIP Code"
-                            placeholder="6000" variant="outlined"></v-text-field></v-col>
-                </div>
+                <v-text-field :rules="[rules.required]" v-model="siteLocation" label="Site Location"
+                    placeholder="Street/Barangay/Municipality/City/Province" variant="outlined"></v-text-field>
+                <v-text-field :rules="[rules.required]" v-model="zipCode" label="ZIP Code" placeholder="6000"
+                    variant="outlined"></v-text-field>
                 <div>
                     <v-row>
                         <v-col cols="auto">
@@ -40,19 +31,17 @@
                         </v-col>
                     </v-row>
                 </div>
-                <div class="d-flex">
-                    <v-col cols="6">
-                        <v-file-input v-model="attachment" label="Attachment" variant="outlined"></v-file-input>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-text-field v-model="scheduleDate" label="Schedule Date" type="date"
-                            variant="outlined"></v-text-field>
-                    </v-col>
-                </div>
+                <v-file-input v-model="attachment" label="Attachment" variant="outlined"></v-file-input>
+                <v-text-field v-model="scheduleDate" label="Schedule Date" type="date" variant="outlined"></v-text-field>
                 <v-textarea v-model="note" label="Note"></v-textarea>
-                <v-checkbox v-model="agreeToTerms" color="blue" :rules="[rules.required]"
-                    label="Before submitting your form, please make sure to review and agree to our company's terms and conditions. By checking the box, you acknowledge that you have read and understood our policies regarding our construction services. Thank you for choosing 6JBuilders Construction and Home Repair Services."></v-checkbox>
-                <v-btn type="submit" color="blue" size="large" width="100px">Submit</v-btn>
+                <v-checkbox v-model="agreement" :rules="[rules.required]" color="blue">
+                    <template v-slot:label>
+                        I agree to the&nbsp;
+                        <router-link :to="getLinkRoute('Terms of Condition')">Terms of Condition</router-link>
+                        &nbsp;and&nbsp;
+                        <router-link :to="getLinkRoute('Privacy Policy')">Privacy Policy</router-link> </template>
+                </v-checkbox>
+                <v-btn type="submit" color="blue" size="large">Submit</v-btn>
             </v-form>
         </v-card>
     </div>
@@ -72,6 +61,7 @@ export default {
     },
     data() {
         return {
+            agreement: false,
             dataSubjectTypes: ['Commercial', 'Contractor', 'Architect', 'Engineer'],
             dataSubjectType: "Private Individual",
             fullName: null,
@@ -106,12 +96,25 @@ export default {
     methods: {
         submitForm() {
             // Handle form submission
-        }
+        },
+        getLinkRoute(link) {
+            if (link === 'Terms of Condition' || link === 'Privacy Policy') {
+                const routeName = link === 'Terms of Condition' ? 'terms-of-service' : 'privacy-policy';
+                return { name: 'legal', params: { page: routeName } };
+            } else {
+                const legalRoute = link.toLowerCase().replace(/\s+/g, '-');
+                return { name: legalRoute };
+            }
+        },
     }
 };
 </script>
   
 <style scoped>
+a {
+    color: blue;
+}
+
 .booking-form {
     display: flex;
     justify-content: center;
@@ -122,7 +125,6 @@ export default {
     max-width: 700px;
     width: 100%;
     padding: 36px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .form-title {

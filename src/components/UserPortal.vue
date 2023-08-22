@@ -1,25 +1,38 @@
 <template>
-    <div class="login-container">
-        <div class="login-box">
-            <h1 class="app-title">6 JBUILDERS PORTAL</h1>
-            <p class="app-description">Log in to get started</p>
+    <div class="d-flex">
+        <div class="left">
+            <div class="align-center justify-center content">
+                <div class="txt">
+                    <h1>Welcome Message</h1>
+                </div>
+                <div class="bg">
+                    <img src="../assets/images/6jbuilders-bg.jpg" alt="Google Logo" />
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="login-box">
+                <h1 class="app-title">6 JBUILDERS PORTAL</h1>
+                <p class="app-description">Log in to get started</p>
 
-            <div class="login-buttons">
-                <vue3-google-login client-id="94901716497-5e4cor5er6mbn82s8lv7vtup83hfrv0i.apps.googleusercontent.com"
-                    @login-success="onLoginSuccess" @login-error="onLoginError">
-                    <v-btn block rounded="sm" size="x-large" class="google-login-button">
-                        <img src="../assets/images/google-icon.png" alt="Google Logo" />
-                        <span>Log in with Google</span>
+                <div class="login-buttons">
+                    <vue3-google-login client-id="94901716497-5e4cor5er6mbn82s8lv7vtup83hfrv0i.apps.googleusercontent.com"
+                        @login-success="onLoginSuccess" @login-error="onLoginError">
+                        <v-btn block rounded="sm" size="x-large" class="google-login-button">
+                            <img src="../assets/images/google-icon.png" alt="Google Logo" />
+                            <span>Log in with Google</span>
+                        </v-btn>
+                    </vue3-google-login>
+                    <span>or</span>
+                    <v-facebook-login app-id="" variant="text" class="facebook-login-button" @login-success="onLoginSuccess"
+                        @login-error="onLoginError" @click="onFacebookLogin">
+                        <span>Log in with Facebook</span>
+                    </v-facebook-login>
+                    <v-btn v-if="!showAdminPortal" variant="text" size="x-small" color="success"
+                        @click="showAdminModal = true">
+                        <span>Admin?</span>
                     </v-btn>
-                </vue3-google-login>
-                <span>or</span>
-                <v-facebook-login app-id="" variant="text" class="facebook-login-button" @login-success="onLoginSuccess"
-                    @login-error="onLoginError" @click="onFacebookLogin">
-                    <span>Log in with Facebook</span>
-                </v-facebook-login>
-                <v-btn v-if="!showAdminPortal" variant="text" size="x-small" color="success" @click="showAdminModal = true">
-                    <span>Admin?</span>
-                </v-btn>
+                </div>
             </div>
         </div>
     </div>
@@ -128,17 +141,10 @@ export default defineComponent({
 </script>
   
 <style scoped>
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .login-box {
     background-color: #ffffff;
     border-radius: 8px;
     padding: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 400px;
     margin: 50px;

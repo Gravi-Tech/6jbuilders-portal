@@ -1,7 +1,7 @@
 <template>
     <div v-show="showButton" class="support-button">
         <v-col cols="auto">
-            <v-btn size="large" color="teal-accent-4" @click="scrollToTop" class="circular-button">
+            <v-btn icon="$vuetify" size="large" color="teal-accent-4" @click="scrollToTop">
                 <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
         </v-col>
@@ -42,9 +42,4 @@ export default {
     right: 20px;
     z-index: 1000;
 }
-
-.circular-button {
-
-    border-radius: 50%;
-}
-</style>  
+</style>

@@ -1,7 +1,7 @@
 <template>
-    <v-app-bar app height="150" class="pb-1 pt-1">
-        <v-container>
-            <v-row class="d-flex justify-center align-center">
+    <v-app-bar app height="160" :class="appBarClass">
+        <section>
+            <v-row v-if="!isShrunk" class="d-flex justify-center align-center mt-1">
                 <v-col cols="auto">
                     <v-row class="d-flex align-center">
                         <v-icon class="app-icon large-icon">mdi-phone</v-icon>
@@ -29,11 +29,11 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col>
+                <!-- <v-col>
                     <v-row class="d-flex align-center">
                         <SearchBar />
                     </v-row>
-                </v-col>
+                </v-col> -->
                 <v-col cols="auto">
                     <Notification />
                 </v-col>
@@ -51,7 +51,7 @@
                         <v-col cols="auto" v-for="(link, i) in navLinks" :key="i">
                             <v-menu v-if="link.route === 'services'" open-on-hover>
                                 <template v-slot:activator="{ props }">
-                                    <v-btn size="small" color="black" v-bind="props">
+                                    <v-btn color="black" v-bind="props">
                                         Services
                                     </v-btn>
                                 </template>
@@ -64,19 +64,22 @@
                                 </v-list>
                             </v-menu>
                             <v-btn v-else :color="activeRoute === link.route ? '#039BE5' : 'black'" variant="text"
-                                size="small" @click="navTo(link.route)">{{ link.title }}</v-btn>
+                                @click="navTo(link.route)">{{ link.title }}</v-btn>
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-row btn class="d-flex justify-end align-center">
-                    <v-col cols="auto">
-                        <v-row class="d-flex justify-center align-center bg-black">
-                            <v-btn variant="evelated" elevation="8" size="large" @click="navTo('book')">Book Now</v-btn>
-                        </v-row>
-                    </v-col>
-                </v-row>
+                <v-col cols="auto" class="mr-4">
+                    <v-row class="d-flex justify-center align-center bg-blue-lighten-1">
+                        <v-btn size="large" @click="navTo('login')">Login</v-btn>
+                    </v-row>
+                </v-col>
+                <v-col cols="auto">
+                    <v-row class="d-flex justify-center align-center bg-blue-lighten-1">
+                        <v-btn size="large" @click="navTo('book')">Book Now</v-btn>
+                    </v-row>
+                </v-col>
             </v-row>
-        </v-container>
+        </section>
     </v-app-bar>
 </template>
 
@@ -110,7 +113,6 @@ const navLinks = [
     { route: 'services', title: 'Services' },
     { route: 'projects', title: 'Projects' },
     { route: 'contact', title: 'Contact' },
-    { route: 'login', title: 'Login' },
 ]
 const navTo = (to) => {
     router.push({ name: to });
@@ -128,7 +130,14 @@ export default {
     },
     data: () => ({
         activeRoute: null,
+        isShrunk: false,
     }),
+    mounted() {
+        window.addEventListener('scroll', this.onScroll);
+    },
+    beforeDestroy() {
+        window.removeEventListener('scroll', this.onScroll);
+    },
     created() {
         this.activeRoute = this.$route.name;
 
@@ -136,10 +145,30 @@ export default {
             this.activeRoute = to.name;
         });
     },
-}
+    methods: {
+        onScroll() {
+            const scrollPosition = window.scrollY;
+            this.isShrunk = scrollPosition > 50;
+        },
+    },
+    computed: {
+        appBarClass() {
+            return {
+                'shrink-header': this.isShrunk,
+            };
+        },
+    },
+};
 </script>
 
 <style>
+.shrink-header {
+    padding: 10px;
+    height: 80px;
+    transition: height 0.4s ease-in-out;
+    overflow: hidden;
+}
+
 strong {
     font-size: 14px;
 }
@@ -149,7 +178,7 @@ strong {
 }
 
 .small-text {
-    font-size: 10px;
+    font-size: 14px;
 }
 
 @media screen and (max-width: 600px) {
