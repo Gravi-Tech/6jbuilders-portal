@@ -1,7 +1,5 @@
 <template>
-    <Header />
     <UserPortal />
-    <Footer />
 </template>
   
 <script scoped>

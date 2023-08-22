@@ -129,7 +129,7 @@ router.beforeEach((to, from, next) => {
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
     : 'Home';
-  document.title = `6 JBUILDERS - ${routeName}`;
+  document.title = `6J Builders - ${routeName}`;
   next();
 });
 

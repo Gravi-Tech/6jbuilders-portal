@@ -148,7 +148,8 @@ export default {
 
 .project-image {
     position: relative;
-    width: calc(33.333% - 10px);
+    width: calc(33.333% - 20px);
+    margin: 10px;
     margin-bottom: 20px;
 }
 
