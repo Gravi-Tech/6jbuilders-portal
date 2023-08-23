@@ -21,7 +21,7 @@
                 <div class="text-subtitle-1">Date Finished: {{ project.date }}</div>
                 <div class="d-flex mt-4">
                     <v-btn color="teal-accent-4" @click="goBack">Back to Projects</v-btn>
-                    <v-btn class="ml-6" color="blue" @click="showRatingModal = true">Rate Project</v-btn>
+                    <v-btn class="ml-6" width="180px" color="blue" @click="showRatingModal = true">Rate Project</v-btn>
                 </div>
             </v-col>
             <v-col cols="12" md="6">
@@ -36,8 +36,8 @@
             <v-col cols="12">
                 <h3 class="text-h5 text-center m-4">Project Images</h3>
                 <div class="d-flex flex-wrap justify-center">
-                    <div v-for="(image, index) in project.projectImages" :key="index" class="project-image">
-                        <v-img :src="image" cover height="200" @click="openImageDialog(index)"></v-img>
+                    <div v-for="(image, index) in project.projectImages" :key="index" class="project-image pr-2 ">
+                        <v-img :src="image" cover height="200" class="rounded"  @click="openImageDialog(index)"></v-img>
                     </div>
                 </div>
             </v-col>
@@ -46,7 +46,7 @@
     <Footer />
 
     <v-dialog v-model="showImageDialog" max-width="600">
-        <v-img :src="project.projectImages[imageIndex]" cover height="600"></v-img>
+        <v-img :src="project.projectImages[imageIndex]" cover height="600" ></v-img>
     </v-dialog>
     <v-dialog v-model="showRatingModal" max-width="400">
         <v-card>
@@ -150,7 +150,9 @@ export default {
     position: relative;
     width: calc(33.333% - 10px);
     margin-bottom: 20px;
+    
 }
+
 
 .image-overlay {
     position: relative;
@@ -163,7 +165,9 @@ export default {
 
 .v-img {
     transition: transform 0.3s;
+   
 }
+
 
 .zoom-icon {
     position: absolute;

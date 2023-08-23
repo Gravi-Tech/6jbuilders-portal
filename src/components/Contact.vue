@@ -18,7 +18,7 @@
                 <router-link :to="getLinkRoute('Privacy Policy')">Privacy Policy</router-link> </template>
             </v-checkbox>
             <br />
-            <v-btn type="submit" color="blue">Submit</v-btn>
+            <v-btn type="submit" width="35rem" color="blue">Submit</v-btn>
           </v-form>
         </v-card>
       </v-col>
