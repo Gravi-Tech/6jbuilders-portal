@@ -60,11 +60,6 @@ const router = createRouter({
       component: () => import('../views/ProjectDetailsView.vue')
     },
     {
-      path: '/6jbuilders/acount-profile',
-      name: 'profile',
-      component: () => import('../views/AccountProfile.vue')
-    },
-    {
       path: '/6jbuilders/services/cabinets',
       name: 'cabinets',
       component: () => import('../views/CabinetsServiceView.vue')

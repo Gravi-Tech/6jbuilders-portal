@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar app height="160" :class="appBarClass">
+    <v-app-bar app :height="appBarHeight" :class="appBarClass">
         <section>
             <v-row v-if="!isShrunk" class="d-flex justify-center align-center mt-1">
                 <v-col cols="auto">
@@ -29,12 +29,9 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col cols="auto">
-                    <MenuProfile />
-                </v-col>
             </v-row>
 
-            <v-row class="d-flex justify-center align-center">
+            <v-row class="d-flex justify-center align-center" style="padding: 10px;">
                 <v-col cols="auto">
                     <v-row class="d-flex justify-center align-center">
                         <a to="/home">
@@ -70,15 +67,35 @@
                         <v-btn size="large" @click="navTo('book')">Book Now</v-btn>
                     </v-row>
                 </v-col>
+                <v-col cols="auto">
+                    <v-btn size="large" color="blue" icon="mdi-account" @click.stop="drawer = !drawer"></v-btn>
+                </v-col>
             </v-row>
         </section>
     </v-app-bar>
+    <v-navigation-drawer v-model="drawer" temporary location="right">
+        <v-list-item lines="two" prepend-avatar="/src/assets/images/user-default.png" title="Software Developer"
+            subtitle="D'Lio Kaiko"></v-list-item>
+
+        <v-divider></v-divider>
+
+        <v-list density="compact" nav>
+            <v-list-item prepend-icon="mdi-account" title="Personal Infromation" value="personal-information"></v-list-item>
+            <v-list-item prepend-icon="mdi-book-plus" title="Booking Request" value="request"></v-list-item>
+            <v-list-item prepend-icon="mdi-history" title="Transaction History" value="history"></v-list-item>
+        </v-list>
+    </v-navigation-drawer>
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import MenuProfile from './MenuProfile.vue';
-const router = useRouter()
+
+const appBarHeight = ref(170);
+const router = useRouter();
+const activeRoute = ref(null);
+const drawer = ref(null);
+const isShrunk = ref(false);
 
 const services = [
     { title: 'Cabinets' },
@@ -96,7 +113,7 @@ const services = [
 
 const navigateToService = (service) => {
     router.push(`/6jbuilders/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`);
-}
+};
 
 const navLinks = [
     { route: 'home', title: 'Home' },
@@ -104,54 +121,39 @@ const navLinks = [
     { route: 'services', title: 'Services' },
     { route: 'projects', title: 'Projects' },
     { route: 'contact', title: 'Contact' },
-]
+];
+
+const onScroll = () => {
+    const scrollPosition = window.scrollY;
+    if (scrollPosition > 50) {
+        isShrunk.value = true;
+        appBarHeight.value = 80;
+    } else {
+        isShrunk.value = false;
+        appBarHeight.value = 170;
+    }
+};
+
+onMounted(() => {
+    window.addEventListener('scroll', onScroll);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('scroll', onScroll);
+});
+
+watch('$route', (to, from) => {
+    activeRoute.value = to.name;
+});
+
 const navTo = (to) => {
     router.push({ name: to });
-}
-</script>
-
-<script>
-export default {
-    components: {
-        MenuProfile,
-    },
-    data: () => ({
-        activeRoute: null,
-        isShrunk: false,
-    }),
-    mounted() {
-        window.addEventListener('scroll', this.onScroll);
-    },
-    beforeDestroy() {
-        window.removeEventListener('scroll', this.onScroll);
-    },
-    created() {
-        this.activeRoute = this.$route.name;
-
-        this.$watch('$route', (to, from) => {
-            this.activeRoute = to.name;
-        });
-    },
-    methods: {
-        onScroll() {
-            const scrollPosition = window.scrollY;
-            this.isShrunk = scrollPosition > 50;
-        },
-    },
-    computed: {
-        appBarClass() {
-            return {
-                'shrink-header': this.isShrunk,
-            };
-        },
-    },
 };
 </script>
 
 <style>
 .shrink-header {
     padding: 10px;
-    height: 80px;
     transition: height 0.4s ease-in-out;
     overflow: hidden;
 }
