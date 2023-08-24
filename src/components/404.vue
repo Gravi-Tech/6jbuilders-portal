@@ -1,11 +1,13 @@
 <template>
-    <div class="not-found">
-        <v-icon class="error-icon">mdi-emoticon-sad-outline</v-icon>
-        <h1 class="error-number">404</h1>
-        <p class="error-message">The page you are looking for doesn’t exist or an other error occurred.</p>
-        <p class="redirect-message">Go back or head over to <a @click="goBack">home</a>
-            to choose a new direction.</p>
-    </div>
+    <v-container>
+        <div class="not-found">
+            <v-icon class="error-icon">mdi-emoticon-sad-outline</v-icon>
+            <h1 class="error-number">404</h1>
+            <p class="error-message">The page you are looking for doesn’t exist or an other error occurred.</p>
+            <p class="redirect-message">Go back or head over to <a @click="goBack">home</a>
+                to choose a new direction.</p>
+        </div>
+    </v-container>
 </template>
 
 <script>
@@ -21,8 +23,6 @@ export default {
 
 <style scoped>
 .not-found {
-    max-width: 600px;
-    margin: 0 auto;
     padding: 20px 10px;
     text-align: center;
 }

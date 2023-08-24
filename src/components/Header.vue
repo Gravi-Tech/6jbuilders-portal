@@ -29,16 +29,8 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <!-- <v-col>
-                    <v-row class="d-flex align-center">
-                        <SearchBar />
-                    </v-row>
-                </v-col> -->
                 <v-col cols="auto">
-                    <Notification />
-                </v-col>
-                <v-col cols="auto">
-                    <Profile />
+                    <MenuProfile />
                 </v-col>
             </v-row>
 
@@ -85,8 +77,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import Profile from './Profile.vue';
-import Notification from './Notification.vue';
+import MenuProfile from './MenuProfile.vue';
 const router = useRouter()
 
 const services = [
@@ -120,13 +111,9 @@ const navTo = (to) => {
 </script>
 
 <script>
-import SearchBar from './SearchBar.vue';
-
 export default {
     components: {
-        SearchBar,
-        Profile,
-        Notification,
+        MenuProfile,
     },
     data: () => ({
         activeRoute: null,

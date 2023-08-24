@@ -27,15 +27,15 @@
           <v-card-title class="mb-4">Information</v-card-title>
           <v-card-text class="d-flex align-center">
             <v-icon class="info-icon" color="blue">mdi-phone</v-icon>
-            <span class="info-label">Phone:</span> 0926 123 7672
+            <span class=" info-label mr-2">Phone:</span> 0926 123 7672
           </v-card-text>
           <v-card-text class="d-flex align-center">
             <v-icon class="info-icon" color="blue">mdi-map-marker</v-icon>
-            <span class="info-label">Address:</span> Canduman, Mandaue Cebu City
+            <span class=" info-label mr-2">Address:</span> Canduman, Mandaue Cebu City
           </v-card-text>
           <v-card-text class="d-flex align-center">
             <v-icon class="info-icon" color="blue">mdi-clock</v-icon>
-            <span class="info-label">Opening Hours:</span> Mon - Sat: 7:00 am - 7:00 pm
+            <span class=" info-label mr-2">Opening Hours:</span> Mon - Sat: 7:00 am - 7:00 pm
           </v-card-text>
         </v-card>
         <v-card class="location-card mt-6">

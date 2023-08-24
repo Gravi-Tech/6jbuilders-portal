@@ -34,6 +34,11 @@ const router = createRouter({
       component: () => import('../views/DashboardView.vue')
     },
     {
+      path: '/6jbuilders/settings',
+      name: 'settings',
+      component: () => import('../views/SettingsView.vue')
+    },
+    {
       path: '/6jbuilders/legal/:page',
       name: 'legal',
       component: () => import('../views/LegalView.vue'),
@@ -53,6 +58,11 @@ const router = createRouter({
       path: '/6jbuilders/project/details/:id',
       name: 'project-details',
       component: () => import('../views/ProjectDetailsView.vue')
+    },
+    {
+      path: '/6jbuilders/acount-profile',
+      name: 'profile',
+      component: () => import('../views/AccountProfile.vue')
     },
     {
       path: '/6jbuilders/services/cabinets',

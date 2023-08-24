@@ -48,8 +48,8 @@
     <v-dialog v-model="showImageDialog" max-width="600">
         <v-img :src="project.projectImages[imageIndex]" cover height="600"></v-img>
     </v-dialog>
-    <v-dialog v-model="showRatingModal" max-width="400">
-        <v-card>
+    <v-dialog v-model="showRatingModal" max-width="500">
+        <v-card class="rate-dialog">
             <v-card-title>Rate Project</v-card-title>
             <v-card-subtitle>{{ project.title }}</v-card-subtitle>
             <v-card-text>
@@ -141,6 +141,9 @@ export default {
     font-size: 1.5rem;
 }
 
+.rate-dialog {
+    padding: 20px;
+}
 .description-content {
     font-size: 16px;
     line-height: 1.6;

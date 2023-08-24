@@ -16,11 +16,6 @@
                 <v-text-field :rules="[rules.required]" v-model="zipCode" label="ZIP Code" placeholder="6000"
                     variant="outlined"></v-text-field>
                 <div>
-                    <v-row>
-                        <v-col cols="auto">
-                            <v-btn variant="text" size="x-small" color="success">Add Additional Service</v-btn>
-                        </v-col>
-                    </v-row>
                     <v-select v-model="serviceType" :items="serviceTypes" label="Type of Service" variant="outlined"
                         :readonly="isReadOnlyService" chips deletable-chips>
                     </v-select>
