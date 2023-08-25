@@ -14,14 +14,14 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
-      path: '/6jbuilders/projects',
-      name: 'projects',
-      component: () => import('../views/ProjectView.vue')
-    },
-    {
       path: '/6jbuilders/book',
       name: 'book',
       component: () => import('../views/BookNowView.vue')
+    },
+    {
+      path: '/6jbuilders/booking-request',
+      name: 'booking-request',
+      component: () => import('../views/BookingRequestView.vue')
     },
     {
       path: '/6jbuilders/contact',
@@ -32,11 +32,6 @@ const router = createRouter({
       path: '/6jbuilders/dashboard',
       name: 'dashboard',
       component: () => import('../views/DashboardView.vue')
-    },
-    {
-      path: '/6jbuilders/settings',
-      name: 'settings',
-      component: () => import('../views/SettingsView.vue')
     },
     {
       path: '/6jbuilders/legal/:page',
@@ -53,6 +48,16 @@ const router = createRouter({
       name: 'password-recovery',
       meta: { requiresAuth: false },
       component: () => import('../views/PasswordRecoveryView.vue')
+    },
+    {
+      path: '/6jbuilders/profile-infomation',
+      name: 'profile',
+      component: () => import('../views/PersonalInformationView.vue')
+    },
+    {
+      path: '/6jbuilders/projects',
+      name: 'projects',
+      component: () => import('../views/ProjectView.vue')
     },
     {
       path: '/6jbuilders/project/details/:id',
@@ -113,6 +118,16 @@ const router = createRouter({
       path: '/6jbuilders/services/welding',
       name: 'welding',
       component: () => import('../views/WeldingServiceView.vue')
+    },
+    {
+      path: '/6jbuilders/settings',
+      name: 'settings',
+      component: () => import('../views/SettingsView.vue')
+    },
+    {
+      path: '/6jbuilders/transaction-history',
+      name: 'transaction-history',
+      component: () => import('../views/TransactionHistoryView.vue')
     },
     {
       path: '/6jbuilders/:pathMatch(.*)*',

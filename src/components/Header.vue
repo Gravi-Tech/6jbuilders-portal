@@ -1,5 +1,25 @@
 <template>
-    <v-app-bar app :height="appBarHeight" :class="appBarClass">
+    <v-navigation-drawer v-model="drawer" expand-on-hover rail temporary location="right" style="width: fit-contentt;">
+        <v-list-item lines="two" prepend-avatar="/src/assets/images/user-default.png" title="Juspher Balangyao"
+            subtitle="codewithjuspher@gmail.com" append-icon="mdi-close">
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list density="comfortable" nav>
+            <v-list-item prepend-icon="mdi-account-outline" title="Your Profile" value="profile-information"
+                @click="navTo('profile')">
+            </v-list-item>
+            <v-list-item prepend-icon="mdi-book-plus" title="Booking Request" value="booking-request"
+                @click="navTo('booking-request')">
+            </v-list-item>
+            <v-list-item prepend-icon="mdi-history" title="Transaction History" value="transaction-history"
+                @click="navTo('transaction-history')">
+            </v-list-item>
+            <v-list-item prepend-icon="mdi-logout" title="Logout" value="logout" @click="navTo('logout')">
+            </v-list-item>
+        </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar app :height="appBarHeight">
         <section>
             <v-row v-if="!isShrunk" class="d-flex justify-center align-center mt-1">
                 <v-col cols="auto">
@@ -68,23 +88,11 @@
                     </v-row>
                 </v-col>
                 <v-col cols="auto">
-                    <v-btn size="large" color="blue" icon="mdi-account" @click.stop="drawer = !drawer"></v-btn>
+                    <v-avatar image="/src/assets/images/user-default.png" @click.stop="drawer = !drawer"></v-avatar>
                 </v-col>
             </v-row>
         </section>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" temporary location="right">
-        <v-list-item lines="two" prepend-avatar="/src/assets/images/user-default.png" title="Software Developer"
-            subtitle="D'Lio Kaiko"></v-list-item>
-
-        <v-divider></v-divider>
-
-        <v-list density="compact" nav>
-            <v-list-item prepend-icon="mdi-account" title="Personal Infromation" value="personal-information"></v-list-item>
-            <v-list-item prepend-icon="mdi-book-plus" title="Booking Request" value="request"></v-list-item>
-            <v-list-item prepend-icon="mdi-history" title="Transaction History" value="history"></v-list-item>
-        </v-list>
-    </v-navigation-drawer>
 </template>
 
 <script setup>
@@ -93,8 +101,8 @@ import { useRouter } from 'vue-router';
 
 const appBarHeight = ref(170);
 const router = useRouter();
-const activeRoute = ref(null);
-const drawer = ref(null);
+const activeRoute = ref(router.currentRoute.value.name);
+const drawer = ref(false);
 const isShrunk = ref(false);
 
 const services = [
@@ -110,6 +118,7 @@ const services = [
     { title: 'Tile Installation' },
     { title: 'Welding' }
 ];
+
 
 const navigateToService = (service) => {
     router.push(`/6jbuilders/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`);
@@ -142,9 +151,12 @@ onBeforeUnmount(() => {
     window.removeEventListener('scroll', onScroll);
 });
 
-watch('$route', (to, from) => {
-    activeRoute.value = to.name;
-});
+watch(
+    () => router.currentRoute.value.name,
+    (newValue) => {
+        activeRoute.value = newValue;
+    }
+);
 
 const navTo = (to) => {
     router.push({ name: to });
