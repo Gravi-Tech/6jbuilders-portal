@@ -48,8 +48,8 @@
     <v-dialog v-model="showImageDialog" max-width="600">
         <v-img :src="project.projectImages[imageIndex]" cover height="600" ></v-img>
     </v-dialog>
-    <v-dialog v-model="showRatingModal" max-width="400">
-        <v-card>
+    <v-dialog v-model="showRatingModal" max-width="500">
+        <v-card class="rate-dialog">
             <v-card-title>Rate Project</v-card-title>
             <v-card-subtitle>{{ project.title }}</v-card-subtitle>
             <v-card-text>
@@ -64,9 +64,10 @@
 </template>
   
 <script>
-import { projects } from '../utils/projectData.js';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
+
+import { projects } from '../utils/projectData.js';
 
 export default {
     components: {
@@ -141,6 +142,9 @@ export default {
     font-size: 1.5rem;
 }
 
+.rate-dialog {
+    padding: 20px;
+}
 .description-content {
     font-size: 16px;
     line-height: 1.6;
@@ -148,7 +152,8 @@ export default {
 
 .project-image {
     position: relative;
-    width: calc(33.333% - 10px);
+    width: calc(33.333% - 20px);
+    margin: 10px;
     margin-bottom: 20px;
     
 }

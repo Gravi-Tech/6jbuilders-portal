@@ -1,7 +1,27 @@
 <template>
-    <v-app-bar color="#E0E0E0" app height="150" class="pb-1 pt-1">
-        <v-container>
-            <v-row class="d-flex justify-center align-center">
+    <v-navigation-drawer v-model="drawer" expand-on-hover rail temporary location="right">
+        <v-list-item lines="two" :prepend-avatar="user[0].avatar" :title="fullName" :subtitle="user[0].email"
+            append-icon="mdi-close">
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list density="comfortable" nav>
+            <v-list-item prepend-icon="mdi-account-outline" title="Your Profile" value="profile-information"
+                @click="navTo('profile')">
+            </v-list-item>
+            <v-list-item prepend-icon="mdi-book-plus" title="Booking Request" value="booking-request"
+                @click="navTo('booking-request')">
+            </v-list-item>
+            <v-list-item prepend-icon="mdi-history" title="Transaction History" value="transaction-history"
+                @click="navTo('transaction-history')">
+            </v-list-item>
+            <v-list-item prepend-icon="mdi-logout" title="Logout" value="logout" @click="navTo('logout')">
+            </v-list-item>
+        </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar app :height="appBarHeight">
+        <section>
+            <v-row v-if="!isShrunk" class="d-flex justify-center align-center mt-1">
                 <v-col cols="auto">
                     <v-row class="d-flex align-center">
                         <v-icon class="app-icon large-icon">mdi-phone</v-icon>
@@ -29,20 +49,9 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col>
-                    <v-row class="d-flex align-center">
-                        <SearchBar />
-                    </v-row>
-                </v-col>
-                <v-col cols="auto">
-                    <Notification />
-                </v-col>
-                <v-col cols="auto">
-                    <Profile />
-                </v-col>
             </v-row>
 
-            <v-row class="d-flex justify-center align-center">
+            <v-row class="d-flex justify-center align-center" style="padding: 10px;">
                 <v-col cols="auto">
                     <v-row class="d-flex justify-center align-center">
                         <a to="/home">
@@ -51,7 +60,7 @@
                         <v-col cols="auto" v-for="(link, i) in navLinks" :key="i">
                             <v-menu v-if="link.route === 'services'" open-on-hover>
                                 <template v-slot:activator="{ props }">
-                                    <v-btn size="small" color="black" v-bind="props">
+                                    <v-btn color="black" v-bind="props">
                                         Services
                                     </v-btn>
                                 </template>
@@ -64,27 +73,38 @@
                                 </v-list>
                             </v-menu>
                             <v-btn v-else :color="activeRoute === link.route ? '#039BE5' : 'black'" variant="text"
-                                size="small" @click="navTo(link.route)">{{ link.title }}</v-btn>
+                                @click="navTo(link.route)">{{ link.title }}</v-btn>
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-row btn class="d-flex justify-end align-center">
-                    <v-col cols="auto">
-                        <v-row class="d-flex justify-center align-center bg-black">
-                            <v-btn variant="evelated" elevation="8" size="large" @click="navTo('book')">Book Now</v-btn>
-                        </v-row>
-                    </v-col>
-                </v-row>
+                <v-col cols="auto" class="mr-4">
+                    <v-row class="d-flex justify-center align-center bg-blue-lighten-1">
+                        <v-btn size="large" @click="navTo('login')">Login</v-btn>
+                    </v-row>
+                </v-col>
+                <v-col cols="auto">
+                    <v-row class="d-flex justify-center align-center bg-blue-lighten-1">
+                        <v-btn size="large" @click="navTo('book')">Book Now</v-btn>
+                    </v-row>
+                </v-col>
+                <v-col cols="auto">
+                    <v-avatar :image="user[0].avatar" @click.stop="drawer = !drawer"></v-avatar>
+                </v-col>
             </v-row>
-        </v-container>
+        </section>
     </v-app-bar>
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import Profile from './Profile.vue';
-import Notification from './Notification.vue';
-const router = useRouter()
+import { user } from '@/utils/userData';
+
+const appBarHeight = ref(170);
+const router = useRouter();
+const activeRoute = ref(router.currentRoute.value.name);
+const drawer = ref(false);
+const isShrunk = ref(false);
 
 const services = [
     { title: 'Cabinets' },
@@ -100,9 +120,11 @@ const services = [
     { title: 'Welding' }
 ];
 
+const fullName = computed(() => `${user[0].firstname} ${user[0].lastname}`);
+
 const navigateToService = (service) => {
     router.push(`/6jbuilders/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`);
-}
+};
 
 const navLinks = [
     { route: 'home', title: 'Home' },
@@ -110,36 +132,46 @@ const navLinks = [
     { route: 'services', title: 'Services' },
     { route: 'projects', title: 'Projects' },
     { route: 'contact', title: 'Contact' },
-    { route: 'login', title: 'Login' },
-]
+];
+
+const onScroll = () => {
+    const scrollPosition = window.scrollY;
+    if (scrollPosition > 50) {
+        isShrunk.value = true;
+        appBarHeight.value = 80;
+    } else {
+        isShrunk.value = false;
+        appBarHeight.value = 170;
+    }
+};
+
+onMounted(() => {
+    window.addEventListener('scroll', onScroll);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('scroll', onScroll);
+});
+
+watch(
+    () => router.currentRoute.value.name,
+    (newValue) => {
+        activeRoute.value = newValue;
+    }
+);
+
 const navTo = (to) => {
     router.push({ name: to });
-}
-</script>
-
-<script>
-import SearchBar from './SearchBar.vue';
-
-export default {
-    components: {
-        SearchBar,
-        Profile,
-        Notification,
-    },
-    data: () => ({
-        activeRoute: null,
-    }),
-    created() {
-        this.activeRoute = this.$route.name;
-
-        this.$watch('$route', (to, from) => {
-            this.activeRoute = to.name;
-        });
-    },
-}
+};
 </script>
 
 <style>
+.shrink-header {
+    padding: 10px;
+    transition: height 0.4s ease-in-out;
+    overflow: hidden;
+}
+
 strong {
     font-size: 14px;
 }
@@ -149,7 +181,7 @@ strong {
 }
 
 .small-text {
-    font-size: 10px;
+    font-size: 14px;
 }
 
 @media screen and (max-width: 600px) {
