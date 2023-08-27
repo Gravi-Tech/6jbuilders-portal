@@ -46,9 +46,9 @@
                         placeholder="Enter Admin ID" v-validate="'required'"></v-text-field>
                     <v-text-field :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                         :type="visible ? 'text' : 'password'" variant="outlined" density="compact"
-                        placeholder="Enter your password" prepend-inner-icon="mdi-lock-outline"
-                        @click:append-inner="visible = !visible" v-model="adminPassword" :readonly="loading"
-                        :rules="[required]" label="Password" type="password" v-validate="'required'">
+                        prepend-inner-icon="mdi-lock-outline" @click:append-inner="visible = !visible"
+                        v-model="adminPassword" :readonly="loading" :rules="[required]" label="Password" type="password"
+                        v-validate="'required'" hint="Enter your password to access this website">
                     </v-text-field>
                     <div class="text-subtitle-1 text-medium-emphasis d-flex align-center mb-1">
                         <router-link to="/6jbuilders/password-recovery" class="text-caption text-decoration-none text-blue"
@@ -182,9 +182,11 @@ export default defineComponent({
 .card-dialog {
     padding: 20px;
 }
+
 .app-title {
     font-size: 24px;
 }
+
 .app-description {
     color: #808080;
     margin-bottom: 30px;

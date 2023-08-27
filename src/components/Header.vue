@@ -1,7 +1,7 @@
 <template>
-    <v-navigation-drawer v-model="drawer" expand-on-hover rail temporary location="right" style="width: fit-contentt;">
-        <v-list-item lines="two" prepend-avatar="/src/assets/images/user-default.png" title="Juspher Balangyao"
-            subtitle="codewithjuspher@gmail.com" append-icon="mdi-close">
+    <v-navigation-drawer v-model="drawer" expand-on-hover rail temporary location="right">
+        <v-list-item lines="two" :prepend-avatar="user[0].avatar" :title="fullName" :subtitle="user[0].email"
+            append-icon="mdi-close">
         </v-list-item>
         <v-divider></v-divider>
         <v-list density="comfortable" nav>
@@ -88,7 +88,7 @@
                     </v-row>
                 </v-col>
                 <v-col cols="auto">
-                    <v-avatar image="/src/assets/images/user-default.png" @click.stop="drawer = !drawer"></v-avatar>
+                    <v-avatar :image="user[0].avatar" @click.stop="drawer = !drawer"></v-avatar>
                 </v-col>
             </v-row>
         </section>
@@ -98,6 +98,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { user } from '@/utils/userData';
 
 const appBarHeight = ref(170);
 const router = useRouter();
@@ -119,6 +120,7 @@ const services = [
     { title: 'Welding' }
 ];
 
+const fullName = computed(() => `${user[0].firstname} ${user[0].lastname}`);
 
 const navigateToService = (service) => {
     router.push(`/6jbuilders/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`);

@@ -17,7 +17,7 @@
                     <v-text-field v-model="adminIdentifier" prepend-inner-icon="mdi-email-outline" label="Email Address" dense variant="outlined" required
                         :rules="adminIdentifierRules">
                     </v-text-field>
-                    <v-btn class="mt-3 rst-btn" color="red" type="reset">Reset Password</v-btn>
+                    <v-btn class="mt-3 rst-btn" color="red" type="reset" variant="flat">Reset Password</v-btn>
                     <v-btn class="mt-6 rst-btn" variant="outlined" size="small" @click="navTo('login')">Go Back to Login</v-btn>
                 </v-form>
             </div>

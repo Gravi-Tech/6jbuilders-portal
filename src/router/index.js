@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import('../views/BookingRequestView.vue')
     },
     {
+      path: '/6jbuilders/booking-request/:id',
+      name: 'booking-detail',
+      component: () => import('../views/BookingDetailView.vue')
+    },
+    {
       path: '/6jbuilders/contact',
       name: 'contact',
       component: () => import('../views/ContactView.vue')
@@ -128,6 +133,11 @@ const router = createRouter({
       path: '/6jbuilders/transaction-history',
       name: 'transaction-history',
       component: () => import('../views/TransactionHistoryView.vue')
+    },
+    {
+      path: '/6jbuilders/transaction-history/:id',
+      name: 'transaction-detail',
+      component: () => import('../views/TransactionDetailView.vue')
     },
     {
       path: '/6jbuilders/:pathMatch(.*)*',

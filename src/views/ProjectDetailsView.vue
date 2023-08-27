@@ -64,9 +64,10 @@
 </template>
   
 <script>
-import { projects } from '../utils/projectData.js';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
+
+import { projects } from '../utils/projectData.js';
 
 export default {
     components: {
