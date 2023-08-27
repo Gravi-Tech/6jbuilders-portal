@@ -4,11 +4,11 @@
     <div id="banner" class="d-flex w-100 h-100 mt-10">
       <div class="d-flex w-50 pa-2">
         <div id="captivated" class="d-block">
-          <p id="tag" class="ml-10 mt-12">
-            We <span id="build" class="accent-color">BUILD</span> and
-            <span id="repair" class="accent-color">REPAIR</span> your Home
+          <p id="tag" class="ml-16 mt-12">
+            We <span id="build" class="accent-color">BUILD</span> and<br>
+            <span id="repair" class="accent-color ml-16">REPAIR</span> your Home
           </p>
-          <p class="ml-10">
+          <p class="ml-16">
             Providing construction and repair services,<br />with excellent quality works, timely
             delivery, and cost-efficient solutions.
           </p>
@@ -37,7 +37,7 @@
       </v-col>
     </section>
 
-    <section>
+    <!-- <section>
       <h1 id="services" class="text-left mb-6">Our Services</h1>
       <v-carousel
         cycle
@@ -60,9 +60,10 @@
           </v-card>
         </v-carousel-item>
       </v-carousel>
-    </section>
-    <div>
+    </section> -->
 
+
+    <div class="timeline">
 
       <div class="ma-8">
         <v-timeline direction="horizontal">
@@ -112,7 +113,7 @@
         </v-timeline>
       </div>
 
-      <h1 id="services" class="text-left mb-6">Know Us</h1>
+      <!-- <h1 id="services" class="text-left mb-6">Know Us</h1>
       <v-container class="my-12">
         <v-row class="flex-row">
           <v-col cols="12" sm="4">
@@ -140,7 +141,7 @@
             </p>
           </v-col>
         </v-row>
-      </v-container>
+      </v-container> -->
     </div>
 
     <Footer />
@@ -202,5 +203,8 @@ p {
   font-family: 'Calistoga', cursive;
   margin-right: auto;
   font-size: 1rem;
+}
+.timeline{
+  margin: 7%;
 }
 </style>

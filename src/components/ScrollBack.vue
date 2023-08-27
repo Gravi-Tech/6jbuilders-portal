@@ -1,7 +1,7 @@
 <template>
     <div v-show="showButton" class="support-button">
         <v-col cols="auto">
-            <v-btn icon="$vuetify" size="large" color="teal-accent-4" @click="scrollToTop">
+            <v-btn icon="$vuetify" size="large" color="orange-lighten-2 " @click="scrollToTop">
                 <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
         </v-col>
