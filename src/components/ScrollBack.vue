@@ -1,11 +1,7 @@
 <template>
     <div v-show="showButton" class="support-button">
         <v-col cols="auto">
-<<<<<<< HEAD
-            <v-btn size="large" color="#FBC02D" @click="scrollToTop">
-=======
             <v-btn icon="$vuetify" size="large" color="teal-accent-4" @click="scrollToTop">
->>>>>>> 34442c56cd2f9cb0c082ef3898fd64d22c8828e1
                 <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
         </v-col>
