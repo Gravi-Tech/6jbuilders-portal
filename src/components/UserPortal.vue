@@ -14,16 +14,12 @@
             <div class="login-box">
                 <v-img src="/src/assets/logo.png" max-height="100" alt="Logo"></v-img>
                 <div class="login-buttons">
-                    <vue3-google-login client-id="94901716497-5e4cor5er6mbn82s8lv7vtup83hfrv0i.apps.googleusercontent.com"
-                        @login-success="onLoginSuccess" @login-error="onLoginError">
-                        <v-btn block rounded="sm" size="x-large" class="google-login-button">
-                            <img src="../assets/images/google-icon.png" alt="Google Logo" />
-                            <span>Log in with Google</span>
-                        </v-btn>
-                    </vue3-google-login>
+                    <v-btn block rounded="sm" size="x-large" class="google-login-button" @click="login">
+                        <img src="../assets/images/google-icon.png" alt="Google Logo" />
+                        <span>Log in with Google</span>
+                    </v-btn>
                     <span>or</span>
-                    <v-facebook-login app-id="" variant="text" class="facebook-login-button" @login-success="onLoginSuccess"
-                        @login-error="onLoginError" @click="onFacebookLogin">
+                    <v-facebook-login app-id="" variant="text" class="facebook-login-button" @click="onFacebookLogin">
                         <span>Log in with Facebook</span>
                     </v-facebook-login>
                     <v-btn v-if="!showAdminPortal" variant="text" size="x-small" color="success"
@@ -77,17 +73,11 @@
 <script>
 import { useRouter } from 'vue-router';
 import { defineComponent } from "vue";
-import { required } from 'vuelidate';
-// import VFacebookLogin from 'vue-facebook-login-component';
-// import { Vue3GoogleLogin } from 'vue3-google-login';
+import { googleTokenLogin } from "vue3-google-login";
 
 const router = useRouter()
 
 export default defineComponent({
-    components: {
-        // Vue3GoogleLogin,
-        // VFacebookLogin
-    },
     data() {
         return {
             showAdminPortal: false,
@@ -97,18 +87,24 @@ export default defineComponent({
             form: {},
             loading: false,
             visible: false,
+            userData: {
+                avatar: '',
+                fullName: '',
+                email: ''
+            }
         };
     },
     methods: {
+        login() {
+            googleTokenLogin().then((response) => {
+                this.userData.avatar = response.profileObj.imageUrl;
+                this.userData.fullName = response.profileObj.name;
+                this.userData.email = response.profileObj.email;
+                this.$router.push('');
+            });
+        },
         navTo(to) {
             this.$router.push({ name: to });
-        },
-        onLoginSuccess(response) {
-            console.log("Logged in with:", response);
-        },
-        onLoginError(error) {
-            // Handle login error
-            console.error("Login error:", error);
         },
         onFacebookLogin() {
             // Handle Facebook login
