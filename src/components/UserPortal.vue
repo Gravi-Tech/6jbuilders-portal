@@ -100,7 +100,7 @@ export default defineComponent({
                 this.userData.avatar = response.profileObj.imageUrl;
                 this.userData.fullName = response.profileObj.name;
                 this.userData.email = response.profileObj.email;
-                this.$router.push('');
+                this.$router.push('/6jbuilders/');
             });
         },
         navTo(to) {
