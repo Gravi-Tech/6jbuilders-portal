@@ -77,19 +77,19 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col cols="auto" class="mr-4">
-                    <v-row class="d-flex justify-center align-center bg-blue-lighten-1">
-                        <v-btn size="large" @click="navTo('login')">Login</v-btn>
-                    </v-row>
-                </v-col>
                 <v-col cols="auto">
                     <v-row class="d-flex justify-center align-center bg-blue-lighten-1">
                         <v-btn size="large" @click="navTo('book')">Book Now</v-btn>
                     </v-row>
                 </v-col>
-                <v-col cols="auto">
-                    <v-avatar :image="user[0].avatar" @click.stop="drawer = !drawer"></v-avatar>
+                <v-col cols="auto" class="ml-4">
+                    <v-row class="d-flex justify-center align-center bg-blue-lighten-1">
+                        <v-btn size="large" @click="navTo('login')">Admin Login</v-btn>
+                    </v-row>
                 </v-col>
+                <!-- <v-col cols="auto">
+                    <v-avatar :image="user[0].avatar" @click.stop="drawer = !drawer"></v-avatar>
+                </v-col> -->
             </v-row>
         </section>
     </v-app-bar>
