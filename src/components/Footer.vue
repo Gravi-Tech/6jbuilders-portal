@@ -101,4 +101,15 @@ p {
 .mx-1 {
     margin: 0.2rem;
 }
+@media only screen and (max-width: 320px) {
+.footer-content {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+.footer-container{
+    font-size:  12px ;
+    grid-row:auto;
+}
+}
 </style>  

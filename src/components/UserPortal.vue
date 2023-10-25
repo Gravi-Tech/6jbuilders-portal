@@ -16,7 +16,7 @@
         <div class="login-buttons">
           <v-card-title class="text-center">ADMIN PORTAL</v-card-title>
           <v-card-text>
-            <v-form v-model="form" @submit.prevent="onSubmit">
+            <v-form v-model="form">
               <v-text-field
                 density="compact"
                 prepend-inner-icon="mdi-account-box-outline"
@@ -63,7 +63,7 @@
             </v-form>
           </v-card-text>
           <v-card-actions class="justify-space-around">
-            <v-btn color="success" variant="tonal" :loading="loading">Sign In</v-btn>
+            <v-btn color="success" variant="tonal" :loading="loading" @click="login">Sign In</v-btn>
           </v-card-actions>
           <v-btn class="mt-6" size="small" variant="outlined" @click="navTo('home')"
             >Back to Homepage</v-btn
@@ -75,11 +75,8 @@
 </template>
 
 <script>
-import { useRouter } from 'vue-router'
 import { defineComponent } from 'vue'
-import { googleTokenLogin } from 'vue3-google-login'
-
-const router = useRouter()
+// import { googleTokenLogin } from 'vue3-google-login'
 
 export default defineComponent({
   data() {
@@ -100,12 +97,11 @@ export default defineComponent({
   },
   methods: {
     login() {
-      googleTokenLogin().then((response) => {
-        this.userData.avatar = response.profileObj.imageUrl
-        this.userData.fullName = response.profileObj.name
-        this.userData.email = response.profileObj.email
-        this.$router.push('/6jbuilders/')
-      })
+      if (this.adminId === 'admin' && this.adminPassword === 'password') {
+        this.$router.push('/6jbuilders/admin/dashboard')
+      } else {
+        console.log('Incorrect admin ID or password')
+      }
     },
     navTo(to) {
       this.$router.push({ name: to })
