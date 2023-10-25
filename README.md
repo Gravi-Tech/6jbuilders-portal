@@ -24,7 +24,7 @@ npm run dev
 ### Local path
 
 ```sh
-http://localhost:4000/6jbuilders/
+http://localhost:4000/
 ```
 
 ### Compile and Minify for Production
