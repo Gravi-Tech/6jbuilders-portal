@@ -4,9 +4,10 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/6jbuilders/',
+      path: '/',
       name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../views/HomeView.vue'),
+      alias: '/6jbuilders'
     },
     {
       path: '/6jbuilders/about-us',
@@ -34,14 +35,9 @@ const router = createRouter({
       component: () => import('../views/ContactView.vue')
     },
     {
-      path: '/6jbuilders/dashboard',
-      name: 'dashboard',
-      component: () => import('../views/DashboardView.vue')
-    },
-    {
       path: '/6jbuilders/legal/:page',
       name: 'legal',
-      component: () => import('../views/LegalView.vue'),
+      component: () => import('../views/LegalView.vue')
     },
     {
       path: '/6jbuilders/login',
@@ -142,25 +138,34 @@ const router = createRouter({
     {
       path: '/6jbuilders/:pathMatch(.*)*',
       name: 'not-found',
-      component: () => import('../views/PageNotFoundView.vue'),
+      component: () => import('../views/PageNotFoundView.vue')
     },
     {
       path: '/6jbuilders/step/details/:stepId',
       name: 'StepDetails',
-      component: () => import('../views/StepDetailsView.vue'),
+      component: () => import('../views/StepDetailsView.vue')
     },
+    // private url
+    {
+      path: '/6jbuilders/admin/:menuItem',
+      name: 'admin',
+      component: () => import('../views/AdminView.vue')
+    }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  const routeName = to.name
-    ? to.name
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ')
-    : 'Home';
-  document.title = `6J Builders - ${routeName}`;
-  next();
-});
+  const capitalize = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+  }
+
+  const routeName = (to.params.menuItem || to.name || 'Home')
+    .split('-')
+    .map((word) => capitalize(word))
+    .join(' ')
+
+  document.title = `6J Builders - ${routeName}`
+  next()
+})
 
 export default router
