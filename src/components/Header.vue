@@ -89,25 +89,17 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { serviceTypes } from '../utils/serviceType'
+
 const appBarHeight = ref(170)
-const showSearchInput = ref(false)
 const router = useRouter()
 const activeRoute = ref(router.currentRoute.value.name)
 const isShrunk = ref(false)
 
-const services = [
-  { title: 'Cabinets' },
-  { title: 'Drywall Installation' },
-  { title: 'Electrical' },
-  { title: 'Glass and Aluminum Installation' },
-  { title: 'Home Renovation' },
-  { title: 'Home Repair Services' },
-  { title: 'Interior Design' },
-  { title: 'Plumbing' },
-  { title: 'Roofing' },
-  { title: 'Tile Installation' },
-  { title: 'Welding' }
-]
+const services = serviceTypes.map(({ id, title }) => ({
+  id,
+  title
+}))
 
 const navigateToService = (service) => {
   router.push(`/6jbuilders/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`)
@@ -173,21 +165,21 @@ strong {
 
 /*for laptopS*/
 
-@media only screen and (max-width:1440px){
+@media only screen and (max-width: 1440px) {
 }
 
-@media only screen and (max-width:1024px){
+@media only screen and (max-width: 1024px) {
 }
 
 /*FOR TABLETS*/
-@media only screen and (max-width:768px){
+@media only screen and (max-width: 768px) {
 }
-@media only screen and (max-width:425px){
+@media only screen and (max-width: 425px) {
 }
 
 /*small devices*/
 
-@media only screen and (max-width:375px){
+@media only screen and (max-width: 375px) {
   .app-icon.large-icon {
     font-size: 20px;
   }
@@ -196,7 +188,7 @@ strong {
     font-size: 8px;
   }
 }
- 
+
 @media screen and (max-width: 320px) {
   .app-icon.large-icon {
     font-size: 20px;

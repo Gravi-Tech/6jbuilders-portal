@@ -73,12 +73,12 @@ export default {
       activeItem: 'dashboard',
       menuItems: [
         { title: 'Dashboard', value: 'dashboard', icon: 'mdi-view-dashboard-outline' },
-        { title: 'Booking Request', value: 'request', icon: 'mdi-school-outline' },
-        { title: 'Projects', value: 'projects', icon: 'mdi-account-group-outline' },
+        { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-check-outline' },
+        { title: 'Projects', value: 'projects', icon: 'mdi-clipboard-check-outline' },
         { title: 'Clients', value: 'clients', icon: 'mdi-account-group-outline' },
         { title: 'Materials', value: 'materials', icon: 'mdi-package-variant' },
         { title: 'Workers', value: 'workers', icon: 'mdi-account-multiple-outline' },
-        { title: 'Task', value: 'task', icon: 'mdi-clipboard-check-outline' },
+        { title: 'Task', value: 'task', icon: 'mdi-checkbox-multiple-outline' },
         { title: 'Feedback', value: 'feedback', icon: 'mdi-message-alert-outline' },
         { title: 'Settings', value: 'setting', icon: 'mdi-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }
@@ -113,9 +113,9 @@ export default {
     }
   },
   created() {
-    const currentRoute = this.$route.name;
-    const menuItem = currentRoute === 'admin' ? this.$route.params.menuItem : '';
-    this.activeItem = menuItem || 'dashboard';
+    const currentRoute = this.$route.name
+    const menuItem = currentRoute === 'admin' ? this.$route.params.menuItem : ''
+    this.activeItem = menuItem || 'dashboard'
   },
   methods: {
     handleMenuItemClick(item) {
@@ -125,7 +125,13 @@ export default {
       }
 
       this.activeItem = item.value
-      this.$router.push({ name: 'admin', params: { menuItem: this.activeItem } })
+
+      const currentState = history.state
+      const url = this.$router.resolve({
+        name: 'admin',
+        params: { menuItem: this.activeItem }
+      }).href
+      history.replaceState(currentState, '', url)
     },
     logout() {
       window.location.href = '/'
