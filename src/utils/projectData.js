@@ -13,8 +13,7 @@ export const projects = [
         reviews: 413,
         date: '05/04/2022',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+           ,
         ],
         service: 'Home Renovations',
     },
@@ -32,8 +31,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+            ,
         ],
         service: 'Cabinets',
     },
@@ -49,8 +47,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+            ,
         ],
         service: 'Home Renovations',
     },
@@ -70,8 +67,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+            ,
         ],
         service: 'Home Renovations',
     },
@@ -89,8 +85,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+            ,
         ],
         service: 'Home Renovations',
     },
@@ -107,8 +102,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+            ,
         ],
         service: 'Home Repair Services',
     },
@@ -125,8 +119,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+           ,
         ],
         service: 'Home Renovations',
     },
@@ -142,8 +135,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+            ,
         ],
         service: 'Home Renovations',
     },
@@ -162,8 +154,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+            ,
         ],
         service: 'Home Renovations',
     },
@@ -179,8 +170,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+           ,
         ],
         service: 'Home Repair Services',
     },
@@ -198,8 +188,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+            ,
         ],
         service: 'Home Repair Services',
     },
@@ -215,8 +204,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+           ,
         ],
         service: 'Home Repair Services',
     },
@@ -232,8 +220,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+           
         ],
         service: 'Home Repair Services',
     },
@@ -253,8 +240,7 @@ export const projects = [
         reviews: 413,
         date: '08/09/2023',
         description: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
-            'Velit laoreet id donec ultrices tincidunt arcu non sodales neque. Magna etiam tempor orci eu lobortis elementum nibh tellus. Ac placerat vestibulum lectus mauris ultrices. Duis at consectetur lorem donec. Nisl purus in mollis nunc sed. Amet mauris commodo quis imperdiet massa.',
+            ,
         ],
         service: 'Home Renovations',
     },

@@ -54,13 +54,11 @@
   </section>
 </template>
 
-<script>
+<script scoped>
 import Dashboard from './DashboardDetails.vue'
 import Client from './ClientDetails.vue'
 import Booking from './BookingRequest.vue'
-import Feedback from './FeedbackDetails.vue'
 import Material from './MaterialDetails.vue'
-import Project from './ProjectDetails.vue'
 import Setting from './SettingsDetails.vue'
 import Task from './TaskDetails.vue'
 import Worker from './WorkerDetails.vue'
@@ -74,12 +72,10 @@ export default {
       menuItems: [
         { title: 'Dashboard', value: 'dashboard', icon: 'mdi-view-dashboard-outline' },
         { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-check-outline' },
-        { title: 'Projects', value: 'projects', icon: 'mdi-clipboard-check-outline' },
+        { title: 'Task', value: 'task', icon: 'mdi-checkbox-multiple-outline' },
         { title: 'Clients', value: 'clients', icon: 'mdi-account-group-outline' },
         { title: 'Materials', value: 'materials', icon: 'mdi-package-variant' },
         { title: 'Workers', value: 'workers', icon: 'mdi-account-multiple-outline' },
-        { title: 'Task', value: 'task', icon: 'mdi-checkbox-multiple-outline' },
-        { title: 'Feedback', value: 'feedback', icon: 'mdi-message-alert-outline' },
         { title: 'Settings', value: 'setting', icon: 'mdi-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }
       ],

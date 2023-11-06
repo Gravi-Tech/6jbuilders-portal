@@ -1,7 +1,7 @@
 <template>
   <div class="booking_request">
     <header class="header">
-      <h1 class="booking_request-title">Booking Request</h1>
+      <h1 class="booking_request-title">Request</h1>
     </header>
     <v-card class="new-booking-card">
       <div class="sub-header">
@@ -27,9 +27,25 @@
         </div>
       </div>
 
+      <div class="search-request">
+        <div class="request">
+          <v-text-field
+            v-model="requestId"
+            density="compact"
+            append-inner-icon="mdi-magnify"
+            @click:append-inner="searchRequest(requestId)"
+            label="Search request by ID"
+            variant="outlined"
+            single-line
+            hide-details
+          ></v-text-field>
+          <span v-if="task404" style="font-style: italic; color: red">Task not found.</span>
+        </div>
+      </div>
+
       <v-card-text class="table-container">
         <table class="table">
-          <thead>
+          <thead style="font-size: 12px">
             <tr>
               <th v-for="column in tableColumns" :key="column.key">{{ column.label }}</th>
             </tr>
@@ -42,8 +58,11 @@
               <td
                 v-for="column in tableColumns"
                 :key="column.key"
-                :class="{ hoverable: row[column.key].length > 8 }"
-                :data-tooltip="row[column.key].length > 8 ? row[column.key] : ''"
+                :class="{
+                  hoverable: row[column.key] && row[column.key].length > 8,
+                  'table-text': true
+                }"
+                :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''"
               >
                 <template v-if="column.key === 'id'">
                   <a @click="openBookingDetails(row.id)" style="color: blue">{{
@@ -57,12 +76,15 @@
                   <template v-else> No attachment </template>
                 </template>
                 <template v-else-if="column.key === 'status'">
-                  <v-chip :color="getStatusChipColor(row[column.key])" text-color="white">{{
-                    row[column.key]
-                  }}</v-chip>
+                  <v-chip
+                    size="small"
+                    :color="getStatusChipColor(row[column.key])"
+                    text-color="white"
+                    >{{ row[column.key] }}</v-chip
+                  >
                 </template>
                 <template v-else>
-                  {{ shortenText(row[column.key], column.maxLength) }}
+                  {{ row[column.key] ? shortenText(row[column.key], column.maxLength) : '-' }}
                 </template>
               </td>
             </tr>
@@ -86,14 +108,6 @@
             </option>
           </select>
         </div>
-
-        <v-alert
-          v-if="showAlert"
-          type="info"
-          :title="'Available Rows'"
-          :text="`Only ${availableDataCount} row(s) are available. Filtering will be applied to the specified range of data.`"
-          variant="tonal"
-        ></v-alert>
       </v-card-text>
     </v-card>
     <transition name="slide">
@@ -124,17 +138,21 @@
                   <v-btn
                     class="edit-btn"
                     prepend-icon="mdi-pencil"
-                    color="warning"
+                    color="#FFC107"
                     variant="tonal"
                     @click="editBooking"
                     >Edit Details</v-btn
                   >
-                  <v-btn prepend-icon="mdi-close" color="red" variant="tonal" @click="rejectBooking"
+                  <v-btn
+                    prepend-icon="mdi-close-circle"
+                    color="#FF0000"
+                    variant="tonal"
+                    @click="rejectBooking"
                     >Reject Booking</v-btn
                   >
                   <v-btn
-                    prepend-icon="mdi-check"
-                    color="green"
+                    prepend-icon="mdi-check-circle"
+                    color="#00C853"
                     variant="outlined"
                     @click="acceptBooking"
                     >Accept Booking</v-btn
@@ -144,6 +162,35 @@
               <v-card variant="text">
                 <v-card-text>
                   <v-container>
+                    <v-row v-if="booking.isVisited === false" class="inspect-place">
+                      <div>
+                        <v-alert
+                          class="task-notification-header"
+                          type="info"
+                          color="#2196F3"
+                          theme="dark"
+                          icon="mdi-information"
+                          title="Location Not Yet Visited"
+                          text="The booking location has not been inspected by the management. Please inspect the location before accepting the service."
+                          variant="tonal"
+                          prominent
+                          border
+                        ></v-alert>
+                      </div>
+                      <div>
+                        <v-btn
+                          class="task-inspect-btn"
+                          prepend-icon="mdi-map-marker"
+                          variant="tonal"
+                          size="small"
+                          @click="updateIsVisited()"
+                          >inspect place</v-btn
+                        >
+                      </div>
+                    </v-row>
+                    <div class="btn-mode">
+                      <v-chip variant="outlined">{{ mode }}</v-chip>
+                    </div>
                     <v-row justify="center">
                       <div class="group-details">
                         <div class="workers">
@@ -156,6 +203,7 @@
                             variant="solo"
                             :items="workers"
                             :item-props="itemProps"
+                            :disabled="isBookingRejected()"
                             v-model="selectedWorkers"
                             required
                           ></v-select>
@@ -169,6 +217,7 @@
                             v-model="selectedDate"
                             readonly
                             @click:append-inner="showDatePicker = true"
+                            :disabled="isBookingRejected()"
                             :value="formattedDate"
                             clearable
                           ></v-text-field>
@@ -180,6 +229,7 @@
                             density="comfortable"
                             variant="solo"
                             v-model="selectedTimeRange"
+                            :disabled="isBookingRejected()"
                             :items="[
                               '08:00 AM - 10:00 AM',
                               '10:00 AM - 12:00 PM',
@@ -191,6 +241,169 @@
                         </div>
                       </div>
                     </v-row>
+                    <v-dialog v-model="showDatePicker">
+                      <v-row justify="end">
+                        <v-date-picker v-model="selectedDate" show-adjacent-months></v-date-picker>
+                      </v-row>
+                    </v-dialog>
+                  </v-container>
+                </v-card-text>
+              </v-card>
+              <div class="group-details">
+                <div class="detail">
+                  <p>Booking ID:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :value="booking.id"
+                    :disabled="isBookingRejected()"
+                    readonly
+                  ></v-text-field>
+                </div>
+                <div class="detail">
+                  <p>Data Subject Type:</p>
+                  <v-select
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.type"
+                    :value="booking.type"
+                    :items="dataSubjectTypes"
+                    :disabled="isBookingRejected()"
+                    :readonly="!editingEnabled"
+                  ></v-select>
+                </div>
+                <div class="detail">
+                  <p>Fullname:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.fullName"
+                    :value="booking.fullName"
+                    :disabled="isBookingRejected()"
+                    :readonly="!editingEnabled"
+                  ></v-text-field>
+                </div>
+                <div class="detail">
+                  <p>Book Status:</p>
+                  <v-select
+                    variant="outlined"
+                    density="compact"
+                    :value="booking.status"
+                    :disabled="isBookingRejected()"
+                    readonly
+                    :class="{
+                      'status-pending': booking.status === 'Pending',
+                      'status-rejected': booking.status === 'Rejected'
+                    }"
+                  >
+                    ></v-select
+                  >
+                </div>
+              </div>
+              <div class="group-details">
+                <div class="detail">
+                  <p>Email:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.email"
+                    :value="booking.email"
+                    :disabled="isBookingRejected()"
+                    :readonly="!editingEnabled"
+                  ></v-text-field>
+                </div>
+                <div class="detail">
+                  <p>Requested Service:</p>
+                  <v-select
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.service"
+                    :value="booking.service"
+                    :items="serviceTypes"
+                    :disabled="isBookingRejected()"
+                    :readonly="!editingEnabled"
+                  ></v-select>
+                </div>
+                <div class="detail">
+                  <p>Location:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.location"
+                    :value="booking.location"
+                    :disabled="isBookingRejected()"
+                    :readonly="!editingEnabled"
+                  ></v-text-field>
+                </div>
+                <div class="detail">
+                  <p>Mobile Number:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.mobileNumber"
+                    :value="booking.mobileNumber"
+                    :disabled="isBookingRejected()"
+                    :readonly="!editingEnabled"
+                  ></v-text-field>
+                </div>
+              </div>
+              <div class="group-details">
+                <div class="detail">
+                  <p>Attachment:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :disabled="isBookingRejected()"
+                    v-if="booking.attachment"
+                  >
+                    <a :href="booking.attachment" target="_blank">View Attachment</a>
+                  </v-text-field>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :disabled="isBookingRejected()"
+                    readonly
+                    v-else
+                    >No attachment</v-text-field
+                  >
+                </div>
+                <div class="detail">
+                  <p>Scheduled Date:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :value="booking.scheduleDate"
+                    :disabled="isBookingRejected()"
+                    readonly
+                  ></v-text-field>
+                </div>
+                <div class="detail">
+                  <p>Created On:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :value="booking.createdDate"
+                    :disabled="isBookingRejected()"
+                    readonly
+                  ></v-text-field>
+                </div>
+              </div>
+              <div class="group-details">
+                <div class="note">
+                  <p>Note:</p>
+                  <v-textarea
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.note"
+                    :value="booking.note || 'N/A'"
+                    :disabled="isBookingRejected()"
+                    :readonly="!editingEnabled"
+                  ></v-textarea>
+                </div>
+              </div>
+              <v-card variant="text">
+                <v-container>
+                  <v-card-text>
                     <div v-if="editingEnabled" class="edit-actions">
                       <v-row justify="end">
                         <div class="form-actions-btn">
@@ -215,158 +428,9 @@
                         </div>
                       </v-row>
                     </div>
-                    <v-dialog v-model="showDatePicker">
-                      <v-row justify="end">
-                        <v-date-picker v-model="selectedDate" show-adjacent-months></v-date-picker>
-                      </v-row>
-                    </v-dialog>
-                  </v-container>
-                </v-card-text>
+                  </v-card-text>
+                </v-container>
               </v-card>
-              <div class="group-details">
-                <div class="detail">
-                  <p>Booking ID:</p>
-                  <v-text-field
-                    variant="outlined"
-                    :value="booking.id"
-                    :disabled="isBookingRejected()"
-                    readonly
-                  ></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Data Subject Type:</p>
-                  <v-select
-                    variant="outlined"
-                    v-model="booking.type"
-                    :value="booking.type"
-                    :items="dataSubjectTypes"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-select>
-                </div>
-                <div class="detail">
-                  <p>Fullname:</p>
-                  <v-text-field
-                    variant="outlined"
-                    v-model="booking.fullName"
-                    :value="booking.fullName"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Book Status:</p>
-                  <v-text-field
-                    variant="outlined"
-                    :value="booking.status"
-                    :disabled="isBookingRejected()"
-                    readonly
-                    :class="{
-                      'status-pending': booking.status === 'Pending',
-                      'status-rejected': booking.status === 'Rejected',
-                      'status-accepted': booking.status === 'Accepted'
-                    }"
-                  ></v-text-field>
-                </div>
-              </div>
-              <div class="group-details">
-                <div class="detail">
-                  <p>Email:</p>
-                  <v-text-field
-                    variant="outlined"
-                    v-model="booking.email"
-                    :value="booking.email"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Requested Service:</p>
-                  <v-select
-                    variant="outlined"
-                    v-model="booking.service"
-                    :value="booking.service"
-                    :items="serviceTypes"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-select>
-                </div>
-                <div class="detail">
-                  <p>Location:</p>
-                  <v-text-field
-                    variant="outlined"
-                    v-model="booking.location"
-                    :value="booking.location"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Mobile Number:</p>
-                  <v-text-field
-                    variant="outlined"
-                    v-model="booking.mobileNumber"
-                    :value="booking.mobileNumber"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
-                </div>
-              </div>
-              <div class="group-details">
-                <div class="detail">
-                  <p>Zip Code:</p>
-                  <v-text-field
-                    variant="outlined"
-                    v-model="booking.zipCode"
-                    :value="booking.zipCode"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Attachment:</p>
-                  <v-text-field
-                    variant="outlined"
-                    :disabled="isBookingRejected()"
-                    v-if="booking.attachment"
-                  >
-                    <a :href="booking.attachment" target="_blank">View Attachment</a>
-                  </v-text-field>
-                  <v-text-field variant="outlined" :disabled="isBookingRejected()" readonly v-else
-                    >No attachment</v-text-field
-                  >
-                </div>
-                <div class="detail">
-                  <p>Scheduled Date:</p>
-                  <v-text-field
-                    variant="outlined"
-                    :value="booking.scheduleDate"
-                    :disabled="isBookingRejected()"
-                    readonly
-                  ></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Created On:</p>
-                  <v-text-field
-                    variant="outlined"
-                    :value="booking.createdDate"
-                    :disabled="isBookingRejected()"
-                    readonly
-                  ></v-text-field>
-                </div>
-              </div>
-              <div class="group-details">
-                <div class="note">
-                  <p>Note:</p>
-                  <v-textarea
-                    variant="outlined"
-                    v-model="booking.note"
-                    :value="booking.note || 'N/A'"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-textarea>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -395,7 +459,7 @@
 </template>
 
 <script>
-import { pendingData, workersData } from '../../utils/tableData'
+import { requestData, workersData } from '../../utils/tableData'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { dataSubjectTypes } from '../../utils/dataSubjectType'
 import { serviceTypes } from '../../utils/serviceType'
@@ -418,7 +482,6 @@ export default {
       originalBooking: {},
       selectedFilter: 'All Service',
       selectedRowFilter: 'all',
-      showAlert: false,
       alertTimeout: null,
       tableColumns: [
         { key: 'id', label: 'ID', maxLength: 8 },
@@ -430,19 +493,20 @@ export default {
         { key: 'location', label: 'Location', maxLength: 20 },
         { key: 'createdDate', label: 'Created On', maxLength: null },
         { key: 'scheduleDate', label: 'Schedule Date', maxLength: null },
-        { key: 'zipCode', label: 'Zip Code', maxLength: null },
-        { key: 'attachment', label: 'Attachment', maxLength: 8 },
-        { key: 'note', label: 'Note', maxLength: 20 },
         { key: 'status', label: 'Status', maxLength: null }
       ],
       selectedBookingId: null,
       showPopup: false,
       popupType: '',
       popupTitle: '',
-      popupMessage: ''
+      popupMessage: '',
+      isVisited: false
     }
   },
   computed: {
+    mode() {
+      return this.editingEnabled ? 'Editing Mode' : 'View Mode'
+    },
     sortedTableData() {
       return this.filteredTableData.sort((a, b) => {
         return new Date(a.scheduleDate) - new Date(b.scheduleDate)
@@ -455,14 +519,6 @@ export default {
         return date.toLocaleDateString(undefined, options)
       }
       return null
-    },
-    availableDataCount() {
-      if (this.selectedFilter === 'All Service') {
-        return this.bookingRequests.length
-      } else {
-        return this.bookingRequests.filter((request) => request.service === this.selectedFilter)
-          .length
-      }
     },
     filteredTableData() {
       if (this.selectedFilter === 'All Service') {
@@ -613,8 +669,10 @@ export default {
           if (reason) {
             this.booking.status = 'Rejected'
             this.booking.rejectionReason = reason
-
             this.showPopupMessage('success', 'Success', successMessage)
+            setTimeout(() => {
+              this.closeBookingDetails()
+            }, 3000)
           } else {
             // TODO: Handle case when reason is not provided
           }
@@ -636,24 +694,6 @@ export default {
         return
       }
 
-      if (this.selectedWorkers === null) {
-        this.showPopupMessage(
-          'error',
-          'Unable to Accept',
-          'Please select at least one construction worker before accepting the booking.'
-        )
-        return
-      }
-
-      if (this.selectedDate === null) {
-        this.showPopupMessage(
-          'error',
-          'Unable to Accept',
-          'Please select a schedule inspection date before accepting the booking.'
-        )
-        return
-      }
-
       if (this.isBookingRejected()) {
         const confirmMessage =
           'The booking request is currently in a rejected status. Would you like to update the status to pending?'
@@ -671,6 +711,33 @@ export default {
         })
       } else {
         // TODO:Perform the accept booking action
+
+        if (!this.booking.isVisited) {
+          this.showPopupMessage(
+            'error',
+            'Unable to Accept',
+            'This booking request has not been visited yet. Please visit the location before accepting.'
+          )
+          return
+        }
+
+        if (this.selectedWorkers === null) {
+          this.showPopupMessage(
+            'error',
+            'Unable to Accept',
+            'Please select at least one construction worker before accepting the booking.'
+          )
+          return
+        }
+
+        if (this.selectedDate === null) {
+          this.showPopupMessage(
+            'error',
+            'Unable to Accept',
+            'Please select a schedule inspection date before accepting the booking.'
+          )
+          return
+        }
 
         const successMessage = 'The booking has been successfully accepted.'
         this.showPopupMessage('success', 'Success', successMessage)
@@ -720,8 +787,7 @@ export default {
           email: this.booking.email,
           service: this.booking.service,
           location: this.booking.location,
-          mobileNumber: this.booking.mobileNumber,
-          zipCode: this.booking.zipCode
+          mobileNumber: this.booking.mobileNumber
         })
 
         const successMessage = 'Changes saved successfully.'
@@ -734,15 +800,7 @@ export default {
       this.editingEnabled = false
     },
     areFieldsEdited() {
-      const editableFields = [
-        'type',
-        'fullName',
-        'email',
-        'service',
-        'location',
-        'mobileNumber',
-        'zipCode'
-      ]
+      const editableFields = ['type', 'fullName', 'email', 'service', 'location', 'mobileNumber']
 
       for (const field of editableFields) {
         const fieldValue = this.booking[field]
@@ -771,9 +829,6 @@ export default {
       }
       if (!this.booking.mobileNumber) {
         invalidFields.push('Mobile Number')
-      }
-      if (!this.booking.zipCode) {
-        invalidFields.push('Zip Code')
       }
 
       return invalidFields
@@ -833,6 +888,33 @@ export default {
         title: item.name,
         subtitle: item.position
       }
+    },
+    searchRequest(id) {
+      const request = this.getBookingById(id)
+      if (request) {
+        this.request = request
+        this.updateBookingDetails(id)
+        this.selectedWorkers = this.getInitialSelectedWorkers(id)
+      } else {
+        this.resetRequest()
+      }
+    },
+    resetRequest() {
+      this.request = null
+      this.selectedWorkers = []
+      this.request404 = true
+    },
+    updateIsVisited(id) {
+      const booking = this.getBookingById(id)
+      const currentDate = new Date()
+      const formattedDate = currentDate.toLocaleDateString('en-US')
+      const formattedTime = currentDate.toLocaleTimeString('en-US')
+      const location = this.booking.location
+
+      const updateIsVisited = `Location Visit Update: Date: ${formattedDate}, Time: ${formattedTime}, Location: ${location}. Thank you for visiting the location and updating the status. The visit has been recorded successfully.`
+
+      this.showPopupMessage('success', 'Visit Update', updateIsVisited)
+      this.booking.isVisited = true
     }
   },
   destroyed() {
@@ -846,7 +928,7 @@ export default {
     }
   },
   created() {
-    this.bookingRequests = pendingData
+    this.bookingRequests = requestData
     if (this.hasIdParam) {
       const urlSearchParams = new URLSearchParams(window.location.search)
       const id = urlSearchParams.get('id')
@@ -1064,5 +1146,35 @@ export default {
 }
 .form-actions-btn .v-btn {
   margin: 5px;
+}
+
+.table-text {
+  font-size: 12px;
+}
+
+.btn-mode {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.search-request {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.search-request .request {
+  width: 500px;
+}
+
+.inspect-place {
+  display: block;
+}
+
+.task-notification-header,
+.task-inspect-btn {
+  margin-bottom: 15px;
 }
 </style>

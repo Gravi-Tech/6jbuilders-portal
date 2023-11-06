@@ -37,13 +37,6 @@
           placeholder="Street/Barangay/Municipality/City/Province"
           variant="outlined"
         ></v-text-field>
-        <v-text-field
-          :rules="[rules.required]"
-          v-model="zipCode"
-          label="ZIP Code"
-          placeholder="6000"
-          variant="outlined"
-        ></v-text-field>
         <div>
           <v-select
             v-model="serviceType"
@@ -125,7 +118,6 @@ export default {
       fullName: null,
       contactNumber: null,
       siteLocation: null,
-      zipCode: null,
       email: null,
       serviceType: this.preSelectedService || 'Home Repair Services',
       attachment: null,
