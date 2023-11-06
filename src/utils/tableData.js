@@ -1,4 +1,4 @@
-export const pendingData = [
+export const requestData = [
   {
     id: '653f74f8d58daf137c3c3a16',
     type: 'Private Individual',
@@ -11,9 +11,8 @@ export const pendingData = [
     scheduleDate: '2023-11-01',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: true,
-    zipCode: '6001',
     attachment: '',
-    status: 'Pending',
+    status: 'Rejected',
     note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.'
   },
   {
@@ -21,14 +20,13 @@ export const pendingData = [
     type: 'Private Individual',
     fullName: 'John Doe',
     mobileNumber: '0999999999',
-    email: '',
+    email: 'john.doe@gmail.com',
     service: 'Drywall Installation',
     location: 'Cebu City',
     createdDate: '2023-09-10',
     scheduleDate: '2023-11-02',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: false,
-    zipCode: '6001',
     attachment: '',
     status: 'Pending',
     note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.'
@@ -45,7 +43,6 @@ export const pendingData = [
     scheduleDate: '2023-11-02',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: false,
-    zipCode: '6001',
     attachment: '',
     status: 'Pending',
     note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.'
@@ -55,14 +52,13 @@ export const pendingData = [
     type: 'Private Individual',
     fullName: 'John Doe',
     mobileNumber: '0999999999',
-    email: '',
+    email: 'john.doe@gmail.com',
     service: 'Home Renovation',
     location: 'Cebu City',
     createdDate: '2023-08-01',
     scheduleDate: '2023-9-21',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: false,
-    zipCode: '6001',
     attachment: '',
     status: 'Pending',
     note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.'
@@ -79,7 +75,6 @@ export const pendingData = [
     scheduleDate: '2023-11-11',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: false,
-    zipCode: '6001',
     attachment: '',
     status: 'Pending',
     note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.'
@@ -89,14 +84,13 @@ export const pendingData = [
     type: 'Private Individual',
     fullName: 'Juspher Balangyao',
     mobileNumber: '0999999999',
-    email: '',
+    email: 'john.doe@gmail.com',
     service: 'Home Renovation',
     location: 'Cebu City',
     createdDate: '2023-09-12',
     scheduleDate: '2023-11-02',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: false,
-    zipCode: '6001',
     attachment: '',
     status: 'Pending',
     note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.'
@@ -106,14 +100,13 @@ export const pendingData = [
     type: 'Private Individual',
     fullName: 'John Doe',
     mobileNumber: '0999999999',
-    email: '',
+    email: 'john.doe@gmail.com',
     service: 'Drywall Installation',
     location: 'Cebu City',
     createdDate: '2023-09-01',
     scheduleDate: '2023-10-01',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: false,
-    zipCode: '6001',
     attachment: '',
     status: 'Pending',
     note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.'
@@ -123,14 +116,13 @@ export const pendingData = [
     type: 'Private Individual',
     fullName: 'John Doe',
     mobileNumber: '0999999999',
-    email: '',
+    email: 'john.doe@gmail.com',
     service: 'Home Renovation',
     location: 'Cebu City',
     createdDate: '2023-09-01',
     scheduleDate: '2023-10-12',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: false,
-    zipCode: '6001',
     attachment: '',
     status: 'Pending',
     note: ''
@@ -140,14 +132,13 @@ export const pendingData = [
     type: 'Private Individual',
     fullName: 'John Doe',
     mobileNumber: '0999999999',
-    email: '',
+    email: 'john.doe@gmail.com',
     service: 'Drywall Installation',
     location: 'Cebu City',
     createdDate: '2023-09-01',
     scheduleDate: '2023-10-01',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: false,
-    zipCode: '6001',
     attachment: '',
     status: 'Pending',
     note: ''
@@ -157,14 +148,13 @@ export const pendingData = [
     type: 'Private Individual',
     fullName: 'John Doe',
     mobileNumber: '0999999999',
-    email: '',
+    email: 'john.doe@gmail.com',
     service: 'Home Renovation',
     location: 'Cebu City',
     createdDate: '2023-09-01',
     scheduleDate: '2023-10-01',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: false,
-    zipCode: '6001',
     attachment: '',
     status: 'Pending',
     note: ''
@@ -174,14 +164,13 @@ export const pendingData = [
     type: 'Private Individual',
     fullName: 'John Doe',
     mobileNumber: '0999999999',
-    email: '',
+    email: 'john.doe@gmail.com',
     service: 'Home Renovation',
     location: 'Cebu City',
     createdDate: '2023-09-01',
     scheduleDate: '2023-10-01',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: false,
-    zipCode: '6001',
     attachment: '',
     status: 'Pending',
     note: ''
@@ -191,139 +180,40 @@ export const pendingData = [
     type: 'Private Individual',
     fullName: 'John Doe',
     mobileNumber: '0999999999',
-    email: '',
+    email: 'john.doe@gmail.com',
     service: 'Home Renovation',
     location: 'Cebu City',
     createdDate: '2023-09-01',
     scheduleDate: '2023-10-01',
     selectedTimeRange: '02:00 PM - 04:00 PM',
     isVisited: false,
-    zipCode: '6001',
     attachment: '',
     status: 'Pending',
     note: ''
   }
 ]
 
-export const completedData = [
-  {
-    id: '617e9b2c6e2d647f28b062t4',
-    booking_id: '617e9b2c6e2d647f28b062u2',
-    service: 'Home Renovation',
-    location: 'Location A',
-    date_created: '2023-6-04',
-    date_updated: '2023-8-01',
-    date_created: '2023-6-04',
-    date_updated: '2023-8-01',
-    date_started: '2023-8-01',
-    date_ended: '2023-10-01',
-    inspection_date: '2023-6-01',
-    isDeleted: false,
-    inspection_date: '2023-6-01',
-    isVisited: true,
-    status: 'Completed',
-    total_material_cost: '650,000.00',
-    total_amount: '1,000,000.00',
-    workers: [
-      {
-        id: '617e9b2c6e2d647f28b062c8'
-      },
-      {
-        id: '617e9b2c6e2d647f28b062c9'
-      }
-    ]
-  },
-  {
-    id: '617e9b2c6e2d647f28b062t3',
-    booking_id: '617e9b2c6e2d647f28b062u3',
-    service: 'Home Renovation',
-    location: 'Location A',
-    date_created: '2023-6-04',
-    date_updated: '2023-8-01',
-    date_started: '2023-8-01',
-    date_ended: '2023-10-01',
-    inspection_date: '2023-6-01',
-    isDeleted: false,
-    isVisited: true,
-    status: 'Completed',
-    total_material_cost: '650,000.00',
-    total_amount: '1,000,000.00',
-    workers: [
-      {
-        id: '617e9b2c6e2d647f28b062c8'
-      },
-      {
-        id: '617e9b2c6e2d647f28b062c9'
-      }
-    ]
-  },
-  {
-    id: '617e9b2c6e2d647f28b062t2',
-    booking_id: '617e9b2c6e2d647f28b062u4',
-    service: 'Home Renovation',
-    location: 'Location A',
-    date_created: '2023-6-04',
-    date_updated: '2023-8-01',
-    date_started: '2023-8-01',
-    date_ended: '2023-10-01',
-    inspection_date: '2023-6-01',
-    isDeleted: false,
-    isVisited: true,
-    status: 'Completed',
-    total_material_cost: '650,000.00',
-    total_amount: '1,000,000.00',
-    workers: [
-      {
-        id: '617e9b2c6e2d647f28b062c8'
-      },
-      {
-        id: '617e9b2c6e2d647f28b062c9'
-      }
-    ]
-  },
-  {
-    id: '617e9b2c6e2d647f28b062t1',
-    booking_id: '617e9b2c6e2d647f28b062u5',
-    service: 'Home Renovation',
-    location: 'Location A',
-    date_created: '2023-6-04',
-    date_updated: '2023-8-01',
-    date_started: '2023-8-01',
-    date_ended: '2023-10-01',
-    inspection_date: '2023-6-01',
-    isDeleted: false,
-    isVisited: true,
-    status: 'Completed',
-    total_material_cost: '650,000.00',
-    total_amount: '1,500,000.00',
-    workers: [
-      {
-        id: '617e9b2c6e2d647f28b062c8'
-      },
-      {
-        id: '617e9b2c6e2d647f28b062c9'
-      }
-    ]
-  }
-]
-
-export const ongoingData = [
+export const taskData = [
   {
     id: '617e9b2c6e2d647f28b062c2',
     fullName: 'John Doe',
     mobileNumber: '0999999999',
+    email: 'john.doe@gmail.com',
     service: 'Cabinets',
     location: 'Location A',
     date_created: '2023-6-04',
     date_updated: '2023-8-01',
     date_started: '2023-8-01',
-    date_ended: '2023-10-01',
+    date_completed: '',
+    schedule_date: '2023-11-01',
     inspection_date: '2023-6-01',
+    inspection_time_range: '04:00 PM - 06:00 PM',
     isDeleted: false,
     isVisited: true,
-    address: 'Address A',
-    status: 'Ongoing',
-    workers: [
+    status: 'In Progress',
+    attachment: '',
+    note: '',
+    selected_workers: [
       {
         id: '617e9b2c6e2d647f28b062c8'
       },
@@ -335,26 +225,26 @@ export const ongoingData = [
       }
     ]
   },
-
   {
     id: '617e9b2c6e2d647f28b062c3',
-    fullName: 'John Doe',
+    fullName: 'John',
     mobileNumber: '0999999999',
+    email: 'john.doe@gmail.com',
     service: 'Roofing',
     location: 'Location A',
     date_created: '2023-6-04',
     date_updated: '2023-8-01',
     date_started: '2023-8-01',
-    date_ended: '2023-10-01',
+    date_completed: '',
+    schedule_date: '2023-11-01',
     inspection_date: '2023-6-01',
+    inspection_time_range: '04:00 PM - 06:00 PM',
     isDeleted: false,
-    isVisited: true,
-    address: 'Address A',
-    status: 'Ongoing',
-    workers: [
-      {
-        id: '617e9b2c6e2d647f28b062c8'
-      },
+    isVisited: false,
+    status: 'In Progress',
+    attachment: '',
+    note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
+    selected_workers: [
       {
         id: '617e9b2c6e2d647f28b062c9'
       },
@@ -367,18 +257,22 @@ export const ongoingData = [
     id: '617e9b2c6e2d647f28b062c4',
     fullName: 'John Doe',
     mobileNumber: '0999999999',
+    email: 'john.doe@gmail.com',
     service: 'Electrical',
     location: 'Location A',
     date_created: '2023-6-04',
     date_updated: '2023-8-01',
     date_started: '2023-8-01',
-    date_ended: '2023-10-01',
+    date_completed: '',
+    schedule_date: '2023-11-01',
     inspection_date: '2023-6-01',
+    inspection_time_range: '04:00 PM - 06:00 PM',
     isDeleted: false,
     isVisited: true,
-    address: 'Address A',
-    status: 'Ongoing',
-    workers: [
+    status: 'In Progress',
+    attachment: '',
+    note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
+    selected_workers: [
       {
         id: '617e9b2c6e2d647f28b062c8'
       },
@@ -387,29 +281,32 @@ export const ongoingData = [
       },
       {
         id: '617e9b2c6e2d647f28b062d4'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062d2'
       }
     ]
   },
-
   {
     id: '617e9b2c6e2d647f28b062c5',
-    fullName: 'John Doe',
+    fullName: 'Doe',
     mobileNumber: '0999999999',
+    email: 'john.doe@gmail.com',
     service: 'Home Renovation',
     location: 'Location A',
     date_created: '2023-6-04',
     date_updated: '2023-8-01',
     date_started: '2023-8-01',
-    date_ended: '2023-10-01',
+    date_completed: '',
+    schedule_date: '2023-11-01',
     inspection_date: '2023-6-01',
+    inspection_time_range: '04:00 PM - 06:00 PM',
     isDeleted: false,
     isVisited: true,
-    address: 'Address A',
-    status: 'Ongoing',
-    workers: [
-      {
-        id: '617e9b2c6e2d647f28b062c8'
-      },
+    status: 'In Progress',
+    attachment: '',
+    note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
+    selected_workers: [
       {
         id: '617e9b2c6e2d647f28b062c9'
       },
@@ -417,23 +314,195 @@ export const ongoingData = [
         id: '617e9b2c6e2d647f28b062d4'
       }
     ]
-  }
-]
-
-export const materialData = [
-  {
-    id: '617e9b2c6e2d647f28b062c6',
-    name: 'Drywall Sheets',
-    quantity: 100,
-    unit: 'pcs',
-    cost: '500.00'
   },
   {
-    id: '617e9b2c6e2d647f28b062c7',
-    name: 'Paint Buckets',
-    quantity: 102,
-    unit: 'pcs',
-    cost: '100.00'
+    id: '617e9b2c6e2d647f28b062t4',
+    fullName: 'John Doe',
+    mobileNumber: '0999999999',
+    email: 'john.doe@gmail.com',
+    service: 'Electrical',
+    location: 'Location A',
+    date_created: '2023-6-04',
+    date_updated: '2023-8-01',
+    date_created: '2023-6-04',
+    date_updated: '2023-8-01',
+    date_started: '2023-8-01',
+    date_completed: '2023-10-01',
+    schedule_date: '2023-11-01',
+    inspection_date: '2023-6-01',
+    inspection_time_range: '04:00 PM - 06:00 PM',
+    isDeleted: false,
+    inspection_date: '2023-6-01',
+    inspection_time_range: '04:00 PM - 06:00 PM',
+    isVisited: true,
+    status: 'Completed',
+    attachment: '',
+    note: '',
+    total_amount: '1,000,000.00',
+    material_cost: '1,000.00',
+    selected_workers: [
+      {
+        id: '617e9b2c6e2d647f28b062c8'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062c9'
+      }
+    ],
+    material_used: [
+      {
+        id: '617e9b2c6e2d647f28b062cd',
+        qty_used: '100'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062cb',
+        qty_used: '10'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062cb',
+        qty_used: '20'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062cd',
+        qty_used: '100'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062cb',
+        qty_used: '10'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062cb',
+        qty_used: '20'
+      },
+      
+    ]
+  },
+  {
+    id: '617e9b2c6e2d647f28b062t3',
+    fullName: 'John Doe',
+    mobileNumber: '0999999999',
+    email: 'john.doe@gmail.com',
+    service: 'Electrical',
+    location: 'Location A',
+    date_created: '2023-6-04',
+    date_updated: '2023-8-01',
+    date_started: '2023-8-01',
+    date_completed: '2023-10-01',
+    schedule_date: '2023-11-01',
+    inspection_date: '2023-6-01',
+    inspection_time_range: '04:00 PM - 06:00 PM',
+    isDeleted: false,
+    isVisited: true,
+    status: 'Completed',
+    attachment: '',
+    note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
+    total_amount: '1,000,000.00',
+    material_cost: '2,000.00',
+    selected_workers: [
+      {
+        id: '617e9b2c6e2d647f28b062c8'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062c9'
+      }
+    ],
+    material_used: [
+      {
+        id: '617e9b2c6e2d647f28b062cd',
+        qty_used: '10'
+      }
+    ]
+  },
+  {
+    id: '617e9b2c6e2d647f28b062t2',
+    fullName: 'John Doe',
+    mobileNumber: '0999999999',
+    email: 'john.doe@gmail.com',
+    service: 'Electrical',
+    location: 'Location A',
+    date_created: '2023-6-04',
+    date_updated: '2023-8-01',
+    date_started: '2023-8-01',
+    date_completed: '2023-10-01',
+    schedule_date: '2023-11-01',
+    inspection_date: '2023-6-01',
+    inspection_time_range: '04:00 PM - 06:00 PM',
+    isDeleted: false,
+    isVisited: true,
+    status: 'Completed',
+    attachment: '',
+    note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
+    total_amount: '1,000,000.00',
+    material_cost: '3,000.00',
+    selected_workers: [
+      {
+        id: '617e9b2c6e2d647f28b062c8'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062c9'
+      }
+    ],
+    material_used: [
+      {
+        id: '617e9b2c6e2d647f28b062c6',
+        qty_used: '100'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062cd',
+        qty_used: '10'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062cs',
+        qty_used: '5'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062ca',
+        qty_used: '30'
+      }
+    ]
+  },
+  {
+    id: '617e9b2c6e2d647f28b062t1',
+    fullName: 'John Doe',
+    mobileNumber: '0999999999',
+    email: 'john.doe@gmail.com',
+    service: 'Electrical',
+    location: 'Location A',
+    date_created: '2023-6-04',
+    date_updated: '2023-8-01',
+    date_started: '2023-8-01',
+    date_completed: '2023-10-01',
+    schedule_date: '2023-11-01',
+    inspection_date: '2023-6-01',
+    inspection_time_range: '04:00 PM - 06:00 PM',
+    isDeleted: false,
+    isVisited: true,
+    status: 'Completed',
+    attachment: '',
+    note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo.',
+    total_amount: '1,500,000.00',
+    material_cost: '4,000.00',
+    selected_workers: [
+      {
+        id: '617e9b2c6e2d647f28b062c8'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062c9'
+      }
+    ],
+    material_used: [
+      {
+        id: '617e9b2c6e2d647f28b062ca',
+        qty_used: '5'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062cb',
+        qty_used: '5'
+      },
+      {
+        id: '617e9b2c6e2d647f28b062cs',
+        qty_used: '5'
+      }
+    ]
   }
 ]
 
@@ -486,4 +555,52 @@ export const workersData = [
     experience: '4 years',
     specializations: ['Interior painting', 'Exterior painting']
   }
+]
+
+export const materialData = [
+  {
+    id: '617e9b2c6e2d647f28b062c6',
+    name: 'Drywall Sheets',
+    quantity: 100,
+    unit: 'pcs',
+    cost: '500.00'
+  },
+  {
+    id: '617e9b2c6e2d647f28b062cb',
+    name: 'Paint Buckets',
+    quantity: 102,
+    unit: 'pcs',
+    cost: '100.00'
+  },
+  {
+    id: '617e9b2c6e2d647f28b062cd',
+    name: 'Electrical Wire',
+    quantity: 50,
+    unit: 'meters',
+    cost: '250.00'
+  },
+  {
+    id: '617e9b2c6e2d647f28b062cs',
+    name: 'Plumbing Pipes',
+    quantity: 20,
+    unit: 'meters',
+    cost: '150.00'
+  },
+  {
+    id: '617e9b2c6e2d647f28b062ca',
+    name: 'Roofing Shingles',
+    quantity: 200,
+    unit: 'pcs',
+    cost: '800.00'
+  }
+]
+
+export const cancellationReasons = [
+  { id: '617e9b2c6e2d647f28b062c8', reason: 'Booking Cancellation' },
+  { id: '617e9b2c6e2d647f28b062c9', reason: 'Project Delayed' },
+  { id: '617e9b2c6e2d647f28b062y1', reason: 'Client Requested Change' },
+  { id: '617e9b2c6e2d647f28b062y2', reason: 'Equipment Unavailable' },
+  { id: '617e9b2c6e2d647f28b062y3', reason: 'Weather Conditions' },
+  { id: '617e9b2c6e2d647f28b062y4', reason: 'Staffing Issues' },
+  { id: '617e9b2c6e2d647f28b062y5', reason: 'Other Reason' }
 ]
