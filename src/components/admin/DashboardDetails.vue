@@ -189,20 +189,13 @@
 </template>
 
 <script>
-import {
-  pendingData,
-  completedData,
-  ongoingData,
-  materialData,
-  workersData
-} from '../../utils/tableData'
+import { requestData, taskData, materialData, workersData } from '../../utils/tableData'
 
 export default {
   data() {
     return {
-      bookingRequests: pendingData,
-      completedRequests: completedData,
-      onGoingRequests: ongoingData,
+      bookingRequests: requestData,
+      task: taskData,
       materials: materialData,
       workers: workersData,
       selectedFilter: 'All Service',
@@ -221,25 +214,25 @@ export default {
       return this.materials.reduce((total, material) => total + material.quantity, 0)
     },
     totalRequests() {
-      return (
-        this.completedRequests.length + this.onGoingRequests.length + this.bookingRequests.length
-      )
+      return this.task.length + this.bookingRequests.length
     },
     totalClients() {
       return this.bookingRequests.length
     },
     totalRemainingTasks() {
-      return this.onGoingRequests.length
+      const ongoingTasks = this.task.filter((task) => task.status === 'Ongoing')
+      return ongoingTasks.length
     },
     totalWorkers() {
       return this.workers.length
     },
     totalRevenue() {
-      const revenue = this.completedRequests.reduce((total, project) => {
-        const amount = parseFloat(project.total_amount.replace(',', ''))
+      const completedTasks = this.task.filter((task) => task.status === 'Completed')
+      const revenue = completedTasks.reduce((total, task) => {
+        const amount = parseFloat(task.total_amount.replace(',', ''))
         return total + amount
       }, 0)
-      return `${revenue.toFixed(2)}`
+      return revenue.toFixed(2)
     },
     latestBookings() {
       const sortedBookings = this.bookingRequests.sort(
@@ -288,7 +281,12 @@ export default {
           message: `The pending request with ID ${request.id} is scheduled for inspection on ${request.scheduleDate} ${request.selectedTimeRange} at ${request.location}.`
         }))
     },
-    viewDetails(notification) {}
+    viewDetails(request) {
+      const id = request.id
+      console.log(id)
+      const detailsPageUrl = this.getDetailsPageUrl(id)
+      window.location.href = detailsPageUrl
+    }
   }
 }
 </script>
