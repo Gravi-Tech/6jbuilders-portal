@@ -220,7 +220,7 @@ export default {
       return this.bookingRequests.length
     },
     totalRemainingTasks() {
-      const ongoingTasks = this.task.filter((task) => task.status === 'Ongoing')
+      const ongoingTasks = this.task.filter((task) => task.status === 'In Progress')
       return ongoingTasks.length
     },
     totalWorkers() {
@@ -393,7 +393,6 @@ export default {
 
 .status {
   font-size: 14px;
-  font-weight: 500;
 }
 
 .status--pending {
