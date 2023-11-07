@@ -117,10 +117,10 @@ const onScroll = () => {
   const scrollPosition = window.scrollY
   if (scrollPosition > 50) {
     isShrunk.value = true
-    appBarHeight.value = 80
+    appBarHeight.value = 60
   } else {
     isShrunk.value = false
-    appBarHeight.value = 170
+    appBarHeight.value = 160
   }
 }
 
