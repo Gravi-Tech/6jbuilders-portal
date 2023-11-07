@@ -758,7 +758,6 @@ export default {
       this.showModal = true
     },
     handleManualRequestClose() {
-      console.log("close")
       this.showModal = false
     }
   },

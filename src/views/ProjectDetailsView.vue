@@ -89,7 +89,7 @@ export default {
     },
     methods: {
         fetchProjectDetails(projectId) {
-            return projects.find(project => project.id === Number(projectId));
+            return projects.find(project => project.id === String(projectId));
         },
         goBack() {
             this.$router.go(-1);

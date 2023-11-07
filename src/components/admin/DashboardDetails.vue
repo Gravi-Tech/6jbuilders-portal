@@ -283,7 +283,6 @@ export default {
     },
     viewDetails(request) {
       const id = request.id
-      console.log(id)
       const detailsPageUrl = this.getDetailsPageUrl(id)
       window.location.href = detailsPageUrl
     }
