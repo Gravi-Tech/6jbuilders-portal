@@ -6,34 +6,34 @@
         <v-select
           v-model="dataSubjectType"
           :items="dataSubjectTypes"
-          label="Data Subject Type"
+          label="Data Subject Type*"
           variant="outlined"
         ></v-select>
         <v-text-field
           :rules="[rules.required]"
           v-model="fullName"
-          label="Full Name"
+          label="Full Name*"
           placeholder="Juan Dela Cruz"
           variant="outlined"
         ></v-text-field>
         <v-text-field
           :rules="[rules.required]"
           v-model="contactNumber"
-          label="Contact Number"
+          label="Contact Number*"
           placeholder="09123456789"
           variant="outlined"
         ></v-text-field>
         <v-text-field
           :rules="[rules.email]"
           v-model="email"
-          label="Email"
+          label="Email*"
           variant="outlined"
           placeholder="juan.delacruz@gmail.com"
         ></v-text-field>
         <v-text-field
           :rules="[rules.required]"
           v-model="siteLocation"
-          label="Site Location"
+          label="Site Location*"
           placeholder="Street/Barangay/Municipality/City/Province"
           variant="outlined"
         ></v-text-field>
@@ -41,7 +41,7 @@
           <v-select
             v-model="serviceType"
             :items="serviceTypes"
-            label="Type of Service"
+            label="Type of Service*"
             variant="outlined"
             :readonly="isReadOnlyService"
             chips
@@ -64,7 +64,7 @@
         <v-file-input v-model="attachment" label="Attachment" variant="outlined"></v-file-input>
         <v-text-field
           v-model="scheduleDate"
-          label="Schedule Date"
+          label="Schedule Date*"
           append-inner-icon="mdi-calendar"
           variant="outlined"
           @click:append-inner="showDatePicker = true"
@@ -76,14 +76,6 @@
           </v-row>
         </v-dialog>
         <v-textarea v-model="note" label="Note"></v-textarea>
-        <v-checkbox v-model="agreement" :rules="[rules.required]" color="blue">
-          <template v-slot:label>
-            I agree to the&nbsp;
-            <router-link :to="getLinkRoute('Terms of Condition')">Terms of Condition</router-link>
-            &nbsp;and&nbsp;
-            <router-link :to="getLinkRoute('Privacy Policy')">Privacy Policy</router-link>
-          </template>
-        </v-checkbox>
         <v-btn type="submit" color="blue" size="large">Submit</v-btn>
       </v-form>
     </v-card>
@@ -122,7 +114,6 @@ export default {
       serviceType: this.preSelectedService || 'Home Repair Services',
       attachment: null,
       note: null,
-      agreeToTerms: false,
       rules: {
         email: (v) => !!(v || '').match(/@/) || 'Please enter a valid email',
         required: (v) => !!v || 'This field is required'
@@ -149,15 +140,15 @@ export default {
     submitForm() {
       // Handle form submission
     },
-    getLinkRoute(link) {
-      if (link === 'Terms of Condition' || link === 'Privacy Policy') {
-        const routeName = link === 'Terms of Condition' ? 'terms-of-service' : 'privacy-policy'
-        return { name: 'legal', params: { page: routeName } }
-      } else {
-        const legalRoute = link.toLowerCase().replace(/\s+/g, '-')
-        return { name: legalRoute }
-      }
-    }
+    // getLinkRoute(link) {
+    //   if (link === 'Terms of Condition' || link === 'Privacy Policy') {
+    //     const routeName = link === 'Terms of Condition' ? 'terms-of-service' : 'privacy-policy'
+    //     return { name: 'legal', params: { page: routeName } }
+    //   } else {
+    //     const legalRoute = link.toLowerCase().replace(/\s+/g, '-')
+    //     return { name: legalRoute }
+    //   }
+    // }
   }
 }
 </script>

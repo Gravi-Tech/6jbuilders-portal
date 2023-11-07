@@ -6,14 +6,8 @@
     <v-card class="new-booking-card">
       <div class="sub-header">
         <div class="filter-container">
-          <v-select
-            chips
-            v-model="selectedFilter"
-            label="Filter By Service"
-            :items="serviceTypes"
-            variant="solo"
-            class="filter-select"
-          ></v-select>
+          <v-select chips v-model="selectedFilter" label="Filter By Service" :items="serviceTypes" variant="solo"
+            class="filter-select"></v-select>
         </div>
         <div class="refresh-container">
           <v-tooltip location="top">
@@ -29,17 +23,23 @@
 
       <div class="search-request">
         <div class="request">
-          <v-text-field
-            v-model="requestId"
-            density="compact"
-            append-inner-icon="mdi-magnify"
-            @click:append-inner="searchRequest(requestId)"
-            label="Search request by ID"
-            variant="outlined"
-            single-line
-            hide-details
-          ></v-text-field>
+          <v-text-field v-model="requestId" density="compact" append-inner-icon="mdi-magnify"
+            @click:append-inner="searchRequest(requestId)" label="Search request by ID" variant="outlined" single-line
+            hide-details></v-text-field>
           <span v-if="task404" style="font-style: italic; color: red">Task not found.</span>
+        </div>
+        <div class="text-center mt-6">
+          <v-dialog v-model="showModal" max-width="700">
+            <template v-slot:activator="{ on }">
+              <div class="add-request">
+                <v-btn color="success" prepend-icon="mdi-plus" @click="handleManualRequest" v-bind="on">MANUAL
+                  BOOKING</v-btn>
+              </div>
+            </template>
+            <v-card>
+              <BookingForm />
+            </v-card>
+          </v-dialog>
         </div>
       </div>
 
@@ -55,15 +55,10 @@
               <td :colspan="tableColumns.length">No Request available.</td>
             </tr>
             <tr v-for="row in sortedTableData" :key="row.id">
-              <td
-                v-for="column in tableColumns"
-                :key="column.key"
-                :class="{
-                  hoverable: row[column.key] && row[column.key].length > 8,
-                  'table-text': true
-                }"
-                :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''"
-              >
+              <td v-for="column in tableColumns" :key="column.key" :class="{
+                hoverable: row[column.key] && row[column.key].length > 8,
+                'table-text': true
+              }" :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''">
                 <template v-if="column.key === 'id'">
                   <a @click="openBookingDetails(row.id)" style="color: blue">{{
                     shortenId(row.id)
@@ -76,12 +71,8 @@
                   <template v-else> No attachment </template>
                 </template>
                 <template v-else-if="column.key === 'status'">
-                  <v-chip
-                    size="small"
-                    :color="getStatusChipColor(row[column.key])"
-                    text-color="white"
-                    >{{ row[column.key] }}</v-chip
-                  >
+                  <v-chip size="small" :color="getStatusChipColor(row[column.key])" text-color="white">{{ row[column.key]
+                  }}</v-chip>
                 </template>
                 <template v-else>
                   {{ row[column.key] ? shortenText(row[column.key], column.maxLength) : '-' }}
@@ -92,18 +83,10 @@
         </table>
         <div class="row-filter">
           <label for="row-filter" class="row-filter__label">Row Filter:</label>
-          <select
-            id="row-filter"
-            class="row-filter__select"
-            v-model="selectedRowFilter"
-            @change="applyRowFilter"
-            :disabled="selectedFilter === 'All Service'"
-          >
-            <option
-              v-for="rowFilterOption in rowFilterOptions"
-              :key="rowFilterOption.value"
-              :value="rowFilterOption.value"
-            >
+          <select id="row-filter" class="row-filter__select" v-model="selectedRowFilter" @change="applyRowFilter"
+            :disabled="selectedFilter === 'All Service'">
+            <option v-for="rowFilterOption in rowFilterOptions" :key="rowFilterOption.value"
+              :value="rowFilterOption.value">
               {{ rowFilterOption.label }}
             </option>
           </select>
@@ -124,39 +107,27 @@
                   <v-breadcrumbs>
                     <v-icon size="large" color="blue-lighten-1" icon="mdi-label"></v-icon>
                     <a href="/6jbuilders/admin/request" style="text-decoration: none; color: black">
-                      <v-breadcrumbs-item><h4>Booking Request</h4></v-breadcrumbs-item>
+                      <v-breadcrumbs-item>
+                        <h4>Booking Request</h4>
+                      </v-breadcrumbs-item>
                     </a>
                     <v-icon icon="mdi-chevron-right"></v-icon>
-                    <v-breadcrumbs-item><h4>Details</h4></v-breadcrumbs-item>
+                    <v-breadcrumbs-item>
+                      <h4>Details</h4>
+                    </v-breadcrumbs-item>
                     <v-icon icon="mdi-chevron-right"></v-icon>
-                    <v-breadcrumbs-item
-                      ><h4>{{ booking.id }}</h4></v-breadcrumbs-item
-                    >
+                    <v-breadcrumbs-item>
+                      <h4>{{ booking.id }}</h4>
+                    </v-breadcrumbs-item>
                   </v-breadcrumbs>
                 </div>
                 <div class="actions">
-                  <v-btn
-                    class="edit-btn"
-                    prepend-icon="mdi-pencil"
-                    color="#FFC107"
-                    variant="tonal"
-                    @click="editBooking"
-                    >Edit Details</v-btn
-                  >
-                  <v-btn
-                    prepend-icon="mdi-close-circle"
-                    color="#FF0000"
-                    variant="tonal"
-                    @click="rejectBooking"
-                    >Reject Booking</v-btn
-                  >
-                  <v-btn
-                    prepend-icon="mdi-check-circle"
-                    color="#00C853"
-                    variant="outlined"
-                    @click="acceptBooking"
-                    >Accept Booking</v-btn
-                  >
+                  <v-btn class="edit-btn" prepend-icon="mdi-pencil" color="#FFC107" variant="tonal"
+                    @click="editBooking">Edit Details</v-btn>
+                  <v-btn prepend-icon="mdi-close-circle" color="#FF0000" variant="tonal" @click="rejectBooking">Reject
+                    Booking</v-btn>
+                  <v-btn prepend-icon="mdi-check-circle" color="#00C853" variant="outlined" @click="acceptBooking">Accept
+                    Booking</v-btn>
                 </div>
               </div>
               <v-card variant="text">
@@ -164,28 +135,14 @@
                   <v-container>
                     <v-row v-if="booking.isVisited === false" class="inspect-place">
                       <div>
-                        <v-alert
-                          class="task-notification-header"
-                          type="info"
-                          color="#2196F3"
-                          theme="dark"
-                          icon="mdi-information"
-                          title="Location Not Yet Visited"
+                        <v-alert class="task-notification-header" type="info" color="#2196F3" theme="dark"
+                          icon="mdi-information" title="Location Not Yet Visited"
                           text="The booking location has not been inspected by the management. Please inspect the location before accepting the service."
-                          variant="tonal"
-                          prominent
-                          border
-                        ></v-alert>
+                          variant="tonal" prominent border></v-alert>
                       </div>
                       <div>
-                        <v-btn
-                          class="task-inspect-btn"
-                          prepend-icon="mdi-map-marker"
-                          variant="tonal"
-                          size="small"
-                          @click="updateIsVisited()"
-                          >inspect place</v-btn
-                        >
+                        <v-btn class="task-inspect-btn" prepend-icon="mdi-map-marker" variant="tonal" size="small"
+                          @click="updateIsVisited()">inspect place</v-btn>
                       </div>
                     </v-row>
                     <div class="btn-mode">
@@ -194,50 +151,25 @@
                     <v-row justify="center">
                       <div class="group-details">
                         <div class="workers">
-                          <v-select
-                            prepend-inner-icon="mdi-account-multiple"
-                            label="Assign Constuction Worker*"
-                            density="comfortable"
-                            multiple
-                            chips
-                            variant="solo"
-                            :items="workers"
-                            :item-props="itemProps"
-                            :disabled="isBookingRejected()"
-                            v-model="selectedWorkers"
-                            required
-                          ></v-select>
+                          <v-select prepend-inner-icon="mdi-account-multiple" label="Assign Constuction Worker*"
+                            density="comfortable" multiple chips variant="solo" :items="workers" :item-props="itemProps"
+                            :disabled="isBookingRejected()" v-model="selectedWorkers" required></v-select>
                         </div>
                         <div class="detail">
-                          <v-text-field
-                            label="Schedule Inspection Date*"
-                            append-inner-icon="mdi-calendar"
-                            density="comfortable"
-                            variant="solo"
-                            v-model="selectedDate"
-                            readonly
-                            @click:append-inner="showDatePicker = true"
-                            :disabled="isBookingRejected()"
-                            :value="formattedDate"
-                            clearable
-                          ></v-text-field>
+                          <v-text-field label="Schedule Inspection Date*" append-inner-icon="mdi-calendar"
+                            density="comfortable" variant="solo" v-model="selectedDate" readonly
+                            @click:append-inner="showDatePicker = true" :disabled="isBookingRejected()"
+                            :value="formattedDate" clearable></v-text-field>
                         </div>
                         <div class="detail">
-                          <v-select
-                            prepend-inner-icon="mdi-clock-outline"
-                            label="Select Time Range"
-                            density="comfortable"
-                            variant="solo"
-                            v-model="selectedTimeRange"
-                            :disabled="isBookingRejected()"
-                            :items="[
+                          <v-select prepend-inner-icon="mdi-clock-outline" label="Select Time Range" density="comfortable"
+                            variant="solo" v-model="selectedTimeRange" :disabled="isBookingRejected()" :items="[
                               '08:00 AM - 10:00 AM',
                               '10:00 AM - 12:00 PM',
                               '12:00 PM - 02:00 PM',
                               '02:00 PM - 04:00 PM',
                               '04:00 PM - 06:00 PM'
-                            ]"
-                          ></v-select>
+                            ]"></v-select>
                         </div>
                       </div>
                     </v-row>
@@ -252,153 +184,78 @@
               <div class="group-details">
                 <div class="detail">
                   <p>Booking ID:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    :value="booking.id"
-                    :disabled="isBookingRejected()"
-                    readonly
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" :value="booking.id" :disabled="isBookingRejected()"
+                    readonly></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Data Subject Type:</p>
-                  <v-select
-                    variant="outlined"
-                    density="compact"
-                    v-model="booking.type"
-                    :value="booking.type"
-                    :items="dataSubjectTypes"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-select>
+                  <v-select variant="outlined" density="compact" v-model="booking.type" :value="booking.type"
+                    :items="dataSubjectTypes" :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-select>
                 </div>
                 <div class="detail">
                   <p>Fullname:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    v-model="booking.fullName"
-                    :value="booking.fullName"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" v-model="booking.fullName" :value="booking.fullName"
+                    :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Book Status:</p>
-                  <v-select
-                    variant="outlined"
-                    density="compact"
-                    :value="booking.status"
-                    :disabled="isBookingRejected()"
-                    readonly
-                    :class="{
+                  <v-select variant="outlined" density="compact" :value="booking.status" :disabled="isBookingRejected()"
+                    readonly :class="{
                       'status-pending': booking.status === 'Pending',
                       'status-rejected': booking.status === 'Rejected'
-                    }"
-                  >
-                    ></v-select
-                  >
+                    }">
+                    ></v-select>
                 </div>
               </div>
               <div class="group-details">
                 <div class="detail">
                   <p>Email:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    v-model="booking.email"
-                    :value="booking.email"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" v-model="booking.email" :value="booking.email"
+                    :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Requested Service:</p>
-                  <v-select
-                    variant="outlined"
-                    density="compact"
-                    v-model="booking.service"
-                    :value="booking.service"
-                    :items="serviceTypes"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-select>
+                  <v-select variant="outlined" density="compact" v-model="booking.service" :value="booking.service"
+                    :items="serviceTypes" :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-select>
                 </div>
                 <div class="detail">
                   <p>Location:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    v-model="booking.location"
-                    :value="booking.location"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" v-model="booking.location" :value="booking.location"
+                    :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Mobile Number:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    v-model="booking.mobileNumber"
-                    :value="booking.mobileNumber"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" v-model="booking.mobileNumber"
+                    :value="booking.mobileNumber" :disabled="isBookingRejected()"
+                    :readonly="!editingEnabled"></v-text-field>
                 </div>
               </div>
               <div class="group-details">
                 <div class="detail">
                   <p>Attachment:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    :disabled="isBookingRejected()"
-                    v-if="booking.attachment"
-                  >
+                  <v-text-field variant="outlined" density="compact" :disabled="isBookingRejected()"
+                    v-if="booking.attachment">
                     <a :href="booking.attachment" target="_blank">View Attachment</a>
                   </v-text-field>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    :disabled="isBookingRejected()"
-                    readonly
-                    v-else
-                    >No attachment</v-text-field
-                  >
+                  <v-text-field variant="outlined" density="compact" :disabled="isBookingRejected()" readonly v-else>No
+                    attachment</v-text-field>
                 </div>
                 <div class="detail">
                   <p>Scheduled Date:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    :value="booking.scheduleDate"
-                    :disabled="isBookingRejected()"
-                    readonly
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" :value="booking.scheduleDate"
+                    :disabled="isBookingRejected()" readonly></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Created On:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    :value="booking.createdDate"
-                    :disabled="isBookingRejected()"
-                    readonly
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" :value="booking.createdDate"
+                    :disabled="isBookingRejected()" readonly></v-text-field>
                 </div>
               </div>
               <div class="group-details">
                 <div class="note">
                   <p>Note:</p>
-                  <v-textarea
-                    variant="outlined"
-                    density="compact"
-                    v-model="booking.note"
-                    :value="booking.note || 'N/A'"
-                    :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"
-                  ></v-textarea>
+                  <v-textarea variant="outlined" density="compact" v-model="booking.note" :value="booking.note || 'N/A'"
+                    :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-textarea>
                 </div>
               </div>
               <v-card variant="text">
@@ -407,24 +264,10 @@
                     <div v-if="editingEnabled" class="edit-actions">
                       <v-row justify="end">
                         <div class="form-actions-btn">
-                          <v-btn
-                            density="compact"
-                            prepend-icon="mdi-close"
-                            variant="tonal"
-                            size="large"
-                            color="red-lighten-1"
-                            @click="cancelEdit"
-                            >Cancel</v-btn
-                          >
-                          <v-btn
-                            density="compact"
-                            prepend-icon="mdi-content-save"
-                            variant="tonal"
-                            size="large"
-                            color="blue-lighten-1"
-                            @click="saveEdit"
-                            >Save</v-btn
-                          >
+                          <v-btn density="compact" prepend-icon="mdi-close" variant="tonal" size="large"
+                            color="red-lighten-1" @click="cancelEdit">Cancel</v-btn>
+                          <v-btn density="compact" prepend-icon="mdi-content-save" variant="tonal" size="large"
+                            color="blue-lighten-1" @click="saveEdit">Save</v-btn>
                         </div>
                       </v-row>
                     </div>
@@ -435,16 +278,8 @@
           </div>
         </div>
 
-        <v-alert
-          class="popup-message"
-          v-if="showPopup"
-          variant="tonal"
-          :type="popupType"
-          :title="popupTitle"
-          :value="true"
-          dismissible
-          @input="hidePopupMessage"
-        >
+        <v-alert class="popup-message" v-if="showPopup" variant="tonal" :type="popupType" :title="popupTitle"
+          :value="true" dismissible @input="hidePopupMessage">
           {{ popupMessage }}
           <template v-if="isBookingRejected() && acceptBookingClicked">
             <div class="actions">
@@ -463,10 +298,12 @@ import { requestData, workersData } from '../../utils/tableData'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { dataSubjectTypes } from '../../utils/dataSubjectType'
 import { serviceTypes } from '../../utils/serviceType'
+import BookingForm from '../Book.vue';
 
 export default {
   components: {
-    VDatePicker
+    VDatePicker,
+    BookingForm
   },
   data() {
     return {
@@ -500,7 +337,8 @@ export default {
       popupType: '',
       popupTitle: '',
       popupMessage: '',
-      isVisited: false
+      isVisited: false,
+      showModal: false
     }
   },
   computed: {
@@ -568,7 +406,7 @@ export default {
           return null
         }
       },
-      set(value) {}
+      set(value) { }
     },
     hasIdParam() {
       const urlSearchParams = new URLSearchParams(window.location.search)
@@ -640,9 +478,8 @@ export default {
         urlSearchParams.delete('id')
       }
 
-      const newUrl = `${window.location.origin}${
-        window.location.pathname
-      }?${urlSearchParams.toString()}`
+      const newUrl = `${window.location.origin}${window.location.pathname
+        }?${urlSearchParams.toString()}`
       history.pushState(null, null, newUrl)
     },
     getBookingById(id) {
@@ -915,6 +752,14 @@ export default {
 
       this.showPopupMessage('success', 'Visit Update', updateIsVisited)
       this.booking.isVisited = true
+    },
+    handleManualRequest() {
+      console.log("Add manual booking")
+      this.showModal = true
+    },
+    handleManualRequestClose() {
+      console.log("close")
+      this.showModal = false
     }
   },
   destroyed() {
@@ -1036,6 +881,7 @@ export default {
 .slide-enter-to {
   transform: translateX(0);
 }
+
 .slide-leave {
   transform: translateX(0);
 }
@@ -1058,6 +904,7 @@ export default {
 .booking-details-panel::-webkit-scrollbar {
   display: none;
 }
+
 .booking-details-content {
   margin: 10px;
 }
@@ -1091,10 +938,12 @@ export default {
 .actions {
   text-align: end;
 }
+
 .actions .v-btn {
   margin-right: 30px;
   width: 180px;
 }
+
 .booking-details-close {
   text-align: end;
   margin: 10px;
@@ -1144,6 +993,7 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
+
 .form-actions-btn .v-btn {
   margin: 5px;
 }
@@ -1161,6 +1011,7 @@ export default {
 
 .search-request {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 20px;
 }
