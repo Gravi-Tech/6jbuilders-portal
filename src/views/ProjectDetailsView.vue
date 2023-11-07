@@ -11,17 +11,17 @@
     <v-container>
         <v-row class="mt-4">
             <v-col cols="12" md="6">
-                <div class="d-flex align-center mb-2">
+                <!-- <div class="d-flex align-center mb-2">
                     <v-rating :model-value="project.rating" color="amber" density="compact" half-increments readonly
                         size="small"></v-rating>
                     <div class="text-grey ms-2">{{ project.rating }} ({{ project.reviews }})</div>
-                </div>
+                </div> -->
                 <h2 class="text-h5 mb-2">{{ project.title }}</h2>
                 <h4 class="text-h6 mb-2">{{ project.location }}</h4>
                 <div class="text-subtitle-1">Date Finished: {{ project.date }}</div>
                 <div class="d-flex mt-4">
                     <v-btn color="teal-accent-4" @click="goBack">Back to Projects</v-btn>
-                    <v-btn class="ml-6" color="blue" @click="showRatingModal = true">Rate Project</v-btn>
+                    <!-- <v-btn class="ml-6" color="blue" @click="showRatingModal = true">Rate Project</v-btn> -->
                 </div>
             </v-col>
             <v-col cols="12" md="6">
@@ -48,7 +48,7 @@
     <v-dialog v-model="showImageDialog" max-width="600">
         <v-img :src="project.projectImages[imageIndex]" cover height="600"></v-img>
     </v-dialog>
-    <v-dialog v-model="showRatingModal" max-width="500">
+    <!-- <v-dialog v-model="showRatingModal" max-width="500">
         <v-card class="rate-dialog">
             <v-card-title>Rate Project</v-card-title>
             <v-card-subtitle>{{ project.title }}</v-card-subtitle>
@@ -60,7 +60,7 @@
                 <v-btn color="success" @click="submitRating">Submit</v-btn>
             </v-card-actions>
         </v-card>
-    </v-dialog>
+    </v-dialog> -->
 </template>
   
 <script>
@@ -77,7 +77,7 @@ export default {
     data() {
         return {
             project: null,
-            showRatingModal: false,
+            // showRatingModal: false,
             userRating: 0,
             showImageDialog: false,
             imageIndex: 0,
@@ -94,21 +94,21 @@ export default {
         goBack() {
             this.$router.go(-1);
         },
-        submitRating() {
-            this.updateProjectRating();
-            this.showRatingModal = false;
-        },
-        updateProjectRating() {
-            const newRating = this.calculateNewRating();
-            this.project.rating = parseFloat(newRating.toFixed(1));
-            this.project.reviews++;
-        },
-        calculateNewRating() {
-            const totalRating = this.project.rating * this.project.reviews;
-            const newTotalRating = totalRating + this.userRating;
-            const newReviews = this.project.reviews + 1;
-            return newTotalRating / newReviews;
-        },
+        // submitRating() {
+        //     this.updateProjectRating();
+        //     this.showRatingModal = false;
+        // },
+        // updateProjectRating() {
+        //     const newRating = this.calculateNewRating();
+        //     this.project.rating = parseFloat(newRating.toFixed(1));
+        //     this.project.reviews++;
+        // },
+        // calculateNewRating() {
+        //     const totalRating = this.project.rating * this.project.reviews;
+        //     const newTotalRating = totalRating + this.userRating;
+        //     const newReviews = this.project.reviews + 1;
+        //     return newTotalRating / newReviews;
+        // },
         openImageDialog(index) {
             this.imageIndex = index;
             this.showImageDialog = true;
@@ -145,6 +145,7 @@ export default {
 .rate-dialog {
     padding: 20px;
 }
+
 .description-content {
     font-size: 16px;
     line-height: 1.6;

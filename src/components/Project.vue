@@ -12,33 +12,36 @@
         <v-row>
             <v-col v-for="(project, index) in filteredProjects" :key="index" class="d-flex child-flex" cols="4">
                 <v-card class="mx-auto my-4" max-width="374">
-                    <v-img cover :src="project.image" :width="400" :height="200"></v-img>
-                    <v-card-item>
-                        <v-card-title>{{ project.title }}</v-card-title>
-                        <v-card-subtitle>
-                            <span class="me-1">{{ project.location }}</span>
-                            <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
-                        </v-card-subtitle>
-                    </v-card-item>
+                    <div class="project">
+                        <div class="details">
+                            <v-img cover :src="project.image" :width="400" :height="200"></v-img>
 
-                    <v-card-text>
-                        <v-row align="center" class="mx-0">
-                            <v-rating :model-value="project.rating" color="amber" density="compact" half-increments readonly
-                                size="small"></v-rating>
+                            <v-card-title>{{ project.title }}</v-card-title>
+                            <v-card-subtitle>
+                                <v-icon icon="mdi-map-marker" size="small"></v-icon>
+                                <span class="ml-1">{{ project.location }}</span>
+                                <div class="my-1 ml-1 text-subtitle-1">{{ project.date }}</div>
+                            </v-card-subtitle>
 
-                            <div class="text-grey ms-4">{{ project.rating }} ({{ project.reviews }})</div>
-                        </v-row>
-
-                        <div class="my-4 text-subtitle-1">{{ project.date }}</div>
-                        <div>{{ Array.isArray(project.description) ? project.description.join(' ').split('.')[0] + '...' :
-                            project.description }}</div>
-                    </v-card-text>
-
-                    <v-card-actions>
-                        <v-btn color="teal-accent-4" variant="text" @click="navigateToProject(project.id)">
-                            Read More
-                        </v-btn>
-                    </v-card-actions>
+                            <v-card-text>
+                                <div>
+                                    {{
+                                        Array.isArray(project.description)
+                                        ? project.description.join(' ').slice(0, 180) + (project.description.join(' ').length >
+                                            100 ? '...' : '')
+                                        : project.description
+                                    }}
+                                </div>
+                            </v-card-text>
+                        </div>
+                        <div class="d-flex justify-end">
+                            <v-card-actions>
+                                <v-btn color="teal-accent-4" variant="tonal" @click="navigateToProject(project.id)">
+                                    Read More
+                                </v-btn>
+                            </v-card-actions>
+                        </div>
+                    </div>
                 </v-card>
             </v-col>
         </v-row>
@@ -71,3 +74,15 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.project {
+    display: block;
+    align-items: center;
+}
+
+.project .details {
+    max-height: 500px;
+    height: 450px;
+}
+</style>
