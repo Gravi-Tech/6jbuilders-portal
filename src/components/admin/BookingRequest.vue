@@ -6,8 +6,8 @@
     <v-card class="new-booking-card">
       <div class="sub-header">
         <div class="filter-container">
-          <v-select chips v-model="selectedFilter" label="Filter By Service" :items="serviceTypes" variant="solo"
-            class="filter-select"></v-select>
+          <v-autocomplete chips v-model="selectedFilter" label="Filter By Service" :items="serviceTypes" variant="solo"
+            class="filter-select"></v-autocomplete>
         </div>
         <div class="refresh-container">
           <v-tooltip location="top">
@@ -159,7 +159,7 @@
                           <v-text-field label="Schedule Inspection Date*" append-inner-icon="mdi-calendar"
                             density="comfortable" variant="solo" v-model="selectedDate" readonly
                             @click:append-inner="showDatePicker = true" :disabled="isBookingRejected()"
-                            :value="formattedDate" clearable></v-text-field>
+                            :value="formattedDate"></v-text-field>
                         </div>
                         <div class="detail">
                           <v-select prepend-inner-icon="mdi-clock-outline" label="Select Time Range" density="comfortable"
@@ -465,7 +465,7 @@ export default {
       panelElement.classList.add('slide-leave-to')
       panelElement.classList.add('slide-leave-active')
 
-      this.refreshPage()
+      // this.refreshPage()
     },
 
     updateBookingDetails(id) {
