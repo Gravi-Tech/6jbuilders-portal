@@ -1,11 +1,6 @@
 <template>
   <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
-    <v-list-item
-      prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-      title="Juspher Estoque Balangyao"
-      subtitle="admin"
-      nav
-    >
+    <v-list-item :prepend-avatar="admin[0].avatar" :title="admin[0].fullname" :subtitle="admin[0].role" nav>
       <template v-slot:append>
         <v-btn variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
       </template>
@@ -14,14 +9,8 @@
     <v-divider></v-divider>
 
     <v-list dense nav>
-      <v-list-item
-        v-for="item in menuItems"
-        :key="item.value"
-        :title="item.title"
-        :value="item.value"
-        :active="activeItem === item.value"
-        @click="handleMenuItemClick(item)"
-      >
+      <v-list-item v-for="item in menuItems" :key="item.value" :title="item.title" :value="item.value"
+        :active="activeItem === item.value" @click="handleMenuItemClick(item)">
         <template v-slot:prepend>
           <v-tooltip bottom v-if="rail">
             <template v-slot:activator="{ props }">
@@ -58,14 +47,15 @@
 import Dashboard from './DashboardDetails.vue'
 import Client from './ClientDetails.vue'
 import Booking from './BookingRequest.vue'
-import Material from './MaterialDetails.vue'
 import Setting from './SettingsDetails.vue'
 import Task from './TaskDetails.vue'
 import Worker from './WorkerDetails.vue'
+import { admin } from '../../utils/userData'
 
 export default {
   data() {
     return {
+      admin: admin,
       drawer: true,
       rail: true,
       activeItem: 'dashboard',
@@ -74,7 +64,6 @@ export default {
         { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-check-outline' },
         { title: 'Task', value: 'task', icon: 'mdi-checkbox-multiple-outline' },
         { title: 'Clients', value: 'clients', icon: 'mdi-account-group-outline' },
-        { title: 'Materials', value: 'materials', icon: 'mdi-package-variant' },
         { title: 'Workers', value: 'workers', icon: 'mdi-account-multiple-outline' },
         { title: 'Settings', value: 'setting', icon: 'mdi-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }

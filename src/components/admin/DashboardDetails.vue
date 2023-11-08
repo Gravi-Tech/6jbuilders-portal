@@ -6,40 +6,9 @@
     <div class="card-row">
       <v-card class="overview-card">
         <v-icon start icon="mdi-label" color="blue" size="x-large"></v-icon>
-        <v-card-title>Total Materials</v-card-title>
-        <v-card-text>
-          <div class="total">
-            {{ totalMaterials }}
-          </div>
-          <v-icon class="icon">mdi-package-variant</v-icon
-          ><v-chip
-            class="link"
-            href="#"
-            size="x-small"
-            color="blue"
-            variant="tonal"
-            text-color="white"
-            style="margin-left: 5px"
-            >View material page</v-chip
-          >
-        </v-card-text>
-      </v-card>
-      <v-card class="overview-card">
-        <v-icon start icon="mdi-label" color="blue" size="x-large"></v-icon>
         <v-card-title>Total Booking</v-card-title>
         <v-card-text>
           <div class="total">{{ totalRequests }}</div>
-          <v-icon class="icon">mdi-calendar-check</v-icon
-          ><v-chip
-            class="link"
-            href="#"
-            size="x-small"
-            color="blue"
-            variant="tonal"
-            text-color="white"
-            style="margin-left: 5px"
-            >View Request page</v-chip
-          >
         </v-card-text>
       </v-card>
       <v-card class="overview-card">
@@ -47,17 +16,7 @@
         <v-card-title>Clients</v-card-title>
         <v-card-text>
           <div class="total">{{ totalClients }}</div>
-          <v-icon class="icon">mdi-account-group</v-icon
-          ><v-chip
-            class="link"
-            href="#"
-            size="x-small"
-            color="blue"
-            variant="tonal"
-            text-color="white"
-            style="margin-left: 5px"
-            >View material page</v-chip
-          >
+
         </v-card-text>
       </v-card>
       <v-card class="overview-card">
@@ -65,17 +24,7 @@
         <v-card-title>Remaining Task</v-card-title>
         <v-card-text>
           <div class="total">{{ totalRemainingTasks }}</div>
-          <v-icon class="icon">mdi-checkbox-multiple-outline</v-icon
-          ><v-chip
-            class="link"
-            href="#"
-            size="x-small"
-            color="blue"
-            variant="tonal"
-            text-color="white"
-            style="margin-left: 5px"
-            >View material page</v-chip
-          >
+
         </v-card-text>
       </v-card>
       <v-card class="overview-card">
@@ -83,25 +32,14 @@
         <v-card-title>Workers</v-card-title>
         <v-card-text>
           <div class="total">{{ totalWorkers }}</div>
-          <v-icon class="icon">mdi-account-multiple</v-icon
-          ><v-chip
-            class="link"
-            href="#"
-            size="x-small"
-            color="blue"
-            variant="tonal"
-            text-color="white"
-            style="margin-left: 5px"
-            >View material page</v-chip
-          >
+
         </v-card-text>
       </v-card>
       <v-card class="overview-card">
         <v-icon start icon="mdi-label" color="blue" size="x-large"></v-icon>
-        <v-card-title>Revenue</v-card-title>
+        <v-card-title>Revenue (PHP)</v-card-title>
         <v-card-text>
           <div style="display: flex; justify-content: center; align-items: center">
-            <v-icon class="icon">mdi-currency-php</v-icon>
             <div class="total revenue">{{ totalRevenue }}</div>
           </div>
         </v-card-text>
@@ -162,20 +100,9 @@
                 </div>
                 <v-divider :thickness="2" class="border-opacity-100" color="info"></v-divider>
                 <div class="notification-footer">
-                  <v-chip
-                    prepend-icon="mdi-eye"
-                    size="small"
-                    variant="outlined"
-                    color="info"
-                    @click="viewDetails(notification)"
-                    >View Details</v-chip
-                  >
-                  <v-chip
-                    prepend-icon="mdi-calendar"
-                    size="small"
-                    variant="outlined"
-                    color="success"
-                  >
+                  <v-chip prepend-icon="mdi-eye" size="small" variant="outlined" color="info"
+                    @click="viewDetails(notification)">View Details</v-chip>
+                  <v-chip prepend-icon="mdi-calendar" size="small" variant="outlined" color="success">
                     {{ notification.createdDate }}
                   </v-chip>
                 </div>
@@ -189,14 +116,14 @@
 </template>
 
 <script>
-import { requestData, taskData, materialData, workersData } from '../../utils/tableData'
+import { requestData, taskData, workersData } from '../../utils/tableData'
 
 export default {
   data() {
     return {
       bookingRequests: requestData,
       task: taskData,
-      materials: materialData,
+      // materials: materialData,
       workers: workersData,
       selectedFilter: 'All Service',
       selectedRowFilter: 'all',
@@ -210,9 +137,6 @@ export default {
     this.updateDisplayedNotifications()
   },
   computed: {
-    totalMaterials() {
-      return this.materials.reduce((total, material) => total + material.quantity, 0)
-    },
     totalRequests() {
       return this.task.length + this.bookingRequests.length
     },
@@ -314,6 +238,7 @@ export default {
 .overview-card {
   flex: 1;
 }
+
 .sub-cards {
   display: flex;
 }
@@ -332,6 +257,7 @@ export default {
   width: 410px;
   margin: 0 0 24px 10px;
 }
+
 .new-booking-card,
 .new-notification-card {
   border-radius: 4px;
@@ -357,6 +283,7 @@ export default {
 .filter-select {
   width: 400px;
 }
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -371,18 +298,6 @@ export default {
 
 .table th {
   font-weight: bold;
-}
-
-.table tbody tr:nth-child(even) {
-  background-color: #e0e0e0;
-}
-
-.table tbody tr:nth-child(odd) {
-  background-color: #ffffff;
-}
-
-.table tbody td:last-child {
-  white-space: nowrap;
 }
 
 .status {

@@ -6,14 +6,8 @@
     <v-card class="new-task-card">
       <div class="sub-header">
         <div class="filter-container">
-          <v-select
-            chips
-            v-model="selectedFilter"
-            label="Filter By Service"
-            :items="serviceTypes"
-            variant="solo"
-            class="filter-select"
-          ></v-select>
+          <v-autocomplete chips v-model="selectedFilter" label="Filter By Service" :items="serviceTypes" variant="solo"
+            class="filter-select"></v-autocomplete>
         </div>
         <div class="refresh-container">
           <v-tooltip location="top">
@@ -29,16 +23,9 @@
 
       <div class="search-task">
         <div class="task">
-          <v-text-field
-            v-model="taskId"
-            density="compact"
-            append-inner-icon="mdi-magnify"
-            @click:append-inner="searchTask(taskId)"
-            label="Search task by ID"
-            variant="outlined"
-            single-line
-            hide-details
-          ></v-text-field>
+          <v-text-field v-model="taskId" density="compact" append-inner-icon="mdi-magnify"
+            @click:append-inner="searchTask(taskId)" label="Search task by ID" variant="outlined" single-line
+            hide-details></v-text-field>
           <span v-if="task404" style="font-style: italic; color: red">Task not found.</span>
         </div>
       </div>
@@ -55,15 +42,10 @@
               <td :colspan="tableColumns.length">No Request available.</td>
             </tr>
             <tr v-for="row in sortedTableData" :key="row.id">
-              <td
-                v-for="column in tableColumns"
-                :key="column.key"
-                :class="{
-                  hoverable: row[column.key] && row[column.key].length > 8,
-                  'table-text': true
-                }"
-                :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''"
-              >
+              <td v-for="column in tableColumns" :key="column.key" :class="{
+                hoverable: row[column.key] && row[column.key].length > 8,
+                'table-text': true
+              }" :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''">
                 <template v-if="column.key === 'id'">
                   <a @click="openTaskDetails(row.id)" style="color: blue">{{
                     shortenId(row.id)
@@ -76,12 +58,8 @@
                   <template v-else> No attachment </template>
                 </template>
                 <template v-else-if="column.key === 'status'">
-                  <v-chip
-                    size="small"
-                    :color="getStatusChipColor(row[column.key])"
-                    text-color="white"
-                    >{{ row[column.key] }}</v-chip
-                  >
+                  <v-chip size="small" :color="getStatusChipColor(row[column.key])" text-color="white">{{ row[column.key]
+                  }}</v-chip>
                 </template>
                 <template v-else>
                   {{ row[column.key] ? shortenText(row[column.key], column.maxLength) : '-' }}
@@ -92,18 +70,10 @@
         </table>
         <div class="row-filter">
           <label for="row-filter" class="row-filter__label">Row Filter:</label>
-          <select
-            id="row-filter"
-            class="row-filter__select"
-            v-model="selectedRowFilter"
-            @change="applyRowFilter"
-            :disabled="selectedFilter === 'All Service'"
-          >
-            <option
-              v-for="rowFilterOption in rowFilterOptions"
-              :key="rowFilterOption.value"
-              :value="rowFilterOption.value"
-            >
+          <select id="row-filter" class="row-filter__select" v-model="selectedRowFilter" @change="applyRowFilter"
+            :disabled="selectedFilter === 'All Service'">
+            <option v-for="rowFilterOption in rowFilterOptions" :key="rowFilterOption.value"
+              :value="rowFilterOption.value">
               {{ rowFilterOption.label }}
             </option>
           </select>
@@ -124,82 +94,51 @@
                   <v-breadcrumbs>
                     <v-icon size="large" color="blue-lighten-1" icon="mdi-label"></v-icon>
                     <a href="/6jbuilders/admin/task" style="text-decoration: none; color: black">
-                      <v-breadcrumbs-item><h4>Task Request</h4></v-breadcrumbs-item>
+                      <v-breadcrumbs-item>
+                        <h4>Task Request</h4>
+                      </v-breadcrumbs-item>
                     </a>
                     <v-icon icon="mdi-chevron-right"></v-icon>
-                    <v-breadcrumbs-item><h4>Details</h4></v-breadcrumbs-item>
+                    <v-breadcrumbs-item>
+                      <h4>Details</h4>
+                    </v-breadcrumbs-item>
                     <v-icon icon="mdi-chevron-right"></v-icon>
-                    <v-breadcrumbs-item
-                      ><h4>{{ task.id }}</h4></v-breadcrumbs-item
-                    >
+                    <v-breadcrumbs-item>
+                      <h4>{{ task.id }}</h4>
+                    </v-breadcrumbs-item>
                   </v-breadcrumbs>
                 </div>
                 <div class="actions">
-                  <v-btn
-                    class="edit-btn"
-                    prepend-icon="mdi-pencil"
-                    color="#FFC107"
-                    variant="tonal"
-                    @click="editTask"
-                    >Update task</v-btn
-                  >
-                  <v-btn
-                    v-if="task.status !== 'Completed'"
-                    prepend-icon="mdi-close-circle"
-                    color="#FF0000"
-                    variant="tonal"
-                    @click="cancelTask"
-                    >cancel task</v-btn
-                  >
+                  <v-btn class="edit-btn" prepend-icon="mdi-pencil" color="#FFC107" variant="tonal"
+                    @click="editTask">Update task</v-btn>
+                  <v-btn v-if="task.status !== 'Completed'" prepend-icon="mdi-close-circle" color="#FF0000"
+                    variant="tonal" @click="cancelTask">cancel task</v-btn>
                   <v-dialog v-model="showCancellationForm" max-width="500px">
                     <v-card>
                       <v-card-title>
                         <span class="headline">Cancellation Details</span>
                       </v-card-title>
                       <v-card-text>
-                        <v-select
-                          v-model="selectedCancellationReason"
-                          :items="cancellationReasons"
-                          :item-props="itemPropsForReason"
-                          density="comfortable"
-                          variant="solo"
-                          label="Cancellation Reason"
-                        ></v-select>
-                        <div
-                          class="other-reason"
-                          v-if="
-                            selectedCancellationReason &&
-                            selectedCancellationReason.reason === 'Other Reason'
-                          "
-                        >
+                        <span v-if="isReasonEmpty" class="reasonError">Reason is required</span>
+                        <v-select v-model="selectedCancellationReason" :items="cancellationReasons"
+                          :item-props="itemPropsForReason" density="comfortable" variant="solo"
+                          label="Cancellation Reason"></v-select>
+                        <div class="other-reason"
+                          v-if="selectedCancellationReason && selectedCancellationReason.reason === 'Other Reason'">
                           <p style="color: grey; font-size: 14px">Provide a reason:</p>
-                          <span v-if="isReasonEmpty" class="reasonError">reason is required</span>
-                          <v-textarea
-                            v-model="otherReason"
-                            bg-color="grey-lighten-3"
-                            color="blue"
-                            variant="outlined"
-                          ></v-textarea>
+                          <span v-if="isReasonEmpty" class="reasonError">Reason is required</span>
+                          <v-textarea v-model="otherReason" bg-color="grey-lighten-3" color="blue"
+                            variant="outlined"></v-textarea>
                         </div>
                       </v-card-text>
                       <v-card-actions>
-                        <v-btn size="large" color="secondary" @click="cancelCancellation"
-                          >Cancel</v-btn
-                        >
-                        <v-btn size="large" color="primary" @click="submitCancellation"
-                          >Submit</v-btn
-                        >
+                        <v-btn size="large" color="secondary" @click="cancelCancellation">Cancel</v-btn>
+                        <v-btn size="large" color="primary" @click="submitCancellation">Submit</v-btn>
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
-                  <v-btn
-                    v-if="task.status !== 'Completed'"
-                    prepend-icon="mdi-check-circle"
-                    color="#00C853"
-                    variant="outlined"
-                    @click="completeTask"
-                    >complete task</v-btn
-                  >
+                  <v-btn v-if="task.status !== 'Completed'" prepend-icon="mdi-check-circle" color="#00C853"
+                    variant="outlined" @click="completeTask">complete task</v-btn>
                 </div>
               </div>
               <v-card variant="text">
@@ -207,28 +146,14 @@
                   <v-container>
                     <v-row v-if="task.isVisited === false" class="inspect-place">
                       <div>
-                        <v-alert
-                          class="task-notification-header"
-                          type="info"
-                          color="#2196F3"
-                          theme="dark"
-                          icon="mdi-information"
-                          title="Location Not Yet Visited"
+                        <v-alert class="task-notification-header" type="info" color="#2196F3" theme="dark"
+                          icon="mdi-information" title="Location Not Yet Visited"
                           text="The task location has not been inspected by the management. Please inspect the location before starting the service."
-                          variant="tonal"
-                          prominent
-                          border
-                        ></v-alert>
+                          variant="tonal" prominent border></v-alert>
                       </div>
                       <div>
-                        <v-btn
-                          class="task-inspect-btn"
-                          prepend-icon="mdi-map-marker"
-                          variant="tonal"
-                          size="small"
-                          @click="updateIsVisited()"
-                          >inspect place</v-btn
-                        >
+                        <v-btn class="task-inspect-btn" prepend-icon="mdi-map-marker" variant="tonal" size="small"
+                          @click="updateIsVisited()">inspect place</v-btn>
                       </div>
                     </v-row>
                     <div class="btn-mode">
@@ -237,58 +162,33 @@
                     <v-row justify="center">
                       <div class="group-details">
                         <div class="workers">
-                          <v-select
-                            prepend-inner-icon="mdi-account-multiple"
-                            label="Task Assignee"
-                            density="comfortable"
-                            multiple
-                            chips
-                            variant="solo"
-                            :items="workers"
-                            :item-props="itemProps"
-                            :value="getInitialSelectedWorkers(task.id)"
-                            v-model="selectedWorkers"
-                            :readonly="!editingEnabled"
-                          ></v-select>
+                          <v-select prepend-inner-icon="mdi-account-multiple" label="Task Assignee" density="comfortable"
+                            multiple chips variant="solo" :items="workers" :item-props="itemProps"
+                            :value="getInitialSelectedWorkers(task.id)" v-model="selectedWorkers"
+                            :readonly="!editingEnabled"></v-select>
                         </div>
-                        <div class="detail">
-                          <v-text-field
-                            label="Schedule Inspection Date*"
-                            append-inner-icon="mdi-calendar"
-                            density="comfortable"
-                            variant="solo"
-                            v-model="task.inspection_date"
-                            @click:append-inner="showDatePicker = editingEnabled"
-                            :value="formattedDate"
-                          ></v-text-field>
+                        <div class="detail" v-if="task.status !== 'Completed'">
+                          <v-text-field label="Schedule Inspection Date*" append-inner-icon="mdi-calendar"
+                            density="comfortable" variant="solo" v-model="task.inspection_date"
+                            @click:append-inner="showDatePicker = editingEnabled" :value="formattedDate"></v-text-field>
                         </div>
-                        <div class="detail">
-                          <v-select
-                            prepend-inner-icon="mdi-clock-outline"
-                            label="Inspection Time Range"
-                            density="comfortable"
-                            variant="solo"
-                            v-model="task.inspection_time_range"
-                            :value="task.inspection_time_range"
-                            :readonly="!editingEnabled"
-                            :items="[
+                        <div class="detail" v-if="task.status !== 'Completed'">
+                          <v-select prepend-inner-icon="mdi-clock-outline" label="Inspection Time Range"
+                            density="comfortable" variant="solo" v-model="task.inspection_time_range"
+                            :value="task.inspection_time_range" :readonly="!editingEnabled" :items="[
                               '08:00 AM - 10:00 AM',
                               '10:00 AM - 12:00 PM',
                               '12:00 PM - 02:00 PM',
                               '02:00 PM - 04:00 PM',
                               '04:00 PM - 06:00 PM'
-                            ]"
-                          ></v-select>
+                            ]"></v-select>
                         </div>
                       </div>
                     </v-row>
 
                     <v-dialog v-model="showDatePicker">
                       <v-row justify="end">
-                        <v-date-picker
-                          v-model="inspection_date"
-                          show-adjacent-months
-                        ></v-date-picker>
+                        <v-date-picker v-model="inspection_date" show-adjacent-months></v-date-picker>
                       </v-row>
                     </v-dialog>
                   </v-container>
@@ -296,200 +196,117 @@
               </v-card>
               <div class="project-summary" v-if="task.status === 'Completed'">
                 <v-container>
-                  <div class="cost">
-                    <p>Project Cost:</p>
-                    <v-text-field
-                      variant="text"
-                      density="compact"
-                      prepend-inner-icon="mdi-currency-php"
-                      :value="task.total_amount"
-                      readonly
-                    ></v-text-field>
-                  </div>
-                  <div class="cost">
-                    <p>Total Material Cost:</p>
-                    <v-text-field
-                      variant="text"
-                      density="compact"
-                      prepend-inner-icon="mdi-currency-php"
-                      :value="task.material_cost"
-                      readonly
-                    ></v-text-field>
-                  </div>
-                  <div class="cost">
-                    <p>Material Used:</p>
-                    <v-textarea
-                      name="input-7-1"
-                      variant="text"
-                      density="compact"
-                      auto-grow
-                      readonly
-                      :model-value="getMaterialUsedString"
-                    ></v-textarea>
+                  <div class="summary">
+                    <div class="summary-details">
+                      <div class="cost">
+                        <p>Project Cost:</p>
+                        <v-text-field variant="text" density="compact" prepend-inner-icon="mdi-currency-php"
+                          :value="task.total_amount" readonly></v-text-field>
+                      </div>
+                    </div>
                   </div>
                 </v-container>
+              </div>
+              <div class="group-details" v-if="addCompleteForm">
+                <v-alert color="white" theme="dark" border="top" border-color="blue">
+                  <v-card class="h-100 w-100" variant="text">
+                    <v-card-title>Complete Task</v-card-title>
+                    <v-card-subtitle>Provide Details to Complete</v-card-subtitle>
+                    <v-card-text>
+                      <div class="detail">
+                        <p>Total Project Cost:</p>
+                        <v-text-field prepend-inner-icon="mdi-currency-php" variant="outlined" density="compact"
+                          placeholder="0.00"></v-text-field>
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                </v-alert>
               </div>
               <div class="group-details">
                 <div class="detail">
                   <p>Task ID:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    :value="task.id"
-                    readonly
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" :value="task.id" readonly></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Fullname:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    v-model="task.fullName"
-                    :value="task.fullName"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" v-model="task.fullName" :value="task.fullName"
+                    :readonly="!editingEnabled"></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Email:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    v-model="task.email"
-                    :value="task.email"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" v-model="task.email" :value="task.email"
+                    :readonly="!editingEnabled"></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Book Status:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    :value="task.status"
-                    readonly
-                    :class="{
+                  <v-select variant="outlined" density="compact" v-model="task.status" :items="statusOptions"
+                    :value="task.status" :readonly="!editingEnabled" :class="{
                       'status-completed': task.status === 'Completed',
-                      'status-onGoing': task.status === 'Ongoing',
+                      'status-onGoing': task.status === 'In Progress',
                       'status-cancelled': task.status === 'Cancelled'
-                    }"
-                  ></v-text-field>
+                    }">
+                  </v-select>
                 </div>
               </div>
               <div class="group-details">
                 <div class="detail">
                   <p>Requested Service:</p>
-                  <v-select
-                    variant="outlined"
-                    density="compact"
-                    v-model="task.service"
-                    :value="task.service"
-                    :items="serviceTypes"
-                    :readonly="!editingEnabled"
-                  ></v-select>
+                  <v-select variant="outlined" density="compact" v-model="task.service" :value="task.service"
+                    :items="serviceTypes" :readonly="!editingEnabled"></v-select>
                 </div>
                 <div class="detail">
                   <p>Location:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    v-model="task.location"
-                    :value="task.location"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" v-model="task.location" :value="task.location"
+                    :readonly="!editingEnabled"></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Attachment:</p>
                   <v-text-field variant="outlined" density="compact" v-if="task.attachment">
                     <a :href="task.attachment" target="_blank">View Attachment</a>
                   </v-text-field>
-                  <v-text-field variant="outlined" density="compact" readonly v-else
-                    >No attachment</v-text-field
-                  >
+                  <v-text-field variant="outlined" density="compact" readonly v-else>No attachment</v-text-field>
                 </div>
                 <div class="detail">
                   <p>Mobile Number:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    v-model="task.mobileNumber"
-                    :value="task.mobileNumber"
-                    :readonly="!editingEnabled"
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" v-model="task.mobileNumber"
+                    :value="task.mobileNumber" :readonly="!editingEnabled"></v-text-field>
                 </div>
               </div>
               <div class="group-details">
                 <div class="detail">
                   <p>Created On:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    :value="task.date_created"
-                    readonly
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" :value="task.date_created" readonly></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Updated On:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    :value="task.date_updated"
-                    readonly
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" :value="task.date_updated" readonly></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Started On:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    :value="task.date_started"
-                    readonly
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" :value="task.date_started" readonly></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Task Completed:</p>
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    :value="task.date_completed"
-                    readonly
-                  ></v-text-field>
+                  <v-text-field variant="outlined" density="compact" :value="task.date_completed" readonly></v-text-field>
                 </div>
               </div>
               <div class="group-details">
                 <div class="note">
                   <p>Note:</p>
-                  <v-textarea
-                    variant="outlined"
-                    density="compact"
-                    v-model="task.note"
-                    :value="task.note"
-                    :readonly="!editingEnabled"
-                  ></v-textarea>
+                  <v-textarea variant="outlined" density="compact" v-model="task.note" :value="task.note"
+                    :readonly="!editingEnabled"></v-textarea>
                 </div>
               </div>
               <v-card variant="text">
                 <v-container>
                   <v-card-text>
-                    <div v-if="editingEnabled" class="edit-actions">
+                    <div v-if="editingEnabled || addCompleteForm" class="edit-actions">
                       <v-row justify="end">
                         <div class="form-actions-btn">
-                          <v-btn
-                            density="compact"
-                            prepend-icon="mdi-close"
-                            variant="tonal"
-                            size="large"
-                            color="red-lighten-1"
-                            @click="cancelEdit"
-                            >Cancel</v-btn
-                          >
-                          <v-btn
-                            density="compact"
-                            prepend-icon="mdi-content-save"
-                            variant="tonal"
-                            size="large"
-                            color="blue-lighten-1"
-                            @click="saveEdit"
-                            >Save</v-btn
-                          >
+                          <v-btn density="compact" prepend-icon="mdi-close" variant="tonal" size="large"
+                            color="red-lighten-1" @click="cancelEdit">Cancel</v-btn>
+                          <v-btn density="compact" prepend-icon="mdi-content-save" variant="tonal" size="large"
+                            color="blue-lighten-1" @click="saveEdit">Save</v-btn>
                         </div>
                       </v-row>
                     </div>
@@ -499,16 +316,8 @@
             </div>
           </div>
         </div>
-        <v-alert
-          class="popup-message"
-          v-if="showPopup"
-          variant="tonal"
-          :type="popupType"
-          :title="popupTitle"
-          :value="true"
-          dismissible
-          @input="hidePopupMessage"
-        >
+        <v-alert class="popup-message" v-if="showPopup" variant="tonal" :type="popupType" :title="popupTitle"
+          :value="true" dismissible @input="hidePopupMessage">
           {{ popupMessage }}
           <template v-if="isTaskRejected() && acceptTaskClicked">
             <div class="actions">
@@ -523,7 +332,7 @@
 </template>
 
 <script>
-import { taskData, workersData, cancellationReasons, materialData } from '../../utils/tableData'
+import { taskData, workersData, cancellationReasons } from '../../utils/tableData'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { dataSubjectTypes } from '../../utils/dataSubjectType'
 import { serviceTypes } from '../../utils/serviceType'
@@ -555,10 +364,12 @@ export default {
         { key: 'date_created', label: 'Created On', maxLength: null },
         { key: 'date_completed', label: 'Completed On', maxLength: null },
         { key: 'schedule_date', label: 'Schedule Date', maxLength: null },
-        { key: 'material_cost', label: 'Matarial Cost(PHP)', maxLength: 8 },
         { key: 'total_amount', label: 'Total Amount(PHP)', maxLength: 8 },
         { key: 'status', label: 'Status', maxLength: null }
       ],
+      statusOptions: ['In Progress'],
+      cancelFormManuallyClosed: false,
+      addMaterials: false,
       selectedTaskId: null,
       showPopup: false,
       popupType: '',
@@ -572,24 +383,26 @@ export default {
       cancellationReason: '',
       otherReason: '',
       originalTask: {},
-      materialData: materialData,
       taskId: null,
-      task404: false
+      task404: false,
+      addCompleteForm: false,
+      // addMaterial: false,
+      // materialData: materialData,
     }
   },
   computed: {
     mode() {
       return this.editingEnabled ? 'Editing Mode' : 'View Mode'
     },
-    getMaterialUsedString() {
-      return this.task.material_used
-        .map((material, index) => {
-          const { name, unit } = materialData.find((item) => item.id === material.id)
-          const materialNumber = index + 1
-          return `${materialNumber}. ${name} - ${material.qty_used} (${unit})`
-        })
-        .join('\n')
-    },
+    // getMaterialUsedString() {
+    //   return this.task.material_used
+    //     .map((material, index) => {
+    //       const { name, unit } = materialData.find((item) => item.id === material.id)
+    //       const materialNumber = index + 1
+    //       return `${materialNumber}. ${name} - ${material.qty_used} (${unit})`
+    //     })
+    //     .join('\n')
+    // },
     sortedTableData() {
       return this.filteredTableData.sort((a, b) => {
         return new Date(a.scheduleDate) - new Date(b.scheduleDate)
@@ -651,7 +464,7 @@ export default {
           return null
         }
       },
-      set(value) {}
+      set(value) { }
     },
     hasIdParam() {
       const urlSearchParams = new URLSearchParams(window.location.search)
@@ -694,7 +507,6 @@ export default {
         this.openTaskDetails(urlId)
       }
     },
-
     openTaskDetails(id) {
       this.selectedTaskId = id
       this.task = this.getTaskById(this.selectedTaskId)
@@ -710,7 +522,8 @@ export default {
       panelElement.classList.add('slide-leave-to')
       panelElement.classList.add('slide-leave-active')
 
-      this.refreshPage()
+      // add for now
+      // this.refreshPage()
     },
 
     updateTaskDetails(id) {
@@ -723,9 +536,8 @@ export default {
         urlSearchParams.delete('id')
       }
 
-      const newUrl = `${window.location.origin}${
-        window.location.pathname
-      }?${urlSearchParams.toString()}`
+      const newUrl = `${window.location.origin}${window.location.pathname
+        }?${urlSearchParams.toString()}`
       history.pushState(null, null, newUrl)
     },
     getTaskById(id) {
@@ -751,67 +563,87 @@ export default {
       this.showCancellationForm = true
     },
     submitCancellation() {
-      if (this.selectedCancellationReason.reason === 'Other Reason' && this.otherReason === '') {
-        this.isReasonEmpty = true
-        return
+      if (this.selectedCancellationReason === null || (this.selectedCancellationReason.reason === 'Other Reason' && this.otherReason === '')) {
+        console.log("empty");
+        this.isReasonEmpty = true;
+        return;
       }
-      const successMessage = 'Cancellation request has been successfully submitted. Thank you.'
-      this.showPopupMessage('success', 'Cancellation Completed', successMessage)
 
-      this.task.status = 'Cancelled'
+      const successMessage = 'Cancellation request has been successfully submitted. Thank you.';
+      this.showPopupMessage('success', 'Cancellation Completed', successMessage);
 
-      this.showCancellationForm = false
-      this.cancellationReason = ''
-      this.otherReason = ''
+      this.task.status = 'Cancelled';
+
+      this.showCancellationForm = false;
+      this.cancellationReason = '';
+      this.otherReason = '';
     },
     cancelCancellation() {
       this.showCancellationForm = false
       this.cancellationReason = ''
       this.otherReason = ''
+      this.cancelFormManuallyClosed = true;
+      this.task.status = this.originalTask.status;
     },
-    completeTask() {},
+    completeTask() {
+      if (this.task.status === 'Cancelled') {
+        const failedMessage = 'The task has been cancelled. Update the status to In Progress in order to Complete the task.'
+        this.showPopupMessage('error', 'Failed to Complete', failedMessage)
+        return
+      }
+      this.addCompleteForm = true
+    },
+    cancelComplete() {
+      this.addCompleteForm = false;
+    },
     editTask() {
       this.editingEnabled = true
       this.originalTask = { ...this.task }
     },
     cancelEdit() {
-      Object.assign(this.task, {
-        fullName: this.originalTask.fullName,
-        email: this.originalTask.email,
-        service: this.originalTask.service,
-        location: this.originalTask.location,
-        mobileNumber: this.originalTask.mobileNumber
-      })
+      if (this.editingEnabled) {
+        Object.assign(this.task, {
+          fullName: this.originalTask.fullName,
+          email: this.originalTask.email,
+          service: this.originalTask.service,
+          location: this.originalTask.location,
+          mobileNumber: this.originalTask.mobileNumber,
+          status: this.originalTask.status
+        });
 
-      this.editingEnabled = false
+        this.editingEnabled = false;
+      } else if (this.addCompleteForm) {
+        this.addCompleteForm = false;
+      }
     },
     saveEdit() {
-      const invalidFields = this.getInvalidFields()
-      const isFieldsEdited = this.areFieldsEdited()
+      const invalidFields = this.getInvalidFields();
+      const isFieldsEdited = this.areFieldsEdited();
 
       if (invalidFields.length > 0) {
-        const errorMessage = `Please fill in the following fields: ${invalidFields.join(', ')}`
-        this.showPopupMessage('error', 'Validation Error', errorMessage)
-        return
+        const errorMessage = `Please fill in the following fields: ${invalidFields.join(', ')}`;
+        this.showPopupMessage('error', 'Validation Error', errorMessage);
+        return;
       }
 
-      if (isFieldsEdited) {
+      if (isFieldsEdited || this.task.status !== this.originalTask.status) {
         Object.assign(this.originalTask, {
           fullName: this.task.fullName,
           email: this.task.email,
           service: this.task.service,
           location: this.task.location,
-          mobileNumber: this.task.mobileNumber
-        })
+          mobileNumber: this.task.mobileNumber,
+          status: this.task.status
+        });
 
-        const successMessage = 'Changes saved successfully.'
-        this.showPopupMessage('success', 'Success', successMessage)
+        const successMessage = 'Changes saved successfully.';
+        this.showPopupMessage('success', 'Success', successMessage);
       } else {
-        const noChangesMessage = 'No changes were made.'
-        this.showPopupMessage('info', 'Info', noChangesMessage)
+        const noChangesMessage = 'No changes were made.';
+        this.showPopupMessage('info', 'Info', noChangesMessage);
       }
 
-      this.editingEnabled = false
+      this.editingEnabled = false;
     },
     areFieldsEdited() {
       const editableFields = [
@@ -821,7 +653,8 @@ export default {
         'location',
         'mobileNumber',
         'selected_workers',
-        'schedule_date'
+        'schedule_date',
+        'status'
       ]
 
       for (const field of editableFields) {
@@ -862,7 +695,6 @@ export default {
         this.hidePopupMessage()
       }, 4000)
     },
-
     showConfirmationPopup(title, message, callback) {
       this.popupType = 'info'
       this.popupTitle = title
@@ -871,7 +703,6 @@ export default {
 
       this.confirmationCallback = callback
     },
-
     confirmAction() {
       if (typeof this.confirmationCallback === 'function') {
         this.confirmationCallback()
@@ -879,7 +710,6 @@ export default {
       this.hidePopupMessage()
       this.acceptTaskClicked = false
     },
-
     cancelAction() {
       this.hidePopupMessage()
       this.acceptTaskClicked = false
@@ -954,7 +784,7 @@ export default {
   watch: {
     selectedFilter(newVal) {
       if (newVal === 'All Service') {
-        this.selectedRowFilter = 'all'
+        this.selectedRowFilter = 'all';
       }
     }
   },
@@ -1071,6 +901,7 @@ export default {
 .slide-enter-to {
   transform: translateX(0);
 }
+
 .slide-leave {
   transform: translateX(0);
 }
@@ -1093,6 +924,7 @@ export default {
 .task-details-panel::-webkit-scrollbar {
   display: none;
 }
+
 .task-details-content {
   margin: 10px;
 }
@@ -1112,12 +944,14 @@ export default {
 }
 
 .note {
-  width: 88%;
+  max-width: 100%;
+  width: 98%;
 }
 
 .detail p,
 .note p,
-.cost p {
+.cost p,
+.material-list p {
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 5px;
@@ -1128,17 +962,21 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 .actions {
   text-align: end;
 }
+
 .actions .v-btn {
   margin-right: 30px;
   width: 180px;
 }
+
 .task-details-close {
   text-align: end;
   margin: 10px;
 }
+
 .status-completed {
   color: #28a745;
 }
@@ -1183,9 +1021,11 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
+
 .form-actions-btn .v-btn {
   margin: 5px;
 }
+
 .inspect-place {
   display: block;
 }
@@ -1219,5 +1059,36 @@ export default {
 
 .search-task .filter-status {
   width: 200px;
+}
+
+.summary {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.summary .summary-details {
+  max-width: 400px;
+  width: 300px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-card {
+  width: 600px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 </style>
