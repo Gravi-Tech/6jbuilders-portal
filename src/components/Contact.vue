@@ -3,7 +3,7 @@
     <h1>Contact Us</h1>
     <br />
     <v-row>
-      <v-col cols="12" md="6">
+      <!-- <v-col cols="12" md="6">
         <v-card class="contact-card">
           <v-card-title class="mb-4">Get in Touch</v-card-title>
           <v-form @submit.prevent="submitForm">
@@ -21,8 +21,8 @@
             <v-btn type="submit" style="width: 100%;" color="blue">Submit</v-btn>
           </v-form>
         </v-card>
-      </v-col>
-      <v-col cols="12" md="6">
+      </v-col> -->
+      <v-col cols="12" md="12">
         <v-card class="location-card">
           <v-card-title class="mb-4">Information</v-card-title>
           <v-card-text class="d-flex align-center">
