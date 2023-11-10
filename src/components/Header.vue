@@ -89,7 +89,7 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { serviceTypes } from '../utils/serviceType'
+import { serviceTypes } from '../dataUtils/serviceType'
 
 const appBarHeight = ref(170)
 const router = useRouter()

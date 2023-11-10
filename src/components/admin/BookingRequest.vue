@@ -61,7 +61,7 @@
               }" :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''">
                 <template v-if="column.key === 'id'">
                   <a @click="openBookingDetails(row.id)" style="color: blue">{{
-                    shortenId(row.id)
+                    row.id
                   }}</a>
                 </template>
                 <template v-else-if="column.key === 'attachment'">
@@ -254,7 +254,7 @@
               <div class="group-details">
                 <div class="note">
                   <p>Note:</p>
-                  <v-textarea variant="outlined" density="compact" v-model="booking.note" :value="booking.note || 'N/A'"
+                  <v-textarea variant="outlined" density="compact" v-model="booking.note" :value="booking.note"
                     :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-textarea>
                 </div>
               </div>
@@ -294,10 +294,10 @@
 </template>
 
 <script>
-import { requestData, workersData } from '../../utils/tableData'
+import { requestData, workersData } from '../../dataUtils/tableData'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
-import { dataSubjectTypes } from '../../utils/dataSubjectType'
-import { serviceTypes } from '../../utils/serviceType'
+import { dataSubjectTypes } from '../../dataUtils/dataSubjectType'
+import { serviceTypes } from '../../dataUtils/serviceType'
 import BookingForm from '../Book.vue';
 
 export default {
@@ -506,7 +506,7 @@ export default {
           if (reason) {
             this.booking.status = 'Rejected'
             this.booking.rejectionReason = reason
-            this.showPopupMessage('success', 'Success', successMessage)
+            this.showPopupMessage('success', 'Rejected', successMessage)
             setTimeout(() => {
               this.closeBookingDetails()
             }, 3000)
@@ -541,7 +541,7 @@ export default {
             this.booking.rejectionReason = reason
             const successMessage =
               'The booking has been successfully accepted and the status has been updated to pending.'
-            this.showPopupMessage('success', 'Success', successMessage)
+            this.showPopupMessage('success', 'Updated', successMessage)
           } else {
             //TODO: Handle case when reason is not provided
           }
@@ -577,7 +577,7 @@ export default {
         }
 
         const successMessage = 'The booking has been successfully accepted.'
-        this.showPopupMessage('success', 'Success', successMessage)
+        this.showPopupMessage('success', 'Accepted', successMessage)
         this.booking.status = 'Accepted'
         this.acceptBookingClicked = false
       }
@@ -628,10 +628,10 @@ export default {
         })
 
         const successMessage = 'Changes saved successfully.'
-        this.showPopupMessage('success', 'Success', successMessage)
+        this.showPopupMessage('success', 'Saved', successMessage)
       } else {
         const noChangesMessage = 'No changes were made.'
-        this.showPopupMessage('info', 'Info', noChangesMessage)
+        this.showPopupMessage('info', 'Oops', noChangesMessage)
       }
 
       this.editingEnabled = false

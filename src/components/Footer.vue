@@ -9,9 +9,14 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>About Us</h3>
-                    <p><span style="font-weight: 600;">6J Builders.</span><br>Lorem ipsum dolor sit amet. Ut quod
-                        consequatur ut cupiditate sint sed aspernatur
-                        impedit et eveniet aperiam.</p>
+                      <p>
+                <span style="font-weight: 600">Looking for a quality and
+                affordable constructor for your home?</span><br />6JBuilders.<br>
+                An organization that was started by the most
+                skilled and most experienced individuals who actively and diligently assist their
+                clients with matters pertaining to home building and repair. They proactively and
+                artistically provide insight on certain services in order to satisfy their clients.
+            </p>
                 </div>
                 <div class="footer-section">
                     <h3>Contact Us</h3>

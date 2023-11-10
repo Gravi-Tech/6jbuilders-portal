@@ -20,7 +20,7 @@
 </template>
   
 <script>
-import { testimonials } from '../utils/testimonialData';
+import { testimonials } from '../dataUtils/testimonialData';
 
 export default {
     data() {
