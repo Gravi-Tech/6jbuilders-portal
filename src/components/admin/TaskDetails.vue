@@ -48,7 +48,7 @@
               }" :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''">
                 <template v-if="column.key === 'id'">
                   <a @click="openTaskDetails(row.id)" style="color: blue">{{
-                    shortenId(row.id)
+                    row.id
                   }}</a>
                 </template>
                 <template v-else-if="column.key === 'attachment'">
@@ -332,10 +332,10 @@
 </template>
 
 <script>
-import { taskData, workersData, cancellationReasons } from '../../utils/tableData'
+import { taskData, workersData, cancellationReasons } from '../../dataUtils/tableData'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
-import { dataSubjectTypes } from '../../utils/dataSubjectType'
-import { serviceTypes } from '../../utils/serviceType'
+import { dataSubjectTypes } from '../../dataUtils/dataSubjectType'
+import { serviceTypes } from '../../dataUtils/serviceType'
 
 export default {
   components: {
@@ -637,7 +637,7 @@ export default {
         });
 
         const successMessage = 'Changes saved successfully.';
-        this.showPopupMessage('success', 'Success', successMessage);
+        this.showPopupMessage('success', 'Saved', successMessage);
       } else {
         const noChangesMessage = 'No changes were made.';
         this.showPopupMessage('info', 'Info', noChangesMessage);

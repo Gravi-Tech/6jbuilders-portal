@@ -50,7 +50,8 @@ import Booking from './BookingRequest.vue'
 import Setting from './SettingsDetails.vue'
 import Task from './TaskDetails.vue'
 import Worker from './WorkerDetails.vue'
-import { admin } from '../../utils/userData'
+import Project from './ProjectDetails.vue'
+import { admin } from '../../dataUtils/userData'
 
 export default {
   data() {
@@ -63,6 +64,7 @@ export default {
         { title: 'Dashboard', value: 'dashboard', icon: 'mdi-view-dashboard-outline' },
         { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-check-outline' },
         { title: 'Task', value: 'task', icon: 'mdi-checkbox-multiple-outline' },
+        { title: 'Project', value: 'projects', icon: 'mdi-folder-outline' },
         { title: 'Clients', value: 'clients', icon: 'mdi-account-group-outline' },
         { title: 'Workers', value: 'workers', icon: 'mdi-account-multiple-outline' },
         { title: 'Settings', value: 'setting', icon: 'mdi-cog-outline' },
@@ -105,18 +107,21 @@ export default {
   methods: {
     handleMenuItemClick(item) {
       if (item.value === 'logout') {
-        this.logoutDialog = true
-        return
+        this.logoutDialog = true;
+        return;
       }
 
-      this.activeItem = item.value
+      this.activeItem = item.value;
 
-      const currentState = history.state
+      const currentState = history.state;
       const url = this.$router.resolve({
         name: 'admin',
         params: { menuItem: this.activeItem }
-      }).href
-      history.replaceState(currentState, '', url)
+      }).href;
+
+      history.replaceState(currentState, '', url);
+
+      this.$router.push({ name: 'admin', params: { menuItem: this.activeItem } });
     },
     logout() {
       window.location.href = '/'

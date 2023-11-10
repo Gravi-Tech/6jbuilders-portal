@@ -84,8 +84,8 @@
 
 <script>
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
-import { serviceTypes } from '../utils/serviceType'
-import { dataSubjectTypes } from '../utils/dataSubjectType'
+import { serviceTypes } from '../dataUtils/serviceType'
+import { dataSubjectTypes } from '../dataUtils/dataSubjectType'
 export default {
   name: 'BookingForm',
   props: {

@@ -444,7 +444,7 @@ export const workersData = [
     position: 'Foreman',
     department: 'Construction',
     experience: '10 years',
-    specializations: ['Carpentry', 'Masonry']
+    profile_img: '/src/assets/images/user-default.png',
   },
   {
     id: '617e9b2c6e2d647f28b062c9',
@@ -452,7 +452,7 @@ export const workersData = [
     position: 'Equipment Operator',
     department: 'Construction',
     experience: '5 years',
-    specializations: ['Excavation', 'Heavy machinery']
+    profile_img: '/src/assets/images/user-default.png',
   },
   {
     id: '617e9b2c6e2d647f28b062d1',
@@ -460,7 +460,7 @@ export const workersData = [
     position: 'Laborer',
     department: 'Construction',
     experience: '2 years',
-    specializations: ['Demolition', 'Concrete work']
+    profile_img: '/src/assets/images/user-default.png',
   },
   {
     id: '617e9b2c6e2d647f28b062d2',
@@ -468,7 +468,7 @@ export const workersData = [
     position: 'Plumber',
     department: 'Construction',
     experience: '8 years',
-    specializations: ['Pipe fitting', 'Plumbing installations']
+    profile_img: '/src/assets/images/user-default.png',
   },
   {
     id: '617e9b2c6e2d647f28b062d3',
@@ -476,7 +476,7 @@ export const workersData = [
     position: 'Electrician',
     department: 'Construction',
     experience: '6 years',
-    specializations: ['Wiring', 'Electrical installations']
+    profile_img: '/src/assets/images/user-default.png',
   },
   {
     id: '617e9b2c6e2d647f28b062d4',
@@ -484,54 +484,16 @@ export const workersData = [
     position: 'Painter',
     department: 'Construction',
     experience: '4 years',
-    specializations: ['Interior painting', 'Exterior painting']
+    profile_img: '/src/assets/images/user-default.png',
   }
 ]
 
-// export const materialData = [
-//   {
-//     id: '617e9b2c6e2d647f28b062c6',
-//     name: 'Drywall Sheets',
-//     quantity: 100,
-//     unit: 'pcs',
-//     cost: '500.00'
-//   },
-//   {
-//     id: '617e9b2c6e2d647f28b062cb',
-//     name: 'Paint Buckets',
-//     quantity: 102,
-//     unit: 'pcs',
-//     cost: '100.00'
-//   },
-//   {
-//     id: '617e9b2c6e2d647f28b062cd',
-//     name: 'Electrical Wire',
-//     quantity: 50,
-//     unit: 'meters',
-//     cost: '250.00'
-//   },
-//   {
-//     id: '617e9b2c6e2d647f28b062cs',
-//     name: 'Plumbing Pipes',
-//     quantity: 20,
-//     unit: 'meters',
-//     cost: '150.00'
-//   },
-//   {
-//     id: '617e9b2c6e2d647f28b062ca',
-//     name: 'Roofing Shingles',
-//     quantity: 200,
-//     unit: 'pcs',
-//     cost: '800.00'
-//   }
-// ]
-
 export const cancellationReasons = [
-  { id: '617e9b2c6e2d647f28b062c8', reason: 'Booking Cancellation' },
-  { id: '617e9b2c6e2d647f28b062c9', reason: 'Project Delayed' },
-  { id: '617e9b2c6e2d647f28b062y1', reason: 'Client Requested Change' },
-  { id: '617e9b2c6e2d647f28b062y2', reason: 'Equipment Unavailable' },
-  { id: '617e9b2c6e2d647f28b062y3', reason: 'Weather Conditions' },
-  { id: '617e9b2c6e2d647f28b062y4', reason: 'Staffing Issues' },
-  { id: '617e9b2c6e2d647f28b062y5', reason: 'Other Reason' }
+  { id: '617e9b2c6e2d647f28b062c8', date_created: '', date_updated: '', reason: 'Booking Cancellation' },
+  { id: '617e9b2c6e2d647f28b062c9', date_created: '', date_updated: '', reason: 'Project Delayed' },
+  { id: '617e9b2c6e2d647f28b062y1', date_created: '', date_updated: '', reason: 'Client Requested Change' },
+  { id: '617e9b2c6e2d647f28b062y2', date_created: '', date_updated: '', reason: 'Equipment Unavailable' },
+  { id: '617e9b2c6e2d647f28b062y3', date_created: '', date_updated: '', reason: 'Weather Conditions' },
+  { id: '617e9b2c6e2d647f28b062y4', date_created: '', date_updated: '', reason: 'Staffing Issues' },
+  { id: '617e9b2c6e2d647f28b062y5', date_created: '', date_updated: '', reason: 'Other Reason' }
 ]

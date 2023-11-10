@@ -35,7 +35,7 @@
 
         </v-card-text>
       </v-card>
-      <v-card class="overview-card">
+      <!-- <v-card class="overview-card">
         <v-icon start icon="mdi-label" color="blue" size="x-large"></v-icon>
         <v-card-title>Revenue (PHP)</v-card-title>
         <v-card-text>
@@ -43,7 +43,7 @@
             <div class="total revenue">{{ totalRevenue }}</div>
           </div>
         </v-card-text>
-      </v-card>
+      </v-card> -->
     </div>
     <div class="sub-cards">
       <v-card class="new-booking-card">
@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import { requestData, taskData, workersData } from '../../utils/tableData'
+import { requestData, taskData, workersData } from '../../dataUtils/tableData'
 
 export default {
   data() {
@@ -150,14 +150,14 @@ export default {
     totalWorkers() {
       return this.workers.length
     },
-    totalRevenue() {
-      const completedTasks = this.task.filter((task) => task.status === 'Completed')
-      const revenue = completedTasks.reduce((total, task) => {
-        const amount = parseFloat(task.total_amount.replace(',', ''))
-        return total + amount
-      }, 0)
-      return revenue.toFixed(2)
-    },
+    // totalRevenue() {
+    //   const completedTasks = this.task.filter((task) => task.status === 'Completed')
+    //   const revenue = completedTasks.reduce((total, task) => {
+    //     const amount = parseFloat(task.total_amount.replace(',', ''))
+    //     return total + amount
+    //   }, 0)
+    //   return revenue.toFixed(2)
+    // },
     latestBookings() {
       const sortedBookings = this.bookingRequests.sort(
         (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
