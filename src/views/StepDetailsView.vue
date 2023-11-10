@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { steps } from '../utils/processData.js';
+import { steps } from '../dataUtils/processData.js';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 

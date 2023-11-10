@@ -1,7 +1,7 @@
 <template>
     <Header />
     <div class="parallax-container">
-        <v-parallax :src="project.image" height="350">
+        <v-parallax :src="project.bg_project_img" height="350">
             <div class="parallax-overlay"></div>
             <div class="parallax-content">
                 <p>Let Us Build and Repair your Home</p>
@@ -18,7 +18,7 @@
                 </div> -->
                 <h2 class="text-h5 mb-2">{{ project.title }}</h2>
                 <h4 class="text-h6 mb-2">{{ project.location }}</h4>
-                <div class="text-subtitle-1">Date Finished: {{ project.date }}</div>
+                <div class="text-subtitle-1">Date Finished: {{ project.date_completed }}</div>
                 <div class="d-flex mt-4">
                     <v-btn color="teal-accent-4" @click="goBack">Back to Projects</v-btn>
                     <!-- <v-btn class="ml-6" color="blue" @click="showRatingModal = true">Rate Project</v-btn> -->
@@ -36,7 +36,7 @@
             <v-col cols="12">
                 <h3 class="text-h5 text-center m-4">Project Images</h3>
                 <div class="d-flex flex-wrap justify-center">
-                    <div v-for="(image, index) in project.projectImages" :key="index" class="project-image">
+                    <div v-for="(image, index) in project.project_imgs" :key="index" class="project-image">
                         <v-img :src="image" cover height="200" @click="openImageDialog(index)"></v-img>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
     <Footer />
 
     <v-dialog v-model="showImageDialog" max-width="600">
-        <v-img :src="project.projectImages[imageIndex]" cover height="600"></v-img>
+        <v-img :src="project.project_imgs[imageIndex]" cover height="600"></v-img>
     </v-dialog>
     <!-- <v-dialog v-model="showRatingModal" max-width="500">
         <v-card class="rate-dialog">
@@ -67,7 +67,7 @@
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 
-import { projects } from '../utils/projectData.js';
+import { projects } from '../dataUtils/projectData.js';
 
 export default {
     components: {
@@ -89,7 +89,7 @@ export default {
     },
     methods: {
         fetchProjectDetails(projectId) {
-            return projects.find(project => project.id === Number(projectId));
+            return projects.find(project => project.id === String(projectId));
         },
         goBack() {
             this.$router.go(-1);

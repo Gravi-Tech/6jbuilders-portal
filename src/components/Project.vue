@@ -1,7 +1,5 @@
 <template>
-    <v-parallax
-        src="https://th.bing.com/th/id/R.6e0e4ba1f49ada5e668d1898e3312871?rik=4CUrTSwBruaA7g&riu=http%3a%2f%2fassets.skyfilabs.com%2fimages%2fconstruction-project-management.png&ehk=4Gj8x%2fOafUdiL1PRUZTTxXtBYCdPpEcf5eOe89nd2fo%3d&risl=&pid=ImgRaw&r=0"
-        height="300">
+    <v-parallax :src="parallaxBackground" height="300">
         <v-row class="fill-height ma-0 text-white">
             <v-col cols="12" class="text-center white--text align-self-center">
                 <h1 class="text-h4 font-weight-thin mb-4"> OUR PROJECTS</h1>
@@ -14,13 +12,13 @@
                 <v-card class="mx-auto my-4" max-width="374">
                     <div class="project">
                         <div class="details">
-                            <v-img cover :src="project.image" :width="400" :height="200"></v-img>
+                            <v-img cover :src="project.bg_project_img" :width="400" :height="200"></v-img>
 
                             <v-card-title>{{ project.title }}</v-card-title>
                             <v-card-subtitle>
                                 <v-icon icon="mdi-map-marker" size="small"></v-icon>
                                 <span class="ml-1">{{ project.location }}</span>
-                                <div class="my-1 ml-1 text-subtitle-1">{{ project.date }}</div>
+                                <div class="my-1 ml-1 text-subtitle-1">{{ project.date_completed }}</div>
                             </v-card-subtitle>
 
                             <v-card-text>
@@ -49,13 +47,14 @@
 </template>
   
 <script>
-import { projects } from '../utils/projectData.js';
+import { projects } from '../dataUtils/projectData.js';
 
 export default {
     data() {
         return {
             projects: projects,
             selectedService: 'All',
+            parallaxBackground: '/src/assets/images/6jbuilders-bg.jpg',
         };
     },
     computed: {

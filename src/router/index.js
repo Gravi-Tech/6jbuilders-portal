@@ -20,16 +20,6 @@ const router = createRouter({
       component: () => import('../views/BookNowView.vue')
     },
     {
-      path: '/6jbuilders/booking-request',
-      name: 'booking-request',
-      component: () => import('../views/BookingRequestView.vue')
-    },
-    {
-      path: '/6jbuilders/booking-request/:id',
-      name: 'booking-detail',
-      component: () => import('../views/BookingDetailView.vue')
-    },
-    {
       path: '/6jbuilders/contact',
       name: 'contact',
       component: () => import('../views/ContactView.vue')

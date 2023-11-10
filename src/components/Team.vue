@@ -16,7 +16,7 @@
 </template>
   
 <script>
-import { teamMembers } from '@/utils/teamData';
+import { teamMembers } from '@/dataUtils/teamData';
 export default {
     data() {
         return {
