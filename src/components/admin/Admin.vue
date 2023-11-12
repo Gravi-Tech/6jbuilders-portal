@@ -45,7 +45,7 @@
 
 <script scoped>
 import Dashboard from './DashboardDetails.vue'
-import Client from './ClientDetails.vue'
+// import Client from './ClientDetails.vue'
 import Booking from './BookingRequest.vue'
 import Setting from './SettingsDetails.vue'
 import Task from './TaskDetails.vue'
@@ -65,7 +65,7 @@ export default {
         { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-check-outline' },
         { title: 'Task', value: 'task', icon: 'mdi-checkbox-multiple-outline' },
         { title: 'Project', value: 'projects', icon: 'mdi-folder-outline' },
-        { title: 'Clients', value: 'clients', icon: 'mdi-account-group-outline' },
+        // { title: 'Clients', value: 'clients', icon: 'mdi-account-group-outline' },
         { title: 'Workers', value: 'workers', icon: 'mdi-account-multiple-outline' },
         { title: 'Settings', value: 'setting', icon: 'mdi-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }
