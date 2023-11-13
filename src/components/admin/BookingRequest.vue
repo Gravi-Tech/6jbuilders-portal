@@ -61,7 +61,7 @@
               }" :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''">
                 <template v-if="column.key === 'id'">
                   <a @click="openBookingDetails(row.id)" style="color: blue">{{
-                    row.id
+                    shortenId(row.id)
                   }}</a>
                 </template>
                 <template v-else-if="column.key === 'attachment'">
@@ -157,13 +157,14 @@
                         </div>
                         <div class="detail">
                           <v-text-field label="Schedule Inspection Date*" append-inner-icon="mdi-calendar"
-                            density="comfortable" variant="solo" v-model="selectedDate" readonly
+                            density="comfortable" variant="solo" v-model="selectedDate" :readonly="!editingEnabled"
                             @click:append-inner="showDatePicker = true" :disabled="isBookingRejected()"
                             :value="formattedDate"></v-text-field>
                         </div>
                         <div class="detail">
                           <v-select prepend-inner-icon="mdi-clock-outline" label="Select Time Range" density="comfortable"
-                            variant="solo" v-model="selectedTimeRange" :disabled="isBookingRejected()" :items="[
+                            variant="solo" v-model="selectedTimeRange" :disabled="isBookingRejected()"
+                            :readonly="!editingEnabled" :items="[
                               '08:00 AM - 10:00 AM',
                               '10:00 AM - 12:00 PM',
                               '12:00 PM - 02:00 PM',
@@ -322,11 +323,11 @@ export default {
       alertTimeout: null,
       tableColumns: [
         { key: 'id', label: 'ID', maxLength: 8 },
-        { key: 'type', label: 'Data Subject', maxLength: 8 },
-        { key: 'fullName', label: 'Full Name', maxLength: 8 },
-        { key: 'mobileNumber', label: 'Mobile Number', maxLength: 8 },
-        { key: 'email', label: 'Email', maxLength: 8 },
-        { key: 'service', label: 'Service', maxLength: 8 },
+        { key: 'type', label: 'Data Subject', maxLength: 11 },
+        { key: 'fullName', label: 'Full Name', maxLength: 11 },
+        { key: 'mobileNumber', label: 'Mobile Number', maxLength: 11 },
+        { key: 'email', label: 'Email', maxLength: 11 },
+        { key: 'service', label: 'Service', maxLength: 11 },
         { key: 'location', label: 'Location', maxLength: 20 },
         { key: 'createdDate', label: 'Created On', maxLength: null },
         { key: 'scheduleDate', label: 'Schedule Date', maxLength: null },
@@ -754,11 +755,9 @@ export default {
       this.booking.isVisited = true
     },
     handleManualRequest() {
-      console.log("Add manual booking")
       this.showModal = true
     },
     handleManualRequestClose() {
-      console.log("close")
       this.showModal = false
     }
   },
