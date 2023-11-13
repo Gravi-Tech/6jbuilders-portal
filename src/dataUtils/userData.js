@@ -1,7 +1,9 @@
 
 export const admin = [
     {
-        fullname: 'Juspher Balangyao',
+        firstname: 'Juspher',
+        middlename: 'Estoque',
+        lastname: ' Balangyao',
         address: 'Gorodo, Cebu City, Cebu, Philippines',
         email: 'codwithjusher@gmail.com',
         phone: '123-456-7890',
