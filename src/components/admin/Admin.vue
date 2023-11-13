@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
-    <v-list-item :prepend-avatar="admin[0].avatar" :title="admin[0].fullname" :subtitle="admin[0].role" nav>
+    <v-list-item :prepend-avatar="admin[0].avatar" :title="getFullName(admin[0])" :subtitle="admin[0].role" nav>
       <template v-slot:append>
         <v-btn variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
       </template>
@@ -95,7 +95,7 @@ export default {
         case 'setting':
           return Setting
         default:
-          return DashboardDetails
+          return Dashboard
       }
     }
   },
@@ -122,6 +122,9 @@ export default {
       history.replaceState(currentState, '', url);
 
       this.$router.push({ name: 'admin', params: { menuItem: this.activeItem } });
+    },
+    getFullName(user) {
+      return `${user.firstname} ${user.middlename} ${user.lastname}`;
     },
     logout() {
       window.location.href = '/'

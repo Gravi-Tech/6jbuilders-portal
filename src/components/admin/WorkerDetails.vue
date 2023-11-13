@@ -209,12 +209,6 @@
         <v-alert class="popup-message" v-if="showPopup" variant="tonal" :type="popupType" :title="popupTitle"
           :value="true" dismissible @input="hidePopupMessage">
           {{ popupMessage }}
-          <template v-if="isTaskRejected() && acceptTaskClicked">
-            <div class="actions">
-              <v-btn color="red" variant="tonal" @click="cancelAction">No</v-btn>
-              <v-btn color="green" variant="outlined" @click="confirmAction">Yes</v-btn>
-            </div>
-          </template>
         </v-alert>
       </div>
     </transition>
