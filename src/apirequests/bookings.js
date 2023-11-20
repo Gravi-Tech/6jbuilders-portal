@@ -1,6 +1,5 @@
 import axios from 'axios'
-require('dotenv').config()
-const baseUrl = process.env.BASE_URL || 'http://localhost:3000/api'
+const baseUrl = 'http://localhost:3000/api'
 
 export const addBooking = async (data) => {
   try {
