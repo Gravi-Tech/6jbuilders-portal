@@ -2,9 +2,9 @@ import axios from 'axios'
 require('dotenv').config()
 const baseUrl = process.env.BASE_URL || 'http://localhost:3000/api'
 
-export const addBooking = async (data) => {
+export const addService = async (data) => {
   try {
-    const response = await axios.post(`${baseUrl}/bookings`, data)
+    const response = await axios.post(`${baseUrl}/services`, data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -12,9 +12,9 @@ export const addBooking = async (data) => {
   }
 }
 
-export const getBooking = async (bookingId) => {
+export const getService = async (serviceId) => {
   try {
-    const response = await axios.get(`${baseUrl}/bookings/${bookingId}`)
+    const response = await axios.get(`${baseUrl}/services/${serviceId}`)
     return response.data
   } catch (error) {
     console.error(error)
@@ -22,9 +22,9 @@ export const getBooking = async (bookingId) => {
   }
 }
 
-export const getAllBookings = async () => {
+export const getAllServices = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/bookings`)
+    const response = await axios.get(`${baseUrl}/services`)
     return response.data
   } catch (error) {
     console.error(error)
@@ -32,9 +32,9 @@ export const getAllBookings = async () => {
   }
 }
 
-export const updateBooking = async (bookingId, data) => {
+export const updateService = async (serviceId, data) => {
   try {
-    const response = await axios.put(`${baseUrl}/bookings/${bookingId}`, data)
+    const response = await axios.put(`${baseUrl}/services/${serviceId}`, data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -42,9 +42,9 @@ export const updateBooking = async (bookingId, data) => {
   }
 }
 
-export const deleteBooking = async (bookingId) => {
+export const deleteService = async (serviceId) => {
   try {
-    const response = await axios.delete(`${baseUrl}/bookings/${bookingId}`)
+    const response = await axios.delete(`${baseUrl}/services/${serviceId}`)
     return response.data
   } catch (error) {
     console.error(error)
