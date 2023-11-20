@@ -41,9 +41,11 @@
                 label="Password"
                 type="password"
                 v-validate="'required'"
-                hint="Enter your password to access this website"
               >
               </v-text-field>
+              <div class="errorMessage" v-if="errorMessage">
+                <p>{{ errorMessage }}</p>
+              </div>
               <div class="text-subtitle-1 text-medium-emphasis d-flex align-center mb-1">
                 <router-link
                   to="/6jbuilders/password-recovery"
@@ -63,7 +65,9 @@
             </v-form>
           </v-card-text>
           <v-card-actions class="justify-space-around">
-            <v-btn color="success" variant="tonal" :loading="loading" @click="login">Sign In</v-btn>
+            <v-btn color="success" variant="tonal" :loading="loading" @click="handleLogin"
+              >Sign In</v-btn
+            >
           </v-card-actions>
           <v-btn class="mt-6" size="small" variant="outlined" @click="navTo('home')"
             >Back to Homepage</v-btn
@@ -75,14 +79,16 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { defineComponent } from 'vue'
-// import { googleTokenLogin } from 'vue3-google-login'
+import { login } from '@/apirequests/admin'
 
 export default defineComponent({
   data() {
     return {
       showAdminPortal: false,
       showAdminModal: false,
+      errorMessage: null,
       adminId: null,
       adminPassword: null,
       form: {},
@@ -96,11 +102,23 @@ export default defineComponent({
     }
   },
   methods: {
-    login() {
-      if (this.adminId === 'admin' && this.adminPassword === 'password') {
+    async handleLogin() {
+      try {
+        const response = await login(this.adminId, this.adminPassword)
+
+        const accessToken = response.accessToken
+
+        localStorage.setItem('accessToken', accessToken)
+        axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+
         this.$router.push('/6jbuilders/admin/dashboard')
-      } else {
-        console.log('Incorrect admin ID or password')
+      } catch (error) {
+        console.error(error)
+        if (error.response && error.response.status === 401) {
+          this.errorMessage = 'Invalid Credentials'
+        } else {
+          this.errorMessage = 'An error occurred. Please try again.'
+        }
       }
     },
     navTo(to) {
@@ -128,6 +146,10 @@ export default defineComponent({
   width: 800px;
 }
 
+.errorMessage {
+  color: white;
+  background-color: red;
+}
 .content {
   display: flex;
   flex-direction: column;
