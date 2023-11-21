@@ -24,7 +24,7 @@
       <div class="search-request">
         <div class="request">
           <v-text-field v-model="requestId" density="compact" append-inner-icon="mdi-magnify"
-            @click:append-inner="searchRequest(requestId)" label="Search request by ID" variant="outlined" single-line
+            @click:append-inner="searchRequest(requestId)" label="Search request by ID" flat variant="solo-filled" single-line
             hide-details></v-text-field>
           <span v-if="task404" style="font-style: italic; color: red">Task not found.</span>
         </div>

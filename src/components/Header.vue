@@ -75,11 +75,6 @@
             <v-btn size="large" @click="navTo('login')">Admin Login</v-btn>
           </v-row>
         </v-col>
-        <!-- <v-col cols="auto" class="ml-4">
-          <v-row class="d-flex justify-center align-center">
-            <v-icon class="search-icon app-icon large-icon">mdi-magnify</v-icon>
-          </v-row>
-        </v-col> -->
       </v-row>
     </section>
   </v-app-bar>

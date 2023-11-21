@@ -1,6 +1,11 @@
 <template>
   <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
-    <v-list-item :prepend-avatar="admin[0].avatar" :title="getFullName(admin[0])" :subtitle="admin[0].role" nav>
+    <v-list-item
+      :prepend-avatar="admin[0].avatar"
+      :title="getFullName(admin[0])"
+      :subtitle="admin[0].role"
+      nav
+    >
       <template v-slot:append>
         <v-btn variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
       </template>
@@ -9,8 +14,14 @@
     <v-divider></v-divider>
 
     <v-list dense nav>
-      <v-list-item v-for="item in menuItems" :key="item.value" :title="item.title" :value="item.value"
-        :active="activeItem === item.value" @click="handleMenuItemClick(item)">
+      <v-list-item
+        v-for="item in menuItems"
+        :key="item.value"
+        :title="item.title"
+        :value="item.value"
+        :active="activeItem === item.value"
+        @click="handleMenuItemClick(item)"
+      >
         <template v-slot:prepend>
           <v-tooltip bottom v-if="rail">
             <template v-slot:activator="{ props }">
@@ -45,7 +56,7 @@
 
 <script scoped>
 import Dashboard from './DashboardDetails.vue'
-// import Client from './ClientDetails.vue'
+import Service from './Service.vue'
 import Booking from './BookingRequest.vue'
 import Setting from './SettingsDetails.vue'
 import Task from './TaskDetails.vue'
@@ -65,7 +76,7 @@ export default {
         { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-check-outline' },
         { title: 'Task', value: 'task', icon: 'mdi-checkbox-multiple-outline' },
         { title: 'Project', value: 'projects', icon: 'mdi-folder-outline' },
-        // { title: 'Clients', value: 'clients', icon: 'mdi-account-group-outline' },
+        { title: 'Service', value: 'services', icon: 'mdi-wrench' },
         { title: 'Workers', value: 'workers', icon: 'mdi-account-multiple-outline' },
         { title: 'Settings', value: 'setting', icon: 'mdi-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }
@@ -86,6 +97,8 @@ export default {
           return Material
         case 'projects':
           return Project
+        case 'services':
+          return Service
         case 'workers':
           return Worker
         case 'task':
@@ -107,24 +120,24 @@ export default {
   methods: {
     handleMenuItemClick(item) {
       if (item.value === 'logout') {
-        this.logoutDialog = true;
-        return;
+        this.logoutDialog = true
+        return
       }
 
-      this.activeItem = item.value;
+      this.activeItem = item.value
 
-      const currentState = history.state;
+      const currentState = history.state
       const url = this.$router.resolve({
         name: 'admin',
         params: { menuItem: this.activeItem }
-      }).href;
+      }).href
 
-      history.replaceState(currentState, '', url);
+      history.replaceState(currentState, '', url)
 
-      this.$router.push({ name: 'admin', params: { menuItem: this.activeItem } });
+      this.$router.push({ name: 'admin', params: { menuItem: this.activeItem } })
     },
     getFullName(user) {
-      return `${user.firstname} ${user.middlename} ${user.lastname}`;
+      return `${user.firstname} ${user.middlename} ${user.lastname}`
     },
     logout() {
       window.location.href = '/'

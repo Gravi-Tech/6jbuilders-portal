@@ -1,10 +1,26 @@
 import axios from 'axios'
-require('dotenv').config()
-const baseUrl = process.env.BASE_URL || 'http://localhost:3000/api'
+
+const baseUrl = 'http://localhost:3000/api'
+
+const api = axios.create({
+  baseURL: baseUrl,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
+const getAccessToken = () => {
+  return localStorage.getItem('accessToken')
+}
 
 export const addService = async (data) => {
   try {
-    const response = await axios.post(`${baseUrl}/services`, data)
+    const accessToken = getAccessToken()
+    const response = await api.post('/services', data, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
     return response.data
   } catch (error) {
     console.error(error)
@@ -14,7 +30,12 @@ export const addService = async (data) => {
 
 export const getService = async (serviceId) => {
   try {
-    const response = await axios.get(`${baseUrl}/services/${serviceId}`)
+    const accessToken = getAccessToken()
+    const response = await api.get(`/services/${serviceId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
     return response.data
   } catch (error) {
     console.error(error)
@@ -24,7 +45,22 @@ export const getService = async (serviceId) => {
 
 export const getAllServices = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/services`)
+    const accessToken = getAccessToken()
+    const response = await api.get('/services', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const getPublicServices = async () => {
+  try {
+    const response = await api.get('/public/services')
     return response.data
   } catch (error) {
     console.error(error)
@@ -34,7 +70,31 @@ export const getAllServices = async () => {
 
 export const updateService = async (serviceId, data) => {
   try {
-    const response = await axios.put(`${baseUrl}/services/${serviceId}`, data)
+    const accessToken = getAccessToken()
+    const response = await api.put(`/services/${serviceId}`, data, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const updateServiceStatus = async (serviceId, status) => {
+  try {
+    const accessToken = getAccessToken()
+    const response = await api.put(
+      `/services/${serviceId}/status`,
+      { status },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    )
     return response.data
   } catch (error) {
     console.error(error)
@@ -44,7 +104,12 @@ export const updateService = async (serviceId, data) => {
 
 export const deleteService = async (serviceId) => {
   try {
-    const response = await axios.delete(`${baseUrl}/services/${serviceId}`)
+    const accessToken = getAccessToken()
+    const response = await api.delete(`/services/${serviceId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
     return response.data
   } catch (error) {
     console.error(error)
