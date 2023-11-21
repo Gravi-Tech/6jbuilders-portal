@@ -107,8 +107,10 @@ export default defineComponent({
         const response = await login(this.adminId, this.adminPassword)
 
         const accessToken = response.accessToken
+        const id = response.id
 
         localStorage.setItem('accessToken', accessToken)
+        localStorage.setItem('id', id)
         axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
 
         this.$router.push('/6jbuilders/admin/dashboard')

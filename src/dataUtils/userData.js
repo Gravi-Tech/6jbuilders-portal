@@ -8,6 +8,8 @@ export const admin = [
         email: 'codwithjusher@gmail.com',
         phone: '123-456-7890',
         avatar: '/src/assets/images/user-default.png',
-        role: 'Admin'
+        role: 'superadmin',
+        status: 'Active',
+        accountNumber: 'AD21103791'
     }
 ];

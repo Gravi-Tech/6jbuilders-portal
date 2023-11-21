@@ -7,15 +7,29 @@
     ></v-skeleton-loader>
     <template v-else>
       <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
-        <v-list-item
-          :prepend-avatar="admin[0].avatar"
-          :title="getFullName(admin[0])"
-          :subtitle="admin[0].role"
-          nav
-        >
-          <template v-slot:append>
-            <v-btn variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
-          </template>
+        <v-list-item>
+          <div class="flex-container">
+            <div class="avatar">
+              <v-list-item-avatar>
+                <v-avatar size="x-small" :color="getAvatarColor(admin.firstname)">
+                  <span class="white--text">{{ getInitials(admin.firstname) }}</span>
+                </v-avatar>
+              </v-list-item-avatar>
+            </div>
+            <div class="fullname">
+              <v-list-item-content>
+                <v-list-item-title>{{ getFullName(admin) }}</v-list-item-title>
+                <v-list-item-subtitle>{{ admin.role }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </div>
+            <div class="actions">
+              <v-list-item-action>
+                <v-btn variant="text" icon @click.stop="rail = !rail">
+                  <v-icon>mdi-chevron-left</v-icon>
+                </v-btn>
+              </v-list-item-action>
+            </div>
+          </div>
         </v-list-item>
 
         <v-divider></v-divider>
@@ -74,7 +88,7 @@ import Setting from './SettingsDetails.vue'
 import Task from './TaskDetails.vue'
 import Worker from './WorkerDetails.vue'
 import Project from './ProjectDetails.vue'
-import { admin } from '../../dataUtils/userData'
+import { getAdmin } from '../../apirequests/admin'
 
 export default {
   data() {
@@ -126,10 +140,7 @@ export default {
     }
   },
   created() {
-    setTimeout(() => {
-      this.admin = admin
-      this.loading = false
-    }, 2000)
+    this.fetchAdminData()
     const currentRoute = this.$route.name
     const menuItem = currentRoute === 'admin' ? this.$route.params.menuItem : ''
     this.activeItem = menuItem || 'dashboard'
@@ -153,19 +164,57 @@ export default {
 
       this.$router.push({ name: 'admin', params: { menuItem: this.activeItem } })
     },
-    getFullName(user) {
-      return `${user.firstname} ${user.middlename} ${user.lastname}`
+    async fetchAdminData() {
+      try {
+        const adminId = localStorage.getItem('id')
+        const adminData = await getAdmin(adminId)
+        this.admin = adminData.data
+        this.loading = false
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    getFullName(admin) {
+      let fullName = ''
+      if (admin.firstname) {
+        fullName += admin.firstname
+      }
+      if (admin.middlename) {
+        fullName += ' ' + admin.middlename
+      }
+      if (admin.lastname) {
+        fullName += ' ' + admin.lastname
+      }
+      return fullName.trim()
+    },
+    getInitials(firstname) {
+      return firstname ? firstname.charAt(0).toUpperCase() : ''
+    },
+    getAvatarColor(firstname) {
+      const colors = ['blue', 'green', 'red', 'orange', 'purple']
+      const index = firstname ? firstname.charCodeAt(0) % colors.length : 0
+      return colors[index]
     },
     logout() {
       localStorage.removeItem('accessToken')
+      localStorage.removeItem('id')
       window.location.href = '/6jbuilders/login'
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .container {
   padding: 20px;
+}
+
+.white--text {
+  font-weight: bold;
 }
 </style>
