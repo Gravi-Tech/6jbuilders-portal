@@ -1,57 +1,69 @@
 <template>
-  <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
-    <v-list-item
-      :prepend-avatar="admin[0].avatar"
-      :title="getFullName(admin[0])"
-      :subtitle="admin[0].role"
-      nav
-    >
-      <template v-slot:append>
-        <v-btn variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
-      </template>
-    </v-list-item>
+  <div>
+    <v-skeleton-loader
+      v-if="loading"
+      boilerplate
+      type="list-item-avatar, list-item-title, list-item-subtitle, card, chip"
+    ></v-skeleton-loader>
+    <template v-else>
+      <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
+        <v-list-item
+          :prepend-avatar="admin[0].avatar"
+          :title="getFullName(admin[0])"
+          :subtitle="admin[0].role"
+          nav
+        >
+          <template v-slot:append>
+            <v-btn variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
+          </template>
+        </v-list-item>
 
-    <v-divider></v-divider>
+        <v-divider></v-divider>
 
-    <v-list dense nav>
-      <v-list-item
-        v-for="item in menuItems"
-        :key="item.value"
-        :title="item.title"
-        :value="item.value"
-        :active="activeItem === item.value"
-        @click="handleMenuItemClick(item)"
-      >
-        <template v-slot:prepend>
-          <v-tooltip bottom v-if="rail">
-            <template v-slot:activator="{ props }">
-              <v-icon v-bind="props" :color="activeItem === item.value ? 'blue darken-2' : 'black'">
+        <v-list dense nav>
+          <v-list-item
+            v-for="item in menuItems"
+            :key="item.value"
+            :title="item.title"
+            :value="item.value"
+            :active="activeItem === item.value"
+            @click="handleMenuItemClick(item)"
+          >
+            <template v-slot:prepend>
+              <v-tooltip bottom v-if="rail">
+                <template v-slot:activator="{ props }">
+                  <v-icon
+                    v-bind="props"
+                    :color="activeItem === item.value ? 'blue darken-2' : 'black'"
+                  >
+                    {{ item.icon }}
+                  </v-icon>
+                </template>
+                <span>{{ item.title }}</span>
+              </v-tooltip>
+              <v-icon v-if="!rail" :color="activeItem === item.value ? 'blue darken-2' : 'black'">
                 {{ item.icon }}
               </v-icon>
             </template>
-            <span>{{ item.title }}</span>
-          </v-tooltip>
-          <v-icon v-if="!rail" :color="activeItem === item.value ? 'blue darken-2' : 'black'">
-            {{ item.icon }}
-          </v-icon>
-        </template>
-      </v-list-item>
-    </v-list>
-  </v-navigation-drawer>
-  <section class="container">
-    <component :is="activeItemComponent"></component>
-    <v-dialog v-model="logoutDialog" persistent max-width="600px">
-      <v-card>
-        <v-card-title class="headline">Logout Confirmation</v-card-title>
-        <v-card-text>Are you sure you want to logout?</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="logoutDialog = false">Cancel</v-btn>
-          <v-btn color="red" text @click="logout">Logout</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </section>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+      <section class="container">
+        <component :is="activeItemComponent"></component>
+        <v-dialog v-model="logoutDialog" persistent max-width="600px">
+          <v-card>
+            <v-card-title class="headline">Logout Confirmation</v-card-title>
+            <v-card-text>Are you sure you want to logout?</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn text @click="logoutDialog = false">Cancel</v-btn>
+              <v-btn color="red" text @click="logout">Logout</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </section>
+    </template>
+  </div>
 </template>
 
 <script scoped>
@@ -67,7 +79,8 @@ import { admin } from '../../dataUtils/userData'
 export default {
   data() {
     return {
-      admin: admin,
+      admin: null,
+      loading: true,
       drawer: true,
       rail: true,
       activeItem: 'dashboard',
@@ -113,6 +126,10 @@ export default {
     }
   },
   created() {
+    setTimeout(() => {
+      this.admin = admin
+      this.loading = false
+    }, 2000)
     const currentRoute = this.$route.name
     const menuItem = currentRoute === 'admin' ? this.$route.params.menuItem : ''
     this.activeItem = menuItem || 'dashboard'
@@ -140,7 +157,8 @@ export default {
       return `${user.firstname} ${user.middlename} ${user.lastname}`
     },
     logout() {
-      window.location.href = '/'
+      localStorage.removeItem('accessToken')
+      window.location.href = '/6jbuilders/login'
     }
   }
 }
