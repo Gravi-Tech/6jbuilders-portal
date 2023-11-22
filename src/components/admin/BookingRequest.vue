@@ -24,7 +24,7 @@
       <div class="search-request">
         <div class="request">
           <v-text-field v-model="requestId" density="compact" append-inner-icon="mdi-magnify"
-            @click:append-inner="searchRequest(requestId)" label="Search request by ID" variant="outlined" single-line
+            @click:append-inner="searchRequest(requestId)" label="Search request by ID" flat variant="solo-filled" single-line
             hide-details></v-text-field>
           <span v-if="task404" style="font-style: italic; color: red">Task not found.</span>
         </div>
@@ -63,12 +63,6 @@
                   <a @click="openBookingDetails(row.id)" style="color: blue">{{
                     shortenId(row.id)
                   }}</a>
-                </template>
-                <template v-else-if="column.key === 'attachment'">
-                  <template v-if="row[column.key]">
-                    <a :href="row[column.key]" target="_blank">View Attachment</a>
-                  </template>
-                  <template v-else> No attachment </template>
                 </template>
                 <template v-else-if="column.key === 'status'">
                   <v-chip size="small" :color="getStatusChipColor(row[column.key])" text-color="white">{{ row[column.key]
@@ -232,15 +226,6 @@
                 </div>
               </div>
               <div class="group-details">
-                <div class="detail">
-                  <p>Attachment:</p>
-                  <v-text-field variant="outlined" density="compact" :disabled="isBookingRejected()"
-                    v-if="booking.attachment">
-                    <a :href="booking.attachment" target="_blank">View Attachment</a>
-                  </v-text-field>
-                  <v-text-field variant="outlined" density="compact" :disabled="isBookingRejected()" readonly v-else>No
-                    attachment</v-text-field>
-                </div>
                 <div class="detail">
                   <p>Scheduled Date:</p>
                   <v-text-field variant="outlined" density="compact" :value="booking.scheduleDate"

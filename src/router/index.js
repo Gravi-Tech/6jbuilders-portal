@@ -30,11 +30,6 @@ const router = createRouter({
       component: () => import('../views/LegalView.vue')
     },
     {
-      path: '/6jbuilders/login',
-      name: 'login',
-      component: () => import('../views/LoginView.vue')
-    },
-    {
       path: '/6jbuilders/password-recovery',
       name: 'password-recovery',
       meta: { requiresAuth: false },
@@ -135,6 +130,11 @@ const router = createRouter({
       name: 'StepDetails',
       component: () => import('../views/StepDetailsView.vue')
     },
+    {
+      path: '/6jbuilders/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue')
+    },
     // private url
     {
       path: '/6jbuilders/admin/:menuItem',
@@ -155,6 +155,17 @@ router.beforeEach((to, from, next) => {
     .join(' ')
 
   document.title = `6J Builders - ${routeName}`
+  const accessToken = localStorage.getItem('accessToken')
+  const isAdminRoute = to.matched.some((record) => record.path.startsWith('/6jbuilders/admin'))
+
+  if (isAdminRoute && !accessToken) {
+    return next('/6jbuilders/login')
+  }
+
+  if (to.name === 'login' && accessToken) {
+    return next('/6jbuilders/admin/dashboard')
+  }
+
   next()
 })
 

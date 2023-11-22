@@ -24,7 +24,7 @@
       <div class="search-task">
         <div class="task">
           <v-text-field v-model="taskId" density="compact" append-inner-icon="mdi-magnify"
-            @click:append-inner="searchTask(taskId)" label="Search task by ID" variant="outlined" single-line
+            @click:append-inner="searchTask(taskId)" label="Search task by ID" flat variant="solo-filled" single-line
             hide-details></v-text-field>
           <span v-if="task404" style="font-style: italic; color: red">Task not found.</span>
         </div>
