@@ -6,8 +6,14 @@
     <v-card class="new-project-card">
       <div class="sub-header">
         <div class="filter-container">
-          <v-autocomplete chips v-model="selectedFilter" label="Filter By Service" :items="serviceTypes" variant="solo"
-            class="filter-select"></v-autocomplete>
+          <v-autocomplete
+            chips
+            v-model="selectedFilter"
+            label="Filter By Service"
+            :items="serviceTypes"
+            variant="solo"
+            class="filter-select"
+          ></v-autocomplete>
         </div>
         <div class="refresh-container">
           <v-tooltip location="top">
@@ -38,10 +44,15 @@
               <td :colspan="tableColumns.length">No Request available.</td>
             </tr>
             <tr v-for="row in sortedTableData" :key="row.id">
-              <td v-for="column in tableColumns" :key="column.key" :class="{
-                hoverable: row[column.key] && row[column.key].length > 8,
-                'table-text': true
-              }" :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''">
+              <td
+                v-for="column in tableColumns"
+                :key="column.key"
+                :class="{
+                  hoverable: row[column.key] && row[column.key].length > 8,
+                  'table-text': true
+                }"
+                :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''"
+              >
                 <template v-if="column.key === 'id'">
                   <a @click="openProjectDetails(row.id)" style="color: blue">{{
                     shortenId(row.id)
@@ -61,10 +72,18 @@
         </table>
         <div class="row-filter">
           <label for="row-filter" class="row-filter__label">Row Filter:</label>
-          <select id="row-filter" class="row-filter__select" v-model="selectedRowFilter" @change="applyRowFilter"
-            :disabled="selectedFilter === 'All Service'">
-            <option v-for="rowFilterOption in rowFilterOptions" :key="rowFilterOption.value"
-              :value="rowFilterOption.value">
+          <select
+            id="row-filter"
+            class="row-filter__select"
+            v-model="selectedRowFilter"
+            @change="applyRowFilter"
+            :disabled="selectedFilter === 'All Service'"
+          >
+            <option
+              v-for="rowFilterOption in rowFilterOptions"
+              :key="rowFilterOption.value"
+              :value="rowFilterOption.value"
+            >
               {{ rowFilterOption.label }}
             </option>
           </select>
@@ -72,10 +91,11 @@
       </v-card-text>
     </v-card>
   </div>
+
   <div class="overlay" v-if="addProject">
     <div class="modal-card">
       <v-card theme="dark" variant="text" class="mt-12">
-        <v-card-title>Project Details</v-card-title>
+        <v-card-title class="mt-4">Project Details</v-card-title>
         <v-card-text>
           <div class="proj-details">
             <div class="project-task">
@@ -89,15 +109,31 @@
           </div>
           <div class="project-task">
             <p>Background Image *:</p>
-            <v-file-input v-model="bg_project_img" chips color="primary" density="compact"
-              accept="image/png, image/jpeg, image/bmp, image/jpg" label="Upload Background Image"
-              prepend-icon="mdi-camera" variant="outlined"></v-file-input>
+            <v-file-input
+              v-model="bg_project_img"
+              chips
+              color="primary"
+              density="compact"
+              accept="image/png, image/jpeg, image/bmp, image/jpg"
+              label="Upload Background Image"
+              prepend-icon="mdi-camera"
+              variant="outlined"
+            ></v-file-input>
           </div>
           <div class="project-task">
             <p>Project Images *:</p>
-            <v-file-input v-model="project_imgs" color="primary" density="compact" counter label="Upload Project Images"
-              multiple prepend-icon="mdi-camera" variant="outlined" accept="image/png, image/jpeg, image/bmp, image/jpg"
-              :show-size="1000">
+            <v-file-input
+              v-model="project_imgs"
+              color="primary"
+              density="compact"
+              counter
+              label="Upload Project Images"
+              multiple
+              prepend-icon="mdi-camera"
+              variant="outlined"
+              accept="image/png, image/jpeg, image/bmp, image/jpg"
+              :show-size="1000"
+            >
               <template v-slot:selection="{ fileNames }">
                 <template v-for="(fileName, index) in fileNames" :key="fileName">
                   <v-chip v-if="index < 2" color="primary" label size="small" class="me-2">
@@ -111,7 +147,13 @@
             </v-file-input>
           </div>
           <p class="description">Description *:</p>
-          <v-textarea v-model="description" variant="outlined" density="compact"></v-textarea>
+          <v-textarea
+            v-model="description"
+            variant="outlined"
+            density="compact"
+            no-resize
+            rows="3"
+          ></v-textarea>
         </v-card-text>
         <v-card-actions class="actions">
           <v-btn variant="tonal" color="red" @click="handleProjectCancel">Cancel</v-btn>
@@ -149,12 +191,21 @@
                 </v-breadcrumbs>
               </div>
               <div class="actions">
-                <v-btn class="edit-btn" prepend-icon="mdi-pencil" color="#FFC107" variant="tonal"
-                  @click="handleEditProject">Edit Details</v-btn>
-                <v-btn prepend-icon="mdi-trash-can-outline" color="red" variant="tonal"
-                  @click="handleDeleteProject">Delete
-                  project</v-btn>
-
+                <v-btn
+                  class="edit-btn"
+                  prepend-icon="mdi-pencil"
+                  color="#FFC107"
+                  variant="tonal"
+                  @click="handleEditProject"
+                  >Edit Details</v-btn
+                >
+                <v-btn
+                  prepend-icon="mdi-trash-can-outline"
+                  color="red"
+                  variant="tonal"
+                  @click="handleDeleteProject"
+                  >Delete project</v-btn
+                >
               </div>
             </div>
             <v-card variant="text">
@@ -169,42 +220,75 @@
             <div class="group-details">
               <div class="detail">
                 <p>Project ID</p>
-                <v-text-field variant="outlined" density="compact" :value="project.id" readonly></v-text-field>
+                <v-text-field
+                  variant="outlined"
+                  density="compact"
+                  :value="project.id"
+                  readonly
+                ></v-text-field>
               </div>
               <div class="detail">
                 <p>Task ID</p>
-                <v-text-field variant="outlined" density="compact" v-model="project.task_id" readonly
-                  :value="project.task_id"></v-text-field>
+                <v-text-field
+                  variant="outlined"
+                  density="compact"
+                  v-model="project.task_id"
+                  readonly
+                  :value="project.task_id"
+                ></v-text-field>
               </div>
               <div class="detail">
                 <p>Project Title</p>
-                <v-text-field variant="outlined" density="compact" v-model="project.title" :value="project.title"
-                  :readonly="!editingEnabled"></v-text-field>
+                <v-text-field
+                  variant="outlined"
+                  density="compact"
+                  v-model="project.title"
+                  :value="project.title"
+                  :readonly="!editingEnabled"
+                ></v-text-field>
               </div>
-
             </div>
             <div class="group-details">
               <div class="detail">
                 <p>Location</p>
-                <v-text-field variant="outlined" density="compact" v-model="project.location" :value="project.location"
-                  :readonly="!editingEnabled"></v-text-field>
+                <v-text-field
+                  variant="outlined"
+                  density="compact"
+                  v-model="project.location"
+                  :value="project.location"
+                  :readonly="!editingEnabled"
+                ></v-text-field>
               </div>
               <div class="detail">
                 <p>Date Finish</p>
-                <v-text-field variant="outlined" density="compact" v-model="project.date_completed"
-                  :value="project.date_completed"></v-text-field>
+                <v-text-field
+                  variant="outlined"
+                  density="compact"
+                  v-model="project.date_completed"
+                  :value="project.date_completed"
+                ></v-text-field>
               </div>
               <div class="detail">
                 <p>Service</p>
-                <v-text-field variant="outlined" density="compact" v-model="project.service" :value="project.service"
-                  :readonly="!editingEnabled"></v-text-field>
+                <v-text-field
+                  variant="outlined"
+                  density="compact"
+                  v-model="project.service"
+                  :value="project.service"
+                  :readonly="!editingEnabled"
+                ></v-text-field>
               </div>
             </div>
             <div class="group-details">
               <div class="description">
                 <p>Project Description</p>
-                <v-textarea variant="outlined" density="compact" v-model="project.description"
-                  :value="project.description" :readonly="!editingEnabled"></v-textarea>
+                <v-textarea
+                  variant="outlined"
+                  density="compact"
+                  v-model="project.description"
+                  :value="project.description"
+                  :readonly="!editingEnabled"
+                ></v-textarea>
               </div>
             </div>
             <v-card variant="text">
@@ -212,15 +296,14 @@
                 <v-card-text class="d-flex justify-center">
                   <div class="project-image">
                     <p>Project Background</p>
-                    <img :src="project.bg_project_img" alt="Project Background">
+                    <img :src="project.bg_project_img" alt="Project Background" />
                   </div>
                   <div class="p-img">
                     <p>Project Images</p>
                     <div class="project-images">
                       <div v-for="image in project.project_imgs" :key="image">
-                        <img :src="image" alt="Project Image">
+                        <img :src="image" alt="Project Image" />
                       </div>
-
                     </div>
                   </div>
                 </v-card-text>
@@ -232,10 +315,24 @@
                   <div v-if="editingEnabled" class="edit-actions">
                     <v-row justify="end">
                       <div class="form-actions-btn">
-                        <v-btn density="compact" prepend-icon="mdi-close" variant="tonal" size="large"
-                          color="red-lighten-1" @click="handleCancelEdit">Cancel</v-btn>
-                        <v-btn density="compact" prepend-icon="mdi-content-save" variant="tonal" size="large"
-                          color="blue-lighten-1" @click="handleSaveEdit">Save</v-btn>
+                        <v-btn
+                          density="compact"
+                          prepend-icon="mdi-close"
+                          variant="tonal"
+                          size="large"
+                          color="red-lighten-1"
+                          @click="handleCancelEdit"
+                          >Cancel</v-btn
+                        >
+                        <v-btn
+                          density="compact"
+                          prepend-icon="mdi-content-save"
+                          variant="tonal"
+                          size="large"
+                          color="blue-lighten-1"
+                          @click="handleSaveEdit"
+                          >Save</v-btn
+                        >
                       </div>
                     </v-row>
                   </div>
@@ -252,14 +349,30 @@
           </div>
         </v-alert>
       </div>
-      <v-alert class="popup-message" v-if="showPopup" variant="tonal" :type="popupType" :title="popupTitle" :value="true"
-        dismissible @input="hidePopupMessage">
+      <v-alert
+        class="popup-message"
+        v-if="showPopup"
+        variant="tonal"
+        :type="popupType"
+        :title="popupTitle"
+        :value="true"
+        dismissible
+        @input="hidePopupMessage"
+      >
         {{ popupMessage }}
       </v-alert>
     </div>
   </transition>
-  <v-alert class="popup-message" v-if="showPopup" variant="tonal" :type="popupType" :title="popupTitle" :value="true"
-    dismissible @input="hidePopupMessage">
+  <v-alert
+    class="popup-message"
+    v-if="showPopup"
+    variant="tonal"
+    :type="popupType"
+    :title="popupTitle"
+    :value="true"
+    dismissible
+    @input="hidePopupMessage"
+  >
     {{ popupMessage }}
   </v-alert>
 </template>
@@ -269,7 +382,7 @@ import { taskData } from '../../dataUtils/tableData'
 import { projects } from '../../dataUtils/projectData'
 import { serviceTypes } from '../../dataUtils/serviceType'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 export default {
   components: {
@@ -292,7 +405,7 @@ export default {
         { key: 'title', label: 'Title', maxLength: 8 },
         { key: 'service', label: 'Service', maxLength: 8 },
         { key: 'location', label: 'Property Address', maxLength: 20 },
-        { key: 'date_completed', label: 'Date Finish', maxLength: null },
+        { key: 'date_completed', label: 'Date Finish', maxLength: null }
       ],
       selectedProjectId: null,
       projectId: null,
@@ -375,7 +488,7 @@ export default {
           return null
         }
       },
-      set(value) { }
+      set(value) {}
     },
     hasIdParam() {
       const urlSearchParams = new URLSearchParams(window.location.search)
@@ -449,8 +562,9 @@ export default {
         urlSearchParams.delete('id')
       }
 
-      const newUrl = `${window.location.origin}${window.location.pathname
-        }?${urlSearchParams.toString()}`
+      const newUrl = `${window.location.origin}${
+        window.location.pathname
+      }?${urlSearchParams.toString()}`
       history.pushState(null, null, newUrl)
     },
     getProjectId(id) {
@@ -469,19 +583,19 @@ export default {
     },
 
     handleDeleteProject() {
-      this.deleteConfirmation = true;
+      this.deleteConfirmation = true
     },
     deleteProject() {
       // Perform the delete operation, e.g., make an API request
 
       // Reset the project data or navigate to a different page if needed
-      const successMessage = 'The project has been successfully deleted.';
-      this.showPopupMessage('success', 'Deleted', successMessage);
-      this.deleteConfirmation = false;
-      this.editingEnabled = false;
+      const successMessage = 'The project has been successfully deleted.'
+      this.showPopupMessage('success', 'Deleted', successMessage)
+      this.deleteConfirmation = false
+      this.editingEnabled = false
     },
     cancelDelete() {
-      this.deleteConfirmation = false;
+      this.deleteConfirmation = false
     },
     handleAddProject() {
       this.addProject = true
@@ -491,73 +605,84 @@ export default {
         title: this.originalProject.title,
         service: this.originalProject.service,
         location: this.originalProject.location,
-        description: this.originalProject.description,
+        description: this.originalProject.description
       })
 
       this.editingEnabled = false
     },
     handleSaveEdit() {
-      if (this.project.title === '' || this.project.service === '' || this.project.location === '' || this.project.description === '') {
-        const errorMessage = 'Please fill in all fields';
-        this.showPopupMessage('error', 'Incomplete Fields', errorMessage);
-        return;
+      if (
+        this.project.title === '' ||
+        this.project.service === '' ||
+        this.project.location === '' ||
+        this.project.description === ''
+      ) {
+        const errorMessage = 'Please fill in all fields'
+        this.showPopupMessage('error', 'Incomplete Fields', errorMessage)
+        return
       }
 
       // Perform the save operation, e.g., make an API request
       const successMessage = 'Changes saved successfully.'
       this.showPopupMessage('success', 'Success', successMessage)
-      this.editingEnabled = false;
+      this.editingEnabled = false
     },
 
     handleProjectCancel() {
       this.addProject = false
-      this.taskID = '';
-      this.title = '';
-      this.bg_project_img = '';
-      this.project_imgs = [];
-      this.description = '';
+      this.taskID = ''
+      this.title = ''
+      this.bg_project_img = ''
+      this.project_imgs = []
+      this.description = ''
     },
     handleProjectAdd() {
-      if (!this.taskID || !this.title || !this.bg_project_img || this.project_imgs.length === 0 || !this.description) {
-        const errorMessage = 'Please fill in all fields';
-        this.showPopupMessage('error', 'Incomplete Fields', errorMessage);
-        return;
+      if (
+        !this.taskID ||
+        !this.title ||
+        !this.bg_project_img ||
+        this.project_imgs.length === 0 ||
+        !this.description
+      ) {
+        const errorMessage = 'Please fill in all fields'
+        this.showPopupMessage('error', 'Incomplete Fields', errorMessage)
+        return
       }
 
-      const existingProject = projects.find((project) => project.id === this.taskID);
+      const existingProject = projects.find((project) => project.id === this.taskID)
 
       if (existingProject) {
-        const errorMessage = 'Project already exists for the task ID';
-        this.showPopupMessage('error', 'Cannot Create', errorMessage);
-        return;
+        const errorMessage = 'Project already exists for the task ID'
+        this.showPopupMessage('error', 'Cannot Create', errorMessage)
+        return
       }
 
-      const task = taskData.find((task) => task.id === this.taskID);
+      const task = taskData.find((task) => task.id === this.taskID)
 
       if (!task) {
-        const errorMessage = 'Task not found!';
-        this.showPopupMessage('error', 'Not Found', errorMessage);
-        return;
+        const errorMessage = 'Task not found!'
+        this.showPopupMessage('error', 'Not Found', errorMessage)
+        return
       }
 
       if (task.status !== 'Completed') {
-        const errorMessage = 'Task must be completed';
-        this.showPopupMessage('error', 'Unable to Create', errorMessage);
-        return;
+        const errorMessage = 'Task must be completed'
+        this.showPopupMessage('error', 'Unable to Create', errorMessage)
+        return
       }
 
-      const { location, date_completed, service } = task;
-      const projectImageURLs = [];
+      const { location, date_completed, service } = task
+      const projectImageURLs = []
 
       for (const file of this.project_imgs) {
-        const reader = new FileReader();
+        const reader = new FileReader()
         reader.onload = () => {
-          const base64String = reader.result.split(',')[1];
-          const mimeType = reader.result.split(',')[0].split(':')[1].split(';')[0];
-          const fileURL = `data:${mimeType};base64,${base64String}`;
-          projectImageURLs.push(fileURL);
-        };
-        reader.readAsDataURL(file);
+          const base64String = reader.result.split(',')[1]
+          const mimeType = reader.result.split(',')[0].split(':')[1].split(';')[0]
+          const fileURL = `data:${mimeType};base64,${base64String}`
+          projectImageURLs.push(fileURL)
+        }
+        reader.readAsDataURL(file)
       }
 
       const projectCreated = {
@@ -570,18 +695,18 @@ export default {
         description: this.description,
         location: location,
         service: service
-      };
+      }
 
-      this.toProjectDB.push(projectCreated);
+      this.toProjectDB.push(projectCreated)
 
-      this.taskID = '';
-      this.title = '';
-      this.bg_project_img = '';
-      this.project_imgs = [];
-      this.description = '';
-      const successMessage = 'The project has been successfully created';
-      this.showPopupMessage('success', 'Created', successMessage);
-      this.addProject = false;
+      this.taskID = ''
+      this.title = ''
+      this.bg_project_img = ''
+      this.project_imgs = []
+      this.description = ''
+      const successMessage = 'The project has been successfully created'
+      this.showPopupMessage('success', 'Created', successMessage)
+      this.addProject = false
     },
     showPopupMessage(type, title, message) {
       this.popupType = type
@@ -598,7 +723,7 @@ export default {
       this.popupType = ''
       this.popupTitle = ''
       this.popupMessage = ''
-    },
+    }
   },
   destroyed() {
     clearTimeout(this.alertTimeout)
