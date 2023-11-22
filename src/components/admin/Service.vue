@@ -1,6 +1,14 @@
 <template>
   <div>
-    <v-card flat>
+    <div class="loading-container" v-if="isLoading">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="44"
+        :width="4"
+      ></v-progress-circular>
+    </div>
+    <v-card v-else flat>
       <v-card-title>
         <div class="headline">
           <span>Services</span>
@@ -30,16 +38,9 @@
           ></v-text-field>
         </div>
       </div>
-      <div class="loading-container" v-if="isLoading">
-        <v-progress-circular
-          indeterminate
-          color="primary"
-          :size="44"
-          :width="4"
-        ></v-progress-circular>
-      </div>
-      <table v-else class="table">
-        <thead>
+
+      <table class="table">
+        <thead style="font-size: 14px">
           <tr>
             <th>ID</th>
             <th>Title</th>
@@ -50,7 +51,7 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style="font-size: 13px">
           <template v-if="displayedServices.length > 0">
             <tr v-for="service in displayedServices" :key="service._id">
               <td>{{ service._id }}</td>
@@ -388,9 +389,6 @@ export default {
     handleItemsPerPageChange() {
       this.currentPage = 1
     },
-    handleSearch() {
-      this.currentPage = 1
-    },
     showPopupMessage(type, title, message) {
       this.popupType = type
       this.popupTitle = title
@@ -422,6 +420,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 80vh;
 }
 .sub__headers {
   display: flex;
