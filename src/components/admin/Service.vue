@@ -1,6 +1,14 @@
 <template>
   <div>
-    <v-card flat>
+    <div class="loading-container" v-if="isLoading">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="44"
+        :width="4"
+      ></v-progress-circular>
+    </div>
+    <v-card v-else flat>
       <v-card-title>
         <div class="headline">
           <span>Services</span>
@@ -30,16 +38,9 @@
           ></v-text-field>
         </div>
       </div>
-      <div class="loading-container" v-if="isLoading">
-        <v-progress-circular
-          indeterminate
-          color="primary"
-          :size="44"
-          :width="4"
-        ></v-progress-circular>
-      </div>
-      <table v-else class="table">
-        <thead>
+
+      <table class="table">
+        <thead style="font-size: 13px">
           <tr>
             <th>ID</th>
             <th>Title</th>
@@ -50,7 +51,7 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style="font-size: 13px">
           <template v-if="displayedServices.length > 0">
             <tr v-for="service in displayedServices" :key="service._id">
               <td>{{ service._id }}</td>
@@ -60,10 +61,16 @@
               <td>{{ formatDate(service.updatedDate) }}</td>
               <td>{{ service.status }}</td>
               <td>
-                <v-btn @click="handleEditService(service._id)" color="secondary" flat class="mr-6"
+                <v-btn
+                  size="small"
+                  @click="handleEditService(service._id)"
+                  color="secondary"
+                  flat
+                  class="mr-6"
                   >Edit</v-btn
                 >
                 <v-btn
+                  size="small"
                   @click="handleDeleteService(service._id)"
                   color="error"
                   variant="outlined"
@@ -196,9 +203,9 @@ export default {
     return {
       search: '',
       services: [],
-      itemsPerPage: 5,
+      itemsPerPage: 10,
       currentPage: 1,
-      options: [5, 10, 20, 50, 100],
+      options: [10, 20, 50, 100],
       isLoading: true,
       showPopup: false,
       popupType: '',
@@ -252,9 +259,7 @@ export default {
     async fetchServices() {
       try {
         this.isLoading = true
-
-        await new Promise((resolve) => setTimeout(resolve, 2000 + Math.random() * 1000))
-
+        // await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000))
         const response = await getAllServices()
         this.services = response.data
       } catch (error) {
@@ -388,9 +393,6 @@ export default {
     handleItemsPerPageChange() {
       this.currentPage = 1
     },
-    handleSearch() {
-      this.currentPage = 1
-    },
     showPopupMessage(type, title, message) {
       this.popupType = type
       this.popupTitle = title
@@ -422,6 +424,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 80vh;
 }
 .sub__headers {
   display: flex;
@@ -442,6 +445,7 @@ export default {
 .items-per-page__label {
   margin-right: 0.5rem;
   font-weight: 600;
+  font-size: 10px;
 }
 
 .items-per-page__select select {
@@ -457,18 +461,17 @@ export default {
 
 .table th,
 .table td {
-  padding: 12px;
+  padding: 5px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
 .table th {
   font-weight: bold;
-  background-color: #f5f5f5;
 }
 
 .table tr:hover {
-  background-color: #f9f9f9;
+  background-color: #f5f5ff;
 }
 
 .table td:last-child {

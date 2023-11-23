@@ -6,8 +6,9 @@
     <v-card class="new-booking-card">
       <div class="sub-header">
         <div class="filter-container">
-          <v-autocomplete chips v-model="selectedFilter" label="Filter By Service" :items="serviceTypes" variant="solo"
-            class="filter-select"></v-autocomplete>
+          <v-autocomplete chips v-model="selectedFilter" label="Filter By Service" 
+          :items="services"  :loading="loading" variant="solo"
+          class="filter-select"></v-autocomplete>
         </div>
         <div class="refresh-container">
           <v-tooltip location="top">
@@ -78,7 +79,7 @@
         <div class="row-filter">
           <label for="row-filter" class="row-filter__label">Row Filter:</label>
           <select id="row-filter" class="row-filter__select" v-model="selectedRowFilter" @change="applyRowFilter"
-            :disabled="selectedFilter === 'All Service'">
+            :disabled="selectedFilter === 'All'">
             <option v-for="rowFilterOption in rowFilterOptions" :key="rowFilterOption.value"
               :value="rowFilterOption.value">
               {{ rowFilterOption.label }}
@@ -211,7 +212,7 @@
                 <div class="detail">
                   <p>Requested Service:</p>
                   <v-select variant="outlined" density="compact" v-model="booking.service" :value="booking.service"
-                    :items="serviceTypes" :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-select>
+                  :items="services"  :loading="loading" :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-select>
                 </div>
                 <div class="detail">
                   <p>Location:</p>
@@ -283,8 +284,8 @@
 import { requestData, workersData } from '../../dataUtils/tableData'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { dataSubjectTypes } from '../../dataUtils/dataSubjectType'
-import { serviceTypes } from '../../dataUtils/serviceType'
 import BookingForm from '../Book.vue';
+import { getAllServices } from '../../apirequests/service'
 
 export default {
   components: {
@@ -294,7 +295,8 @@ export default {
   data() {
     return {
       dataSubjectTypes: dataSubjectTypes,
-      serviceTypes: serviceTypes,
+      services: [],
+      loading: false,
       editingEnabled: false,
       showDatePicker: false,
       selectedDate: null,
@@ -303,7 +305,7 @@ export default {
       selectedWorkers: null,
       bookingRequests: [],
       originalBooking: {},
-      selectedFilter: 'All Service',
+      selectedFilter: 'All',
       selectedRowFilter: 'all',
       alertTimeout: null,
       tableColumns: [
@@ -345,7 +347,7 @@ export default {
       return null
     },
     filteredTableData() {
-      if (this.selectedFilter === 'All Service') {
+      if (this.selectedFilter === 'All') {
         return this.bookingRequests
       }
 
@@ -407,7 +409,27 @@ export default {
 
     this.checkURLForBookingId()
   },
+  created() {
+    this.fetchServices()
+    this.bookingRequests = requestData
+    if (this.hasIdParam) {
+      const urlSearchParams = new URLSearchParams(window.location.search)
+      const id = urlSearchParams.get('id')
+      this.openBookingDetails(id)
+    }
+  },
   methods: {
+    async fetchServices() {
+      try {
+        this.loading = true
+        const response = await getAllServices()
+        this.services = response.data.map((service) => service.title)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
     refreshPage() {
       location.reload()
     },
@@ -751,19 +773,11 @@ export default {
   },
   watch: {
     selectedFilter(newVal) {
-      if (newVal === 'All Service') {
+      if (newVal === 'All') {
         this.selectedRowFilter = 'all'
       }
     }
   },
-  created() {
-    this.bookingRequests = requestData
-    if (this.hasIdParam) {
-      const urlSearchParams = new URLSearchParams(window.location.search)
-      const id = urlSearchParams.get('id')
-      this.openBookingDetails(id)
-    }
-  }
 }
 </script>
 
