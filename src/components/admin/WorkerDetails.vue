@@ -20,8 +20,17 @@
           </v-tooltip>
         </div>
       </div>
-
       <div class="search-request">
+        <div class="sub__headers">
+        <div class="items-per-page">
+          <label class="items-per-page__label" for="itemsPerPage">Items per Page:</label>
+          <div class="items-per-page__select">
+            <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
+              <option v-for="option in options" :key="option" :value="option">{{ option }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
         <div class="text-center mt-6">
           <v-dialog v-model="showModal" max-width="700">
             <template v-slot:activator="{ on }">
@@ -247,7 +256,13 @@ export default {
       popupType: '',
       popupTitle: '',
       popupMessage: '',
-      showModal: false
+      showModal: false,
+      name:'',
+      position: null,
+      address:'',
+      experience:'',
+      contact:''
+
     }
   },
   computed: {
