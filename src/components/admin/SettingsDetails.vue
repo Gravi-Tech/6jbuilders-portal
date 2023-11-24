@@ -21,7 +21,7 @@
                   variant="outlined"
                   density="compact"
                   v-model="admin.accountNumber"
-                  readonly
+
                 ></v-text-field>
               </span>
             </div>
@@ -142,8 +142,9 @@ export default {
         email: '',
         phone: '',
         address: '',
-        update_date: null
-      }
+        update_date: null,
+      },
+      oldEmail: '',
     }
   },
   created() {
@@ -155,6 +156,7 @@ export default {
         const adminId = localStorage.getItem('id')
         const adminData = await getAdmin(adminId)
         this.admin = adminData.data
+        this.oldEmail = adminData.data.email
         this.loading = false
       } catch (error) {
         console.error(error)
@@ -193,7 +195,7 @@ export default {
               return
             } else {
               this.admin.update_date = new Date()
-              updateAdmin(adminId, this.admin)
+              updateAdmin(adminId, {...this.admin, oldEmail: this.oldEmail})
                 .then((response) => {
                   const successMessage = 'The profile has been successfully updated.'
                   this.showPopupMessage('success', 'Updated', successMessage)

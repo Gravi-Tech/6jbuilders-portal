@@ -98,5 +98,23 @@ export const checkAccountNumber = async (accountNumber) => {
   } catch (error) {
     console.error('Failed to check account number:', error)
     throw error
+}
+}
+export const checkEmail = async (email) => {
+  try {
+    const accessToken = getAccessToken()
+    const response = await api.put(
+      `${baseUrl}/admins/checkEmail`,
+      { email },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    console.error('Failed to check email address:', error)
+    throw error
   }
 }

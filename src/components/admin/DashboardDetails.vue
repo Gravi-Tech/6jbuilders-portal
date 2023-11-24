@@ -16,7 +16,6 @@
         <v-card-title>Clients</v-card-title>
         <v-card-text>
           <div class="total">{{ totalClients }}</div>
-
         </v-card-text>
       </v-card>
       <v-card class="overview-card">
@@ -24,7 +23,6 @@
         <v-card-title>Remaining Task</v-card-title>
         <v-card-text>
           <div class="total">{{ totalRemainingTasks }}</div>
-
         </v-card-text>
       </v-card>
       <v-card class="overview-card">
@@ -32,7 +30,6 @@
         <v-card-title>Workers</v-card-title>
         <v-card-text>
           <div class="total">{{ totalWorkers }}</div>
-
         </v-card-text>
       </v-card>
       <!-- <v-card class="overview-card">
@@ -100,9 +97,20 @@
                 </div>
                 <v-divider :thickness="2" class="border-opacity-100" color="info"></v-divider>
                 <div class="notification-footer">
-                  <v-chip prepend-icon="mdi-eye" size="small" variant="outlined" color="info"
-                    @click="viewDetails(notification)">View Details</v-chip>
-                  <v-chip prepend-icon="mdi-calendar" size="small" variant="outlined" color="success">
+                  <v-chip
+                    prepend-icon="mdi-eye"
+                    size="small"
+                    variant="outlined"
+                    color="info"
+                    @click="viewDetails(notification)"
+                    >View Details</v-chip
+                  >
+                  <v-chip
+                    prepend-icon="mdi-calendar"
+                    size="small"
+                    variant="outlined"
+                    color="success"
+                  >
                     {{ notification.createdDate }}
                   </v-chip>
                 </div>
@@ -112,11 +120,29 @@
         </v-container>
       </v-card>
     </div>
+    <v-row>
+  <v-col cols="12" sm="4" class="mt-n4">
+    <v-card class="mx-auto" height="400px">
+      <v-card-item title="Projects">
+        <Doughnut/>
+      </v-card-item>
+    </v-card>
+  </v-col>
+  <v-col cols="12" sm="8" class="mt-n4">
+    <v-card class="mx-auto" height="400px">
+      <v-card-item title="Reports">
+        <Bar class="mt-n4"/>
+      </v-card-item>
+    </v-card>
+  </v-col>
+</v-row>
   </div>
 </template>
 
 <script>
 import { requestData, taskData, workersData } from '../../dataUtils/tableData'
+import Doughnut from '../Doughnut.vue'
+import Bar from '../Bar.vue'
 
 export default {
   data() {
@@ -165,6 +191,11 @@ export default {
       return sortedBookings.slice(0, 12)
     }
   },
+  components:{
+    Doughnut,
+    Bar,
+  },
+
   methods: {
     shortenId(id) {
       return id.substring(0, 8)
