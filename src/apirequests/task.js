@@ -27,11 +27,7 @@ export const addTask = async (data) => {
   }
 }
 
-<<<<<<< HEAD
-export const getTask = async (taskId) => {
-=======
 export const getTaskById = async (taskId) => {
->>>>>>> 0fa8f8071c4fadd56d870d3a9cd2bd17673743d8
   try {
     const accessToken = getAccessToken()
     const response = await api.get(`/tasks/${taskId}`, {
@@ -76,8 +72,6 @@ export const updateTask = async (taskId, data) => {
   }
 }
 
-<<<<<<< HEAD
-=======
 export const updateTaskIsVisited = async (taskId, isVisited) => {
   try {
     const accessToken = getAccessToken()
@@ -97,7 +91,6 @@ export const updateTaskIsVisited = async (taskId, isVisited) => {
   }
 }
 
->>>>>>> 0fa8f8071c4fadd56d870d3a9cd2bd17673743d8
 export const deleteTask = async (taskId) => {
   try {
     const accessToken = getAccessToken()
@@ -112,8 +105,6 @@ export const deleteTask = async (taskId) => {
     throw error
   }
 }
-<<<<<<< HEAD
-=======
 
 export const checkTaskStatus = async (taskId) => {
   try {
@@ -163,4 +154,3 @@ export const completeTask = async (taskId, totalAmount) => {
     throw error
   }
 }
->>>>>>> 0fa8f8071c4fadd56d870d3a9cd2bd17673743d8
