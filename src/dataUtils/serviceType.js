@@ -1,11 +1,11 @@
 export const serviceTypes = [
-  {
-    id: '1e80d0a6-82e5-4e7a-93d5-954fde8a7bee',
-    title: 'All Service',
-    short_title: 'all',
-    createdDate: '2021-01-01',
-    updatedDate: '2021-01-01'
-  },
+  // {
+  //   id: '1e80d0a6-82e5-4e7a-93d5-954fde8a7bee',
+  //   title: 'All Service',
+  //   short_title: 'all',
+  //   createdDate: '2021-01-01',
+  //   updatedDate: '2021-01-01'
+  // },
   {
     id: '1e80d0a6-82e5-4e7a-93d5-954fde8a7b1a',
     title: 'Cabinets',

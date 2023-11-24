@@ -3,31 +3,25 @@
     <v-skeleton-loader
       v-if="loading"
       boilerplate
-      type="list-item-avatar, list-item-title, list-item-subtitle, card, chip"
+      type="icon card, chip"
     ></v-skeleton-loader>
     <template v-else>
       <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
         <v-list-item>
           <div class="flex-container">
             <div class="avatar">
-              <v-list-item-avatar>
-                <v-avatar size="x-small" :color="getAvatarColor(admin.firstname)">
-                  <span class="white--text">{{ getInitials(admin.firstname) }}</span>
-                </v-avatar>
-              </v-list-item-avatar>
+              <v-avatar size="x-small" :color="getAvatarColor(admin.firstname)">
+                <span class="white--text">{{ getInitials(admin.firstname) }}</span>
+              </v-avatar>
             </div>
             <div class="fullname">
-              <v-list-item-content>
-                <v-list-item-title>{{ getFullName(admin) }}</v-list-item-title>
-                <v-list-item-subtitle>{{ admin.role }}</v-list-item-subtitle>
-              </v-list-item-content>
+              <v-list-item-title>{{ getFullName(admin) }}</v-list-item-title>
+              <v-list-item-subtitle>{{ admin.role }}</v-list-item-subtitle>
             </div>
             <div class="actions">
-              <v-list-item-action>
-                <v-btn variant="text" icon @click.stop="rail = !rail">
-                  <v-icon>mdi-chevron-left</v-icon>
-                </v-btn>
-              </v-list-item-action>
+              <v-btn variant="text" icon @click.stop="rail = !rail">
+                <v-icon>mdi-chevron-left</v-icon>
+              </v-btn>
             </div>
           </div>
         </v-list-item>
@@ -80,7 +74,7 @@
   </div>
 </template>
 
-<script scoped>
+<script>
 import Dashboard from './DashboardDetails.vue'
 import Service from './Service.vue'
 import Booking from './BookingRequest.vue'
