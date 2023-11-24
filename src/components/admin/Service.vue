@@ -40,7 +40,7 @@
       </div>
 
       <table class="table">
-        <thead style="font-size: 14px">
+        <thead style="font-size: 13px">
           <tr>
             <th>ID</th>
             <th>Title</th>
@@ -61,10 +61,16 @@
               <td>{{ formatDate(service.updatedDate) }}</td>
               <td>{{ service.status }}</td>
               <td>
-                <v-btn @click="handleEditService(service._id)" color="secondary" flat class="mr-6"
+                <v-btn
+                  size="small"
+                  @click="handleEditService(service._id)"
+                  color="secondary"
+                  flat
+                  class="mr-6"
                   >Edit</v-btn
                 >
                 <v-btn
+                  size="small"
                   @click="handleDeleteService(service._id)"
                   color="error"
                   variant="outlined"
@@ -197,9 +203,9 @@ export default {
     return {
       search: '',
       services: [],
-      itemsPerPage: 5,
+      itemsPerPage: 10,
       currentPage: 1,
-      options: [5, 10, 20, 50, 100],
+      options: [10, 20, 50, 100],
       isLoading: true,
       showPopup: false,
       popupType: '',
@@ -253,9 +259,7 @@ export default {
     async fetchServices() {
       try {
         this.isLoading = true
-
-        await new Promise((resolve) => setTimeout(resolve, 2000 + Math.random() * 1000))
-
+        // await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000))
         const response = await getAllServices()
         this.services = response.data
       } catch (error) {
@@ -441,6 +445,7 @@ export default {
 .items-per-page__label {
   margin-right: 0.5rem;
   font-weight: 600;
+  font-size: 10px;
 }
 
 .items-per-page__select select {
@@ -456,18 +461,17 @@ export default {
 
 .table th,
 .table td {
-  padding: 12px;
+  padding: 5px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
 .table th {
   font-weight: bold;
-  background-color: #f5f5f5;
 }
 
 .table tr:hover {
-  background-color: #f9f9f9;
+  background-color: #f5f5ff;
 }
 
 .table td:last-child {

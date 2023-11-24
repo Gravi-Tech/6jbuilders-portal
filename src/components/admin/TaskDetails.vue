@@ -3,8 +3,41 @@
     <header class="header">
       <h1 class="task_request-title">Task</h1>
     </header>
-    <v-card flat class="new-task-card">
+    <div class="loading-container" v-if="isLoading">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="44"
+        :width="4"
+      ></v-progress-circular>
+    </div>
+    <v-card v-else flat class="new-task-card">
       <v-card-text class="table-container">
+        <div class="sub__headers">
+          <div class="items-per-page">
+            <label class="items-per-page__label" for="itemsPerPage">Items per page:</label>
+            <div class="items-per-page__select">
+              <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
+                <option v-for="option in options" :key="option" :value="option">
+                  {{ option }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="search">
+            <v-text-field
+              class="mr-4"
+              v-model="search"
+              append-inner-icon="mdi-magnify"
+              density="compact"
+              label="Search to filter table"
+              single-line
+              flat
+              hide-details
+              variant="solo-filled"
+            ></v-text-field>
+          </div>
+        </div>
         <table class="table">
           <thead style="font-size: 12px">
             <tr>
@@ -12,10 +45,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-if="filteredTableData.length === 0">
-              <td :colspan="tableColumns.length">No Request available.</td>
+            <tr v-if="displayedTask.length === 0">
+              <td :colspan="tableColumns.length">No Task available.</td>
             </tr>
-            <tr v-for="row in sortedTableData" :key="row.id">
+            <tr v-for="row in displayedTask" :key="row.id">
               <td
                 v-for="column in tableColumns"
                 :key="column.key"
@@ -46,6 +79,12 @@
             </tr>
           </tbody>
         </table>
+        <v-pagination
+          v-model="currentPage"
+          :length="totalPages"
+          @input="handlePageChange"
+          class="mt-4"
+        ></v-pagination>
       </v-card-text>
     </v-card>
     <transition name="slide">
@@ -102,26 +141,30 @@
                         <span v-if="isReasonEmpty" class="reasonError">Reason is required</span>
                         <v-select
                           v-model="selectedCancellationReason"
-                          :items="cancellationReasons"
+                          :items="reasons"
+                          :loading="loading"
                           :item-props="itemPropsForReason"
                           density="comfortable"
                           variant="solo"
                           label="Cancellation Reason"
+                          @change="handleCancelReasonChange"
                         ></v-select>
                         <div
                           class="other-reason"
                           v-if="
                             selectedCancellationReason &&
-                            selectedCancellationReason.reason === 'Other Reason'
+                            selectedCancellationReason === 'Other Reason'
                           "
                         >
                           <p style="color: grey; font-size: 14px">Provide a reason:</p>
                           <span v-if="isReasonEmpty" class="reasonError">Reason is required</span>
                           <v-textarea
                             v-model="otherReason"
-                            bg-color="grey-lighten-3"
                             color="blue"
-                            variant="outlined"
+                            variant="solo-filled"
+                            auto-grow
+                            rows="2"
+                            row-height="20"
                           ></v-textarea>
                         </div>
                       </v-card-text>
@@ -140,9 +183,31 @@
                     prepend-icon="mdi-check-circle"
                     color="#00C853"
                     variant="outlined"
-                    @click="completeTask"
+                    @click="openCompleteTaskDialog()"
                     >complete task</v-btn
                   >
+                  <v-dialog v-model="showCompleteTaskDialog" max-width="400px">
+                    <v-card>
+                      <v-card-title>Complete Task</v-card-title>
+                      <v-card-subtitle>Provide ammount to complete a task</v-card-subtitle>
+                      <v-card-text>
+                        <div class="detail">
+                          <p>Total Project Cost:</p>
+                          <v-text-field
+                            prepend-inner-icon="mdi-currency-php"
+                            variant="outlined"
+                            density="compact"
+                            v-model="total_amount"
+                            placeholder="0.00"
+                          ></v-text-field>
+                        </div>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-btn color="primary" @click="completeTask">Submit</v-btn>
+                        <v-btn @click="closeCompleteTaskDialog">Cancel</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </div>
               </div>
               <v-card variant="text">
@@ -253,25 +318,6 @@
                     </div>
                   </div>
                 </v-container>
-              </div>
-              <div class="group-details" v-if="addCompleteForm">
-                <v-alert color="white" theme="dark" border="top" border-color="blue">
-                  <v-card class="h-100 w-100" variant="text">
-                    <v-card-title>Complete Task</v-card-title>
-                    <v-card-subtitle>Provide Details to Complete</v-card-subtitle>
-                    <v-card-text>
-                      <div class="detail">
-                        <p>Total Project Cost:</p>
-                        <v-text-field
-                          prepend-inner-icon="mdi-currency-php"
-                          variant="outlined"
-                          density="compact"
-                          placeholder="0.00"
-                        ></v-text-field>
-                      </div>
-                    </v-card-text>
-                  </v-card>
-                </v-alert>
               </div>
               <div class="group-details">
                 <div class="detail">
@@ -408,7 +454,7 @@
               <v-card variant="text">
                 <v-container>
                   <v-card-text>
-                    <div v-if="editingEnabled || addCompleteForm" class="edit-actions">
+                    <div v-if="editingEnabled" class="edit-actions">
                       <v-row justify="end">
                         <div class="form-actions-btn">
                           <v-btn
@@ -462,10 +508,20 @@
 </template>
 
 <script>
-import { taskData, workersData, cancellationReasons } from '../../dataUtils/tableData'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { getAllServices } from '../../apirequests/service'
-import { getAllTask } from '../../apirequests/task'
+import { getAllReason } from '../../apirequests/reason'
+
+import {
+  getAllTask,
+  getTaskById,
+  updateTaskIsVisited,
+  checkTaskStatus,
+  completeTask,
+  updateTask
+} from '../../apirequests/task'
+import { getAllWorkers } from '../../apirequests/workers'
+import { getAssigneesByTaskId } from '../../apirequests/assignees'
 
 export default {
   components: {
@@ -473,18 +529,29 @@ export default {
   },
   data() {
     return {
+      search: '',
       services: [],
-      originaltask: {},
+      reasons: [],
+      selectedCancellationReason: null,
+      showOtherReason: false,
+      showCancellationForm: false,
+      isReasonEmpty: false,
+      cancellationReason: '',
+      otherReason: '',
+      itemsPerPage: 10,
+      currentPage: 1,
+      options: [10, 20, 50, 100],
       taskRequest: [],
       selectedTaskId: null,
+      workers: [],
+      selectedWorkers: [],
+      showCompleteTaskDialog: false,
       loading: false,
-      selectedFilter: 'All',
-      selectedRowFilter: 'all',
+      isLoading: true,
+      total_amount: '',
       editingEnabled: false,
       showDatePicker: false,
       inspection_date: null,
-      workers: workersData,
-      selectedWorkers: [],
       taskId: null,
       alertTimeout: null,
       tableColumns: [
@@ -506,13 +573,6 @@ export default {
       popupType: '',
       popupTitle: '',
       popupMessage: '',
-      selectedCancellationReason: null,
-      cancellationReasons: cancellationReasons,
-      showOtherReason: false,
-      showCancellationForm: false,
-      isReasonEmpty: false,
-      cancellationReason: '',
-      otherReason: '',
       task404: false,
       addCompleteForm: false
     }
@@ -520,11 +580,6 @@ export default {
   computed: {
     mode() {
       return this.editingEnabled ? 'Editing Mode' : 'View Mode'
-    },
-    sortedTableData() {
-      return this.filteredTableData.sort((a, b) => {
-        return new Date(a.schedule_date) - new Date(b.schedule_date)
-      })
     },
     formattedDate() {
       if (this.task.inspection_date) {
@@ -534,36 +589,44 @@ export default {
       }
       return null
     },
-    filteredTableData() {
-      if (this.selectedFilter === 'All') {
-        return this.taskRequest
-      }
+    filteredTask() {
+      const searchTerm = this.search.toLowerCase().trim()
+      const sortedTasks = this.taskRequest.sort((a, b) => {
+        const statusOrder = {
+          'In Progress': 1,
+          Completed: 2,
+          Cancelled: 3
+        }
 
-      const searchText = this.selectedFilter.toLowerCase()
+        const statusA = a.status
+        const statusB = b.status
 
-      let filteredData = this.taskRequest.filter((row) => {
-        const rowData = row.service.toLowerCase()
-        return rowData.includes(searchText)
+        if (statusOrder[statusA] < statusOrder[statusB]) {
+          return -1
+        }
+        if (statusOrder[statusA] > statusOrder[statusB]) {
+          return 1
+        }
+        return 0
       })
 
-      const selectedRowFilter = this.selectedRowFilter
-
-      if (['5', '10', '20', '50', 'all'].includes(selectedRowFilter)) {
-        const numEnd =
-          selectedRowFilter === 'all' ? filteredData.length : parseInt(selectedRowFilter)
-        filteredData = filteredData.slice(0, Math.min(numEnd, filteredData.length))
-      }
-
-      return filteredData
+      return sortedTasks.filter((task) => {
+        return (
+          task.fullName.toLowerCase().includes(searchTerm) ||
+          task.mobileNumber.toLowerCase().includes(searchTerm) ||
+          task.service.toLowerCase().includes(searchTerm) ||
+          task.status.toLowerCase().includes(searchTerm) ||
+          task.location.toLowerCase().includes(searchTerm)
+        )
+      })
     },
-    rowFilterOptions() {
-      return [
-        { label: 'All Rows', value: 'all' },
-        { label: '5', value: '5' },
-        { label: '10', value: '10' },
-        { label: '20', value: '20' },
-        { label: '50', value: '50' }
-      ]
+    displayedTask() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage
+      const endIndex = startIndex + this.itemsPerPage
+      return this.filteredTask.slice(startIndex, endIndex)
+    },
+    totalPages() {
+      return Math.ceil(this.filteredTask.length / this.itemsPerPage)
     },
     task: {
       get() {
@@ -599,18 +662,77 @@ export default {
   },
   created() {
     this.fetchServices()
+    this.fetchReasons()
     this.getAllTasks()
-
-    if (this.hasIdParam) {
-      const urlSearchParams = new URLSearchParams(window.location.search)
-      const id = urlSearchParams.get('_id')
-      this.openTaskDetails(id)
-      // this.selectedWorkers = this.getInitialSelectedWorkers(id)
-    } else {
-      this.selectedWorkers = []
-    }
+    this.updateIsVisited()
+    this.getTaskById()
+    this.getAllWorkers()
+      .then(() => {
+        if (this.hasIdParam) {
+          const urlSearchParams = new URLSearchParams(window.location.search)
+          const id = urlSearchParams.get('_id')
+          this.openTaskDetails(id)
+        } else {
+          this.selectedWorkers = []
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   },
   methods: {
+    openTaskDetails(_id) {
+      this.selectedTaskId = _id
+      this.task = this.getTaskById(this.selectedTaskId)
+      this.updateTaskDetails(this.selectedTaskId)
+      this.fetchAssigneesByTaskId(this.selectedTaskId)
+    },
+    async openCompleteTaskDialog() {
+      if (this.task.status === 'Cancelled') {
+        const failedMessage =
+          'The task has been cancelled. Update the status to In Progress in order to Complete the task.'
+        this.showPopupMessage('error', 'Failed to Complete', failedMessage)
+        return
+      }
+      this.showCompleteTaskDialog = true
+    },
+    closeCompleteTaskDialog() {
+      this.showCompleteTaskDialog = false
+    },
+    async completeTask() {
+      try {
+        await completeTask(this.selectedTaskId, this.total_amount)
+        this.closeCompleteTaskDialog()
+        this.getAllTasks()
+      } catch (error) {
+        console.error(error)
+        // Handle error if needed
+      }
+    },
+    async fetchAssigneesByTaskId(taskId) {
+      try {
+        const response = await getAssigneesByTaskId(taskId)
+        const assignees = response.assignees.data[0]?.assignees || []
+
+        const selectedWorkerIds = assignees.map((assignee) => assignee.worker_id)
+        this.selectedWorkers = this.workers.filter((worker) =>
+          selectedWorkerIds.includes(worker._id)
+        )
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async getAllWorkers() {
+      try {
+        this.loading = true
+        const response = await getAllWorkers()
+        this.workers = response.data
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
     async fetchServices() {
       try {
         this.loading = true
@@ -622,13 +744,33 @@ export default {
         this.loading = false
       }
     },
+    async fetchReasons() {
+      try {
+        this.loading = true
+        const response = await getAllReason()
+        this.reasons = response.data.map((reason) => reason.reason)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
     async getAllTasks() {
       try {
+        this.isLoading = true
         const response = await getAllTask()
         this.taskRequest = response.data
       } catch (error) {
         console.error(error)
+      } finally {
+        this.isLoading = false
       }
+    },
+    handlePageChange(page) {
+      this.currentPage = page
+    },
+    handleItemsPerPageChange() {
+      this.currentPage = 1
     },
     shortenText(text, maxLength) {
       if (text && maxLength && text.length > maxLength) {
@@ -656,23 +798,11 @@ export default {
     },
     checkURLForTaskId() {
       const urlSearchParams = new URLSearchParams(window.location.search)
-      const urlId = urlSearchParams.get('_id')
+      const urlId = urlSearchParams.get('id')
 
       if (urlId && urlId !== this.selectedTaskId) {
-        const panelElement = document.querySelector('.task-details-panel')
-        panelElement.classList.remove('slide-leave')
-        panelElement.classList.remove('slide-leave-to')
-        panelElement.classList.remove('slide-leave-active')
-
-        this.closeTaskDetails()
         this.openTaskDetails(urlId)
       }
-    },
-    openTaskDetails(_id) {
-      this.selectedTaskId = _id
-      this.task = this.getTaskById(this.selectedTaskId)
-      this.updateTaskDetails(this.selectedTaskId)
-      // this.selectedWorkers = this.getInitialSelectedWorkers(this.selectedTaskId)
     },
     closeTaskDetails() {
       this.selectedTaskId = null
@@ -735,109 +865,15 @@ export default {
       this.cancellationReason = ''
       this.otherReason = ''
       this.cancelFormManuallyClosed = true
-      this.task.status = this.originalTask.status
-    },
-    completeTask() {
-      if (this.task.status === 'Cancelled') {
-        const failedMessage =
-          'The task has been cancelled. Update the status to In Progress in order to Complete the task.'
-        this.showPopupMessage('error', 'Failed to Complete', failedMessage)
-        return
-      }
-      this.addCompleteForm = true
     },
     cancelComplete() {
       this.addCompleteForm = false
     },
     editTask() {
       this.editingEnabled = true
-      this.originalTask = { ...this.task }
     },
-    cancelEdit() {
-      if (this.editingEnabled) {
-        Object.assign(this.task, {
-          fullName: this.originalTask.fullName,
-          email: this.originalTask.email,
-          service: this.originalTask.service,
-          location: this.originalTask.location,
-          mobileNumber: this.originalTask.mobileNumber,
-          status: this.originalTask.status
-        })
-
-        this.editingEnabled = false
-      } else if (this.addCompleteForm) {
-        this.addCompleteForm = false
-      }
-    },
-    saveEdit() {
-      const invalidFields = this.getInvalidFields()
-      const isFieldsEdited = this.areFieldsEdited()
-
-      if (invalidFields.length > 0) {
-        const errorMessage = `Please fill in the following fields: ${invalidFields.join(', ')}`
-        this.showPopupMessage('error', 'Validation Error', errorMessage)
-        return
-      }
-
-      if (isFieldsEdited || this.task.status !== this.originalTask.status) {
-        Object.assign(this.originalTask, {
-          fullName: this.task.fullName,
-          email: this.task.email,
-          service: this.task.service,
-          location: this.task.location,
-          mobileNumber: this.task.mobileNumber,
-          status: this.task.status
-        })
-
-        const successMessage = 'Changes saved successfully.'
-        this.showPopupMessage('success', 'Saved', successMessage)
-      } else {
-        const noChangesMessage = 'No changes were made.'
-        this.showPopupMessage('info', 'Info', noChangesMessage)
-      }
-
-      this.editingEnabled = false
-    },
-    areFieldsEdited() {
-      const editableFields = [
-        'fullName',
-        'email',
-        'service',
-        'location',
-        'mobileNumber',
-        'assignees',
-        'schedule_date',
-        'status'
-      ]
-
-      for (const field of editableFields) {
-        const fieldValue = this.task[field]
-        const originalFieldValue = this.originalTask[field]
-
-        if (fieldValue !== originalFieldValue) {
-          return true
-        }
-      }
-
-      return false
-    },
-    getInvalidFields() {
-      const invalidFields = []
-      if (!this.task.fullName) {
-        invalidFields.push('Full Name')
-      }
-      if (!this.task.service) {
-        invalidFields.push('Service')
-      }
-      if (!this.task.location) {
-        invalidFields.push('Location')
-      }
-      if (!this.task.mobileNumber) {
-        invalidFields.push('Mobile Number')
-      }
-
-      return invalidFields
-    },
+    cancelEdit() {},
+    async saveEdit() {},
     showPopupMessage(type, title, message) {
       this.popupType = type
       this.popupTitle = title
@@ -885,22 +921,15 @@ export default {
           return 'gray'
       }
     },
-    // getInitialSelectedWorkers(taskId) {
-    //   const task = taskData.find((task) => task._id === taskId)
-    //   const selectedWorkerIds = task.assignees.map((worker) => worker.id)
-    //   const selectedWorkers = this.workers.filter((worker) => selectedWorkerIds.includes(worker.id))
-
-    //   return selectedWorkers
-    // },
     itemProps(item) {
       return {
-        title: item.name,
+        title: item.fullName,
         subtitle: item.position
       }
     },
     itemPropsForReason(item) {
       return {
-        title: item.reason
+        reason: item.reason
       }
     },
     resetTask() {
@@ -908,17 +937,30 @@ export default {
       this.selectedWorkers = []
       this.task404 = true
     },
-    updateIsVisited(_id) {
-      const task = this.getTaskById(_id)
-      const currentDate = new Date()
-      const formattedDate = currentDate.toLocaleDateString('en-US')
-      const formattedTime = currentDate.toLocaleTimeString('en-US')
-      const location = this.task.location
+    async updateIsVisited() {
+      if (!this.selectedTaskId) {
+        return
+      }
 
-      const updateIsVisited = `Location Visit Update: Date: ${formattedDate}, Time: ${formattedTime}, Location: ${location}. Thank you for visiting the location and updating the status. The visit has been recorded successfully.`
+      try {
+        const task = await getTaskById(this.selectedTaskId)
+        const currentDate = new Date()
+        const formattedDate = currentDate.toLocaleDateString('en-US')
+        const formattedTime = currentDate.toLocaleTimeString('en-US')
+        const location = task.data.location
 
-      this.showPopupMessage('success', 'Visit Update', updateIsVisited)
-      this.task.isVisited = true
+        const visitUpdateMessage = `Location Visit Update: Date: ${formattedDate}, Time: ${formattedTime}, Location: ${location}. Thank you for visiting the location and updating the status. The visit has been recorded successfully.`
+
+        await updateTaskIsVisited(this.selectedTaskId, true)
+
+        this.showPopupMessage('success', 'Visit Update', visitUpdateMessage)
+        this.task.isVisited = true
+
+        this.getAllTasks()
+      } catch (error) {
+        console.error(error)
+        throw error
+      }
     }
   }
 }
@@ -1167,21 +1209,45 @@ export default {
   margin-bottom: 30px;
 }
 
-.search-task {
+.sub__headers {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  margin: 1rem;
 }
 
-.search-task .task {
-  width: 500px;
+.search {
+  max-width: 400px;
+  width: 100%;
+}
+.items-per-page {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
 }
 
-.search-task .filter-status {
-  width: 200px;
+.items-per-page__label {
+  font-size: 10px;
+  margin-right: 0.5rem;
+  font-weight: 500;
 }
 
+.items-per-page__select select {
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+}
+
+.table tr:hover {
+  background-color: #f5f5ff;
+}
 .summary {
   display: flex;
   justify-content: start;
@@ -1191,25 +1257,5 @@ export default {
 .summary .summary-details {
   max-width: 400px;
   width: 300px;
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-card {
-  width: 600px;
-  background-color: white;
-  padding: 10px;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 </style>
