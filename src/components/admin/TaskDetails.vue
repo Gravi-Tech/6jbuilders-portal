@@ -153,7 +153,7 @@
                           class="other-reason"
                           v-if="
                             selectedCancellationReason &&
-                            selectedCancellationReason === 'Other Reason'
+                            selectedCancellationReason.reason === 'Other Reason'
                           "
                         >
                           <p style="color: grey; font-size: 14px">Provide a reason:</p>
@@ -189,16 +189,25 @@
                   <v-dialog v-model="showCompleteTaskDialog" max-width="400px">
                     <v-card>
                       <v-card-title>Complete Task</v-card-title>
-                      <v-card-subtitle>Provide ammount to complete a task</v-card-subtitle>
+                      <v-card-subtitle>Provide amount to complete a task</v-card-subtitle>
                       <v-card-text>
                         <div class="detail">
                           <p>Total Project Cost:</p>
+                          <span
+                            v-if="errorAmount"
+                            style="font-size: x-small; color: red; font-style: italic"
+                            >please enter amount</span
+                          >
                           <v-text-field
                             prepend-inner-icon="mdi-currency-php"
                             variant="outlined"
                             density="compact"
-                            v-model="total_amount"
+                            v-model.number="total_amount"
                             placeholder="0.00"
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            required
                           ></v-text-field>
                         </div>
                       </v-card-text>
@@ -242,7 +251,7 @@
                     <div class="btn-mode">
                       <v-chip variant="outlined">{{ mode }}</v-chip>
                     </div>
-                    <v-row justify="center">
+                    <v-row justify="start">
                       <div class="group-details">
                         <div class="workers">
                           <v-select
@@ -255,7 +264,7 @@
                             :items="workers"
                             :item-props="itemProps"
                             v-model="selectedWorkers"
-                            :readonly="!editingEnabled"
+                            readonly
                           ></v-select>
                         </div>
                         <div class="detail" v-if="task.status !== 'Completed'">
@@ -265,10 +274,20 @@
                             density="comfortable"
                             variant="solo"
                             v-model="task.inspection_date"
-                            @click:append-inner="showDatePicker = editingEnabled"
+                            @click:append-inner="showDatePicker = true"
                             :value="formattedDate"
                           ></v-text-field>
                         </div>
+
+                        <v-dialog v-model="showDatePicker">
+                          <v-row justify="end">
+                            <v-date-picker
+                              v-model="selectedDate"
+                              show-adjacent-months
+                              @input="updateInspectionDate"
+                            ></v-date-picker>
+                          </v-row>
+                        </v-dialog>
                         <div class="detail" v-if="task.status !== 'Completed'">
                           <v-select
                             prepend-inner-icon="mdi-clock-outline"
@@ -289,15 +308,6 @@
                         </div>
                       </div>
                     </v-row>
-
-                    <v-dialog v-model="showDatePicker">
-                      <v-row justify="end">
-                        <v-date-picker
-                          v-model="inspection_date"
-                          show-adjacent-months
-                        ></v-date-picker>
-                      </v-row>
-                    </v-dialog>
                   </v-container>
                 </v-card-text>
               </v-card>
@@ -516,9 +526,9 @@ import {
   getAllTask,
   getTaskById,
   updateTaskIsVisited,
-  checkTaskStatus,
   completeTask,
-  updateTask
+  updateTask,
+  cancelTask
 } from '../../apirequests/task'
 import { getAllWorkers } from '../../apirequests/workers'
 import { getAssigneesByTaskId } from '../../apirequests/assignees'
@@ -574,7 +584,8 @@ export default {
       popupTitle: '',
       popupMessage: '',
       task404: false,
-      addCompleteForm: false
+      addCompleteForm: false,
+      errorAmount: false
     }
   },
   computed: {
@@ -680,7 +691,17 @@ export default {
         console.error(error)
       })
   },
+
   methods: {
+    updateInspectionDate() {
+      const selectedDate = new Date(this.selectedDate)
+      const year = selectedDate.getFullYear()
+      const month = String(selectedDate.getMonth() + 1).padStart(2, '0')
+      const day = String(selectedDate.getDate()).padStart(2, '0')
+      const formattedDate = `${year}-${month}-${day}`
+      this.task.inspection_date = formattedDate
+      this.showDatePicker = false
+    },
     openTaskDetails(_id) {
       this.selectedTaskId = _id
       this.task = this.getTaskById(this.selectedTaskId)
@@ -698,15 +719,22 @@ export default {
     },
     closeCompleteTaskDialog() {
       this.showCompleteTaskDialog = false
+      this.errorAmount = false
     },
     async completeTask() {
       try {
+        if (!this.total_amount || parseFloat(this.total_amount) === 0) {
+          this.errorAmount = true
+          return
+        }
+
         await completeTask(this.selectedTaskId, this.total_amount)
         this.closeCompleteTaskDialog()
         this.getAllTasks()
+        this.showPopupMessage('success', 'Task Completed', 'Task has been successfully completed.')
       } catch (error) {
         console.error(error)
-        // Handle error if needed
+        this.showPopupMessage('error', 'Error', error.message)
       }
     },
     async fetchAssigneesByTaskId(taskId) {
@@ -744,17 +772,6 @@ export default {
         this.loading = false
       }
     },
-    async fetchReasons() {
-      try {
-        this.loading = true
-        const response = await getAllReason()
-        this.reasons = response.data.map((reason) => reason.reason)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        this.loading = false
-      }
-    },
     async getAllTasks() {
       try {
         this.isLoading = true
@@ -765,6 +782,71 @@ export default {
       } finally {
         this.isLoading = false
       }
+    },
+    async fetchReasons() {
+      try {
+        this.loading = true
+        const response = await getAllReason()
+        this.reasons = response.data.map((reason) => ({
+          id: reason._id,
+          reason: reason.reason
+        }))
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
+    submitCancellation() {
+      if (!this.selectedCancellationReason) {
+        this.isReasonEmpty = true
+        return
+      }
+
+      if (
+        this.selectedCancellationReason.reason === 'Other Reason' &&
+        this.otherReason.trim() === ''
+      ) {
+        this.isReasonEmpty = true
+        return
+      }
+
+      this.isReasonEmpty = false
+
+      const reasonId =
+        this.selectedCancellationReason.reason === 'Other Reason'
+          ? null
+          : this.selectedCancellationReason.id
+      const reason =
+        this.selectedCancellationReason.reason === 'Other Reason' ? this.otherReason.trim() : null
+
+      cancelTask(this.selectedTaskId, reasonId, reason)
+        .then((response) => {
+          this.task = response.data
+          const successMessage = 'Cancellation request has been successfully submitted. Thank you.'
+          this.showPopupMessage('success', 'Cancellation Completed', successMessage)
+          this.getAllTasks()
+        })
+        .catch((error) => {
+          console.error(error)
+          const errorMessage = 'Failed to submit cancellation request. Please try again.'
+          this.showPopupMessage('error', 'Cancellation Failed', errorMessage)
+        })
+
+      this.showCancellationForm = false
+      this.cancellationReason = ''
+      this.otherReason = ''
+    },
+    itemPropsForReason(item) {
+      return {
+        title: item.reason
+      }
+    },
+    cancelCancellation() {
+      this.showCancellationForm = false
+      this.cancellationReason = ''
+      this.otherReason = ''
+      this.cancelFormManuallyClosed = true
     },
     handlePageChange(page) {
       this.currentPage = page
@@ -831,7 +913,7 @@ export default {
       return this.taskRequest.find((task) => task._id === _id)
     },
     isTaskRejected() {
-      return this.task.status === 'Rejected'
+      return this.task.status === 'Cancelled'
     },
     cancelTask() {
       if (this.task.status === 'Cancelled') {
@@ -841,30 +923,6 @@ export default {
       }
 
       this.showCancellationForm = true
-    },
-    submitCancellation() {
-      if (
-        this.selectedCancellationReason === null ||
-        (this.selectedCancellationReason.reason === 'Other Reason' && this.otherReason === '')
-      ) {
-        this.isReasonEmpty = true
-        return
-      }
-
-      const successMessage = 'Cancellation request has been successfully submitted. Thank you.'
-      this.showPopupMessage('success', 'Cancellation Completed', successMessage)
-
-      this.task.status = 'Cancelled'
-
-      this.showCancellationForm = false
-      this.cancellationReason = ''
-      this.otherReason = ''
-    },
-    cancelCancellation() {
-      this.showCancellationForm = false
-      this.cancellationReason = ''
-      this.otherReason = ''
-      this.cancelFormManuallyClosed = true
     },
     cancelComplete() {
       this.addCompleteForm = false
@@ -927,11 +985,6 @@ export default {
         subtitle: item.position
       }
     },
-    itemPropsForReason(item) {
-      return {
-        reason: item.reason
-      }
-    },
     resetTask() {
       this.task = null
       this.selectedWorkers = []
@@ -963,6 +1016,14 @@ export default {
       }
     }
   }
+  //   watch: {
+  //   selectedWorkers: {
+  //     handler: function (newSelectedWorkers) {
+  //       console.log('Selected Workers:', newSelectedWorkers)
+  //     },
+  //     deep: true
+  //   }
+  // }
 }
 </script>
 
