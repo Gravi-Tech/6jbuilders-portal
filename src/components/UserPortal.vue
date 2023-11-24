@@ -16,7 +16,7 @@
         <div class="login-buttons">
           <v-card-title class="text-center">ADMIN PORTAL</v-card-title>
           <v-card-text>
-            <v-form v-model="form">
+            <v-form v-model="form" style="width: 450px;">
               <v-text-field
                 density="compact"
                 prepend-inner-icon="mdi-account-box-outline"
@@ -46,7 +46,7 @@
               <div class="errorMessage" v-if="errorMessage">
                 <p>{{ errorMessage }}</p>
               </div>
-              <div class="text-subtitle-1 text-medium-emphasis d-flex align-center mb-1">
+              <!-- <div class="text-subtitle-1 text-medium-emphasis d-flex align-center mb-1">
                 <router-link
                   to="/6jbuilders/password-recovery"
                   class="text-caption text-decoration-none text-blue"
@@ -54,19 +54,19 @@
                 >
                   Forgot password?
                 </router-link>
-              </div>
-              <v-card class="mb-12" color="surface-variant" variant="tonal">
+              </div> -->
+              <!-- <v-card class="mb-12" color="surface-variant" variant="tonal">
                 <v-card-text class="text-medium-emphasis text-caption">
                   Warning: After 3 consecutive failed login attempts, your account will be
                   temporarily locked for three hours. If you must login now, you can also click
                   "Forgot login password?" below to reset the login password.
                 </v-card-text>
-              </v-card>
+              </v-card> -->
             </v-form>
           </v-card-text>
           <v-card-actions class="justify-space-around">
             <v-btn color="success" variant="tonal" :loading="loading" @click="handleLogin"
-              >Sign In</v-btn
+             style="width: 300px;" size="large" >Sign In</v-btn
             >
           </v-card-actions>
           <v-btn class="mt-6" size="small" variant="outlined" @click="navTo('home')"
@@ -129,9 +129,9 @@ export default defineComponent({
     required(v) {
       return !!v || 'Field is required'
     },
-    initiatePasswordRecovery() {
-      this.$router.push('/6jbuilders/password-recovery')
-    }
+    // initiatePasswordRecovery() {
+    //   this.$router.push('/6jbuilders/password-recovery')
+    // }
   }
 })
 </script>
