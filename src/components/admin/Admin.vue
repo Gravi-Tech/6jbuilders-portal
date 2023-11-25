@@ -1,15 +1,11 @@
 <template>
   <div>
-    <v-skeleton-loader
-      v-if="loading"
-      boilerplate
-      type="icon card, chip"
-    ></v-skeleton-loader>
+    <v-skeleton-loader v-if="loading" boilerplate type="icon card, chip"></v-skeleton-loader>
     <template v-else>
       <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
         <v-list-item>
           <div class="flex-container">
-            <div class="avatar">
+            <div class="avatar mr-2">
               <v-avatar size="x-small" :color="getAvatarColor(admin.firstname)">
                 <span class="white--text">{{ getInitials(admin.firstname) }}</span>
               </v-avatar>
@@ -97,9 +93,9 @@ export default {
         { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-check-outline' },
         { title: 'Task', value: 'task', icon: 'mdi-checkbox-multiple-outline' },
         { title: 'Project', value: 'projects', icon: 'mdi-folder-outline' },
-        { title: 'Service', value: 'services', icon: 'mdi-wrench' },
-        { title: 'Workers', value: 'workers', icon: 'mdi-account-multiple-outline' },
-        { title: 'Settings', value: 'setting', icon: 'mdi-cog-outline' },
+        { title: 'Settings', value: 'services', icon: 'mdi-cogs' },
+        { title: 'Workers', value: 'workers', icon: 'mdi-account-hard-hat-outline' },
+        { title: 'Profile', value: 'profile', icon: 'mdi-account-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }
       ],
       logoutDialog: false
@@ -126,7 +122,7 @@ export default {
           return Task
         case 'feedback':
           return Feedback
-        case 'setting':
+        case 'profile':
           return Setting
         default:
           return Dashboard

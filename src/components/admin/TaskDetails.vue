@@ -1,92 +1,106 @@
 <template>
   <div class="task_request">
-    <header class="header">
-      <h1 class="task_request-title">Task</h1>
-    </header>
-    <div class="loading-container" v-if="isLoading">
-      <v-progress-circular
-        indeterminate
-        color="primary"
-        :size="44"
-        :width="4"
-      ></v-progress-circular>
-    </div>
-    <v-card v-else flat class="new-task-card">
-      <v-card-text class="table-container">
-        <div class="sub__headers">
-          <div class="items-per-page">
-            <label class="items-per-page__label" for="itemsPerPage">Items per page:</label>
-            <div class="items-per-page__select">
-              <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
-                <option v-for="option in options" :key="option" :value="option">
-                  {{ option }}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="search">
-            <v-text-field
-              class="mr-4"
-              v-model="search"
-              append-inner-icon="mdi-magnify"
-              density="compact"
-              label="Search to filter table"
-              single-line
-              flat
-              hide-details
-              variant="solo-filled"
-            ></v-text-field>
-          </div>
+    <v-tabs v-model="tab" color="primary">
+      <v-tab value="task">
+        <v-icon start> mdi-table-eye </v-icon>
+        task table
+      </v-tab>
+    </v-tabs>
+    <v-window v-model="tab">
+      <v-window-item value="task">
+        <div class="loading-container" v-if="isLoading">
+          <v-progress-circular
+            indeterminate
+            color="primary"
+            :size="44"
+            :width="4"
+          ></v-progress-circular>
         </div>
-        <table class="table">
-          <thead style="font-size: 12px">
-            <tr>
-              <th v-for="column in tableColumns" :key="column.key">{{ column.label }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="displayedTask.length === 0">
-              <td :colspan="tableColumns.length">No Task available.</td>
-            </tr>
-            <tr v-for="row in displayedTask" :key="row.id">
-              <td
-                v-for="column in tableColumns"
-                :key="column.key"
-                :class="{
-                  hoverable: row[column.key] && row[column.key].length > 8,
-                  'table-text': true
-                }"
-                :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''"
-              >
-                <template v-if="column.key === '_id'">
-                  <a @click="openTaskDetails(row._id)" style="color: blue">{{ row._id }}</a>
-                </template>
-                <template v-else-if="column.key === 'status'">
-                  <v-chip
-                    size="small"
-                    :color="getStatusChipColor(row[column.key])"
-                    text-color="white"
-                    >{{ row[column.key] }}</v-chip
+        <v-card v-else flat class="new-task-card">
+          <v-card-text class="table-container">
+            <div class="sub__headers">
+              <div class="items-per-page">
+                <label class="items-per-page__label" for="itemsPerPage">Items per page:</label>
+                <div class="items-per-page__select">
+                  <select
+                    v-model="itemsPerPage"
+                    @change="handleItemsPerPageChange"
+                    id="itemsPerPage"
                   >
-                </template>
-                <template v-else-if="isDateColumn(column.key)">
-                  {{ formatDate(row[column.key]) }}
-                </template>
-                <template v-else>
-                  {{ row[column.key] ? shortenText(row[column.key], column.maxLength) : '-' }}
-                </template>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <v-pagination
-          v-model="currentPage"
-          :length="totalPages"
-          @input="handlePageChange"
-          class="mt-4"
-        ></v-pagination>
-      </v-card-text>
-    </v-card>
+                    <option v-for="option in options" :key="option" :value="option">
+                      {{ option }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="search">
+                <v-text-field
+                  class="mr-4"
+                  v-model="search"
+                  append-inner-icon="mdi-magnify"
+                  density="compact"
+                  label="Search to filter table"
+                  single-line
+                  flat
+                  hide-details
+                  variant="solo-filled"
+                ></v-text-field>
+              </div>
+            </div>
+            <table class="table">
+              <thead style="font-size: 12px">
+                <tr>
+                  <th v-for="column in tableColumns" :key="column.key">{{ column.label }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="displayedTask.length === 0">
+                  <td :colspan="tableColumns.length">No Task available.</td>
+                </tr>
+                <tr v-for="row in displayedTask" :key="row.id">
+                  <td
+                    v-for="column in tableColumns"
+                    :key="column.key"
+                    :class="{
+                      hoverable: row[column.key] && row[column.key].length > 8,
+                      'table-text': true
+                    }"
+                    :data-tooltip="
+                      row[column.key] && row[column.key].length > 8 ? row[column.key] : ''
+                    "
+                  >
+                    <template v-if="column.key === '_id'">
+                      <a @click="openTaskDetails(row._id)" style="color: blue">{{ row._id }}</a>
+                    </template>
+                    <template v-else-if="column.key === 'status'">
+                      <v-chip
+                        size="small"
+                        :color="getStatusChipColor(row[column.key])"
+                        text-color="white"
+                        >{{ row[column.key] }}</v-chip
+                      >
+                    </template>
+                    <template v-else-if="isDateColumn(column.key)">
+                      {{ formatDate(row[column.key]) }}
+                    </template>
+                    <template v-else>
+                      {{ row[column.key] ? shortenText(row[column.key], column.maxLength) : '-' }}
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <v-pagination
+              v-model="currentPage"
+              :length="totalPages"
+              @input="handlePageChange"
+              class="mt-4"
+            ></v-pagination>
+          </v-card-text>
+        </v-card>
+      </v-window-item>
+    </v-window>
+
     <transition name="slide">
       <div v-if="selectedTaskId || hasIdParam" class="task-details-panel">
         <div class="task-details-close" @click="closeTaskDetails">
@@ -99,15 +113,8 @@
               <div class="header-details">
                 <div>
                   <v-breadcrumbs>
-                    <v-icon size="large" color="blue-lighten-1" icon="mdi-label"></v-icon>
-                    <a href="/6jbuilders/admin/task" style="text-decoration: none; color: black">
-                      <v-breadcrumbs-item>
-                        <h4>Task Request</h4>
-                      </v-breadcrumbs-item>
-                    </a>
-                    <v-icon icon="mdi-chevron-right"></v-icon>
                     <v-breadcrumbs-item>
-                      <h4>Details</h4>
+                      <h4>Task Details</h4>
                     </v-breadcrumbs-item>
                     <v-icon icon="mdi-chevron-right"></v-icon>
                     <v-breadcrumbs-item>
@@ -125,13 +132,14 @@
                     >Update task</v-btn
                   >
                   <v-btn
-                    v-if="task.status !== 'Completed'"
+                    v-if="!(task.isCancelled || task.isCompleted)"
                     prepend-icon="mdi-close-circle"
                     color="#FF0000"
                     variant="tonal"
                     @click="cancelTask"
-                    >cancel task</v-btn
                   >
+                    cancel task
+                  </v-btn>
                   <v-dialog v-model="showCancellationForm" max-width="500px">
                     <v-card>
                       <v-card-title>
@@ -153,7 +161,7 @@
                           class="other-reason"
                           v-if="
                             selectedCancellationReason &&
-                            selectedCancellationReason === 'Other Reason'
+                            selectedCancellationReason.reason === 'Other Reason'
                           "
                         >
                           <p style="color: grey; font-size: 14px">Provide a reason:</p>
@@ -189,16 +197,25 @@
                   <v-dialog v-model="showCompleteTaskDialog" max-width="400px">
                     <v-card>
                       <v-card-title>Complete Task</v-card-title>
-                      <v-card-subtitle>Provide ammount to complete a task</v-card-subtitle>
+                      <v-card-subtitle>Provide amount to complete a task</v-card-subtitle>
                       <v-card-text>
                         <div class="detail">
                           <p>Total Project Cost:</p>
+                          <span
+                            v-if="errorAmount"
+                            style="font-size: x-small; color: red; font-style: italic"
+                            >please enter amount</span
+                          >
                           <v-text-field
                             prepend-inner-icon="mdi-currency-php"
                             variant="outlined"
                             density="compact"
-                            v-model="total_amount"
+                            v-model.number="total_amount"
                             placeholder="0.00"
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            required
                           ></v-text-field>
                         </div>
                       </v-card-text>
@@ -239,9 +256,78 @@
                         >
                       </div>
                     </v-row>
-                    <div class="btn-mode">
-                      <v-chip variant="outlined">{{ mode }}</v-chip>
+                    <div class="file-view">
+                      <v-btn variant="text" color="primary" @click="previewDownload">
+                        <v-icon size="x-large" class="mr-2"> mdi-eye </v-icon>
+                        Preview Details
+                      </v-btn>
+                      <v-chip variant="outlined">
+                        <v-icon class="mr-2">{{
+                          editingEnabled ? 'mdi-pencil-outline' : 'mdi-eye-outline'
+                        }}</v-icon>
+                        {{ editingEnabled ? 'Editing Mode' : 'View Mode' }}
+                      </v-chip>
                     </div>
+                    <v-dialog v-model="previewDetails" max-width="600">
+                      <v-card>
+                        <v-card-title>Preview</v-card-title>
+                        <v-card-title><h2>Task Details</h2></v-card-title>
+                        <v-card-subtitle>ID: {{ this.task._id }}</v-card-subtitle>
+                        <v-card-text>
+                          <p>
+                            Requested Service: <b>{{ this.task.service }}</b>
+                          </p>
+                          <p>
+                            Data Subject Type: <b>{{ this.task.type }}</b>
+                          </p>
+                          <p>
+                            Fullname: <b>{{ this.task.fullName }}</b>
+                          </p>
+                          <p>
+                            Email: <b>{{ this.task.email }}</b>
+                          </p>
+                          <p>
+                            Task Status: <b>{{ this.task.status }}</b>
+                          </p>
+                          <p>
+                            Mobile Number: <b>{{ this.task.mobileNumber }}</b>
+                          </p>
+                          <p>
+                            Location: <b>{{ this.task.location }}</b>
+                          </p>
+                          <p>
+                            Date Requested: <b>{{ formatDate(this.task.date_created) }}</b>
+                          </p>
+                          <p>
+                            Date Schedule: <b>{{ formatDate(this.task.schedule_date) }}</b>
+                          </p>
+                          <p>
+                            Inspection Date: <b>{{ formatDate(this.task.inspection_date) }}</b>
+                          </p>
+                          <p>
+                            Inspection Time Range: <b>{{ this.task.inspection_time_range }}</b>
+                          </p>
+                          <p>
+                            Date Started: <b>{{ formatDate(this.task.date_started) }}</b>
+                          </p>
+                          <p>
+                            Date Completed: <b>{{ formatDate(this.task.date_completed) }}</b>
+                          </p>
+                          <p>
+                            Note: <b>{{ this.task.note }}</b>
+                          </p>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-btn color="primary">
+                            <v-icon size="x-large" @click="handleDownload">
+                              mdi-file-download
+                            </v-icon>
+                            Download</v-btn
+                          >
+                          <v-btn @click="handleCancelDownload">Cancel</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
                     <v-row justify="center">
                       <div class="group-details">
                         <div class="workers">
@@ -255,53 +341,57 @@
                             :items="workers"
                             :item-props="itemProps"
                             v-model="selectedWorkers"
-                            :readonly="!editingEnabled"
+                            readonly
                           ></v-select>
                         </div>
-                        <div class="detail" v-if="task.status !== 'Completed'">
-                          <v-text-field
-                            label="Schedule Inspection Date*"
-                            append-inner-icon="mdi-calendar"
-                            density="comfortable"
-                            variant="solo"
-                            v-model="task.inspection_date"
-                            @click:append-inner="showDatePicker = editingEnabled"
-                            :value="formattedDate"
-                          ></v-text-field>
-                        </div>
-                        <div class="detail" v-if="task.status !== 'Completed'">
-                          <v-select
-                            prepend-inner-icon="mdi-clock-outline"
-                            label="Inspection Time Range"
-                            density="comfortable"
-                            variant="solo"
-                            v-model="task.inspection_time_range"
-                            :value="task.inspection_time_range"
-                            :readonly="!editingEnabled"
-                            :items="[
-                              '08:00 AM - 10:00 AM',
-                              '10:00 AM - 12:00 PM',
-                              '12:00 PM - 02:00 PM',
-                              '02:00 PM - 04:00 PM',
-                              '04:00 PM - 06:00 PM'
-                            ]"
-                          ></v-select>
+                        <div class="d-flex" v-if="!task.isVisited">
+                          <div class="detail">
+                            <v-text-field
+                              label="Schedule Inspection Date"
+                              append-inner-icon="mdi-calendar"
+                              density="comfortable"
+                              variant="solo"
+                              :readonly="!editingEnabled"
+                              v-model="task.inspection_date"
+                              @click:append-inner="showDatePicker = editingEnabled"
+                              :value="formattedDate"
+                            ></v-text-field>
+                          </div>
+
+                          <v-dialog v-model="showDatePicker">
+                            <v-row justify="end">
+                              <v-date-picker
+                                v-model="selectedDate"
+                                show-adjacent-months
+                                @input="updateInspectionDate"
+                              ></v-date-picker>
+                            </v-row>
+                          </v-dialog>
+                          <div class="detail">
+                            <v-select
+                              prepend-inner-icon="mdi-clock-outline"
+                              label="Inspection Time Range"
+                              density="comfortable"
+                              variant="solo"
+                              v-model="task.inspection_time_range"
+                              :value="task.inspection_time_range"
+                              :readonly="!editingEnabled"
+                              :items="[
+                                '08:00 AM - 10:00 AM',
+                                '10:00 AM - 12:00 PM',
+                                '12:00 PM - 2:00 PM',
+                                '2:00 PM - 4:00 PM',
+                                '4:00 PM - 6:00 PM'
+                              ]"
+                            ></v-select>
+                          </div>
                         </div>
                       </div>
                     </v-row>
-
-                    <v-dialog v-model="showDatePicker">
-                      <v-row justify="end">
-                        <v-date-picker
-                          v-model="inspection_date"
-                          show-adjacent-months
-                        ></v-date-picker>
-                      </v-row>
-                    </v-dialog>
                   </v-container>
                 </v-card-text>
               </v-card>
-              <div class="project-summary" v-if="task.status === 'Completed'">
+              <div class="project-summary" v-if="task.isCompleted">
                 <v-container>
                   <div class="summary">
                     <div class="summary-details">
@@ -391,13 +481,15 @@
                   ></v-text-field>
                 </div>
                 <div class="detail">
-                  <p>Task Completed:</p>
-                  <v-text-field
+                  <p>Data ubject Type:</p>
+                  <v-select
                     variant="outlined"
                     density="compact"
-                    :value="formatDate(task.date_completed)"
-                    readonly
-                  ></v-text-field>
+                    :items="dataSubjectType"
+                    v-model="task.type"
+                    :value="task.type"
+                    :readonly="!editingEnabled"
+                  ></v-select>
                 </div>
                 <div class="detail">
                   <p>Mobile Number:</p>
@@ -435,6 +527,15 @@
                     variant="outlined"
                     density="compact"
                     :value="formatDate(task.date_started)"
+                    readonly
+                  ></v-text-field>
+                </div>
+                <div class="detail">
+                  <p>Task Completed:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :value="formatDate(task.date_completed)"
                     readonly
                   ></v-text-field>
                 </div>
@@ -495,12 +596,6 @@
           @input="hidePopupMessage"
         >
           {{ popupMessage }}
-          <template v-if="isTaskRejected() && acceptTaskClicked">
-            <div class="actions">
-              <v-btn color="red" variant="tonal" @click="cancelAction">No</v-btn>
-              <v-btn color="green" variant="outlined" @click="confirmAction">Yes</v-btn>
-            </div>
-          </template>
         </v-alert>
       </div>
     </transition>
@@ -516,12 +611,14 @@ import {
   getAllTask,
   getTaskById,
   updateTaskIsVisited,
-  checkTaskStatus,
   completeTask,
-  updateTask
+  updateTask,
+  cancelTask,
+  checkTaskStatus
 } from '../../apirequests/task'
 import { getAllWorkers } from '../../apirequests/workers'
 import { getAssigneesByTaskId } from '../../apirequests/assignees'
+import { dataSubjectTypes } from '@/dataUtils/dataSubjectType'
 
 export default {
   components: {
@@ -529,6 +626,7 @@ export default {
   },
   data() {
     return {
+      tab: 'task',
       search: '',
       services: [],
       reasons: [],
@@ -554,8 +652,10 @@ export default {
       inspection_date: null,
       taskId: null,
       alertTimeout: null,
+      dataSubjectType: dataSubjectTypes,
       tableColumns: [
         { key: '_id', label: 'ID', maxLength: 8 },
+        { key: 'type', label: 'Subject Type', maxLength: 8 },
         { key: 'fullName', label: 'Full Name', maxLength: 8 },
         { key: 'mobileNumber', label: 'Mobile Number', maxLength: 8 },
         { key: 'service', label: 'Service', maxLength: 8 },
@@ -574,13 +674,12 @@ export default {
       popupTitle: '',
       popupMessage: '',
       task404: false,
-      addCompleteForm: false
+      addCompleteForm: false,
+      errorAmount: false,
+      previewDetails: false
     }
   },
   computed: {
-    mode() {
-      return this.editingEnabled ? 'Editing Mode' : 'View Mode'
-    },
     formattedDate() {
       if (this.task.inspection_date) {
         const date = new Date(this.task.inspection_date)
@@ -616,7 +715,9 @@ export default {
           task.mobileNumber.toLowerCase().includes(searchTerm) ||
           task.service.toLowerCase().includes(searchTerm) ||
           task.status.toLowerCase().includes(searchTerm) ||
-          task.location.toLowerCase().includes(searchTerm)
+          task.location.toLowerCase().includes(searchTerm) ||
+          task._id.toLowerCase().includes(searchTerm) ||
+          task.type.toLowerCase().includes(searchTerm)
         )
       })
     },
@@ -680,7 +781,17 @@ export default {
         console.error(error)
       })
   },
+
   methods: {
+    updateInspectionDate() {
+      const selectedDate = new Date(this.selectedDate)
+      const year = selectedDate.getFullYear()
+      const month = String(selectedDate.getMonth() + 1).padStart(2, '0')
+      const day = String(selectedDate.getDate()).padStart(2, '0')
+      const formattedDate = `${year}-${month}-${day}`
+      this.task.inspection_date = formattedDate
+      this.showDatePicker = false
+    },
     openTaskDetails(_id) {
       this.selectedTaskId = _id
       this.task = this.getTaskById(this.selectedTaskId)
@@ -694,23 +805,38 @@ export default {
         this.showPopupMessage('error', 'Failed to Complete', failedMessage)
         return
       }
+
+      if (!this.task.isVisited) {
+        const failedMessage = `Please visit the location "${this.task.location}" before completing the task.`
+        this.showPopupMessage('error', 'Failed to Complete', failedMessage)
+        return
+      }
+
       this.showCompleteTaskDialog = true
     },
     closeCompleteTaskDialog() {
       this.showCompleteTaskDialog = false
+      this.errorAmount = false
     },
     async completeTask() {
       try {
+        if (!this.total_amount || parseFloat(this.total_amount) === 0) {
+          this.errorAmount = true
+          return
+        }
+
         await completeTask(this.selectedTaskId, this.total_amount)
         this.closeCompleteTaskDialog()
         this.getAllTasks()
+        this.showPopupMessage('success', 'Task Completed', 'Task has been successfully completed.')
       } catch (error) {
         console.error(error)
-        // Handle error if needed
+        this.showPopupMessage('error', 'Error', error.message)
       }
     },
     async fetchAssigneesByTaskId(taskId) {
       try {
+        this.loading = true
         const response = await getAssigneesByTaskId(taskId)
         const assignees = response.assignees.data[0]?.assignees || []
 
@@ -720,6 +846,8 @@ export default {
         )
       } catch (error) {
         console.error(error)
+      } finally {
+        this.loading = false
       }
     },
     async getAllWorkers() {
@@ -744,17 +872,6 @@ export default {
         this.loading = false
       }
     },
-    async fetchReasons() {
-      try {
-        this.loading = true
-        const response = await getAllReason()
-        this.reasons = response.data.map((reason) => reason.reason)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        this.loading = false
-      }
-    },
     async getAllTasks() {
       try {
         this.isLoading = true
@@ -765,6 +882,71 @@ export default {
       } finally {
         this.isLoading = false
       }
+    },
+    async fetchReasons() {
+      try {
+        this.loading = true
+        const response = await getAllReason()
+        this.reasons = response.data.map((reason) => ({
+          id: reason._id,
+          reason: reason.reason
+        }))
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
+    submitCancellation() {
+      if (!this.selectedCancellationReason) {
+        this.isReasonEmpty = true
+        return
+      }
+
+      if (
+        this.selectedCancellationReason.reason === 'Other Reason' &&
+        this.otherReason.trim() === ''
+      ) {
+        this.isReasonEmpty = true
+        return
+      }
+
+      this.isReasonEmpty = false
+
+      const reasonId =
+        this.selectedCancellationReason.reason === 'Other Reason'
+          ? null
+          : this.selectedCancellationReason.id
+      const reason =
+        this.selectedCancellationReason.reason === 'Other Reason' ? this.otherReason.trim() : null
+
+      cancelTask(this.selectedTaskId, reasonId, reason)
+        .then((response) => {
+          this.task = response.data
+          const successMessage = 'Cancellation request has been successfully submitted. Thank you.'
+          this.showPopupMessage('success', 'Cancellation Completed', successMessage)
+          this.getAllTasks()
+        })
+        .catch((error) => {
+          console.error(error)
+          const errorMessage = 'Failed to submit cancellation request. Please try again.'
+          this.showPopupMessage('error', 'Cancellation Failed', errorMessage)
+        })
+
+      this.showCancellationForm = false
+      this.cancellationReason = ''
+      this.otherReason = ''
+    },
+    itemPropsForReason(item) {
+      return {
+        title: item.reason
+      }
+    },
+    cancelCancellation() {
+      this.showCancellationForm = false
+      this.cancellationReason = ''
+      this.otherReason = ''
+      this.cancelFormManuallyClosed = true
     },
     handlePageChange(page) {
       this.currentPage = page
@@ -807,6 +989,8 @@ export default {
     closeTaskDetails() {
       this.selectedTaskId = null
       this.updateTaskDetails(null)
+      // TODO: check if there are changes before closing
+      this.editingEnabled = false
 
       const panelElement = document.querySelector('.task-details-panel')
       panelElement.classList.add('slide-leave')
@@ -830,9 +1014,6 @@ export default {
     getTaskById(_id) {
       return this.taskRequest.find((task) => task._id === _id)
     },
-    isTaskRejected() {
-      return this.task.status === 'Rejected'
-    },
     cancelTask() {
       if (this.task.status === 'Cancelled') {
         const failedMessage = 'The task has already been cancelled. You cannot cancel it again.'
@@ -842,38 +1023,66 @@ export default {
 
       this.showCancellationForm = true
     },
-    submitCancellation() {
-      if (
-        this.selectedCancellationReason === null ||
-        (this.selectedCancellationReason.reason === 'Other Reason' && this.otherReason === '')
-      ) {
-        this.isReasonEmpty = true
-        return
-      }
-
-      const successMessage = 'Cancellation request has been successfully submitted. Thank you.'
-      this.showPopupMessage('success', 'Cancellation Completed', successMessage)
-
-      this.task.status = 'Cancelled'
-
-      this.showCancellationForm = false
-      this.cancellationReason = ''
-      this.otherReason = ''
-    },
-    cancelCancellation() {
-      this.showCancellationForm = false
-      this.cancellationReason = ''
-      this.otherReason = ''
-      this.cancelFormManuallyClosed = true
-    },
     cancelComplete() {
       this.addCompleteForm = false
     },
     editTask() {
       this.editingEnabled = true
     },
-    cancelEdit() {},
-    async saveEdit() {},
+    cancelEdit() {
+      if (this.editingEnabled) {
+        this.getAllTasks()
+        this.editingEnabled = false
+      }
+    },
+    async saveEdit() {
+      if (
+        this.task.fullName.trim() === '' ||
+        this.task.email.trim() === '' ||
+        this.task.service.trim() === '' ||
+        this.task.location.trim() === '' ||
+        this.task.type.trim() === '' ||
+        this.task.mobileNumber.trim() === ''
+      ) {
+        const errorMessage = 'Please fill in all the required fields.'
+        this.showPopupMessage('error', 'Update Failed', errorMessage)
+        return
+      }
+
+      try {
+        const taskId = this.selectedTaskId
+        const updatedData = {
+          fullName: this.task.fullName,
+          email: this.task.email,
+          service: this.task.service,
+          location: this.task.location,
+          type: this.task.type,
+          status: this.task.status,
+          mobileNumber: this.task.mobileNumber,
+          note: this.task.note
+        }
+
+        const statusResponse = await checkTaskStatus(taskId)
+
+        if (statusResponse.data === 'Cancelled') {
+          updatedData.isCancelled = false
+          updatedData.reasonId = null
+          updatedData.otherReason = null
+        }
+
+        await updateTask(taskId, updatedData)
+
+        const successMessage = 'Task updated successfully.'
+        this.showPopupMessage('success', 'Update Successful', successMessage)
+
+        this.editingEnabled = false
+        this.getAllTasks()
+      } catch (error) {
+        console.error(error)
+        const errorMessage = 'Failed to update the task. Please try again.'
+        this.showPopupMessage('error', 'Update Failed', errorMessage)
+      }
+    },
     showPopupMessage(type, title, message) {
       this.popupType = type
       this.popupTitle = title
@@ -927,11 +1136,6 @@ export default {
         subtitle: item.position
       }
     },
-    itemPropsForReason(item) {
-      return {
-        reason: item.reason
-      }
-    },
     resetTask() {
       this.task = null
       this.selectedWorkers = []
@@ -961,8 +1165,25 @@ export default {
         console.error(error)
         throw error
       }
+    },
+    previewDownload() {
+      this.previewDetails = true
+    },
+    handleDownload() {
+      alert('TODO: Download into pdf')
+    },
+    handleCancelDownload() {
+      this.previewDetails = false
     }
   }
+  //   watch: {
+  //   selectedWorkers: {
+  //     handler: function (newSelectedWorkers) {
+  //       console.log('Selected Workers:', newSelectedWorkers)
+  //     },
+  //     deep: true
+  //   }
+  // }
 }
 </script>
 
@@ -1078,7 +1299,7 @@ export default {
   top: 60px;
   right: 0;
   bottom: 0;
-  width: 95%;
+  width: 97%;
   background-color: white;
   z-index: 999;
   overflow-y: auto;
@@ -1108,7 +1329,7 @@ export default {
 
 .note {
   max-width: 100%;
-  width: 98%;
+  width: 1185px;
 }
 
 .detail p,
@@ -1202,9 +1423,9 @@ export default {
   font-size: 12px;
 }
 
-.btn-mode {
+.file-view {
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
 }

@@ -15,11 +15,15 @@ const getAccessToken = () => {
 export const addAssigneeByTaskId = async (taskId, data) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.post(`/tasks/${taskId}/assignees`, data, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
+    const response = await api.post(
+      `/tasks/${taskId}/assignees`,
+      { assignees: data },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
       }
-    })
+    )
     return response.data
   } catch (error) {
     console.error(error)
@@ -45,11 +49,15 @@ export const getAssigneesByTaskId = async (taskId) => {
 export const updateAssigneesByTaskId = async (taskId, data) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.put(`/tasks/${taskId}/assignees`, data, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
+    const response = await api.put(
+      `/tasks/${taskId}/assignees`,
+      { worker_id: data },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
       }
-    })
+    )
     return response.data
   } catch (error) {
     console.error(error)

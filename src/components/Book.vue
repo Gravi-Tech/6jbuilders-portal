@@ -10,16 +10,29 @@
       ></v-select>
       <v-text-field
         :rules="[rules.required]"
-        v-model="fullName"
-        label="Full Name *"
-        placeholder="Juan Dela Cruz"
+        v-model="first_name"
+        label="Firstname *"
+        placeholder="Juan"
+        variant="outlined"
+      ></v-text-field>
+      <v-text-field
+        v-model="middle_name"
+        label="Middlename (Optional)"
+        placeholder="Dela"
         variant="outlined"
       ></v-text-field>
       <v-text-field
         :rules="[rules.required]"
-        v-model="contactNumber"
+        v-model="last_name"
+        label="Lastname*"
+        placeholder="Cruz"
+        variant="outlined"
+      ></v-text-field>
+      <v-text-field
+        :rules="[rules.required]"
+        v-model="contact_number"
         label="Contact Number *"
-        placeholder="09123456789"
+        placeholder="09999999999"
         variant="outlined"
       ></v-text-field>
       <v-text-field
@@ -31,7 +44,7 @@
       ></v-text-field>
       <v-text-field
         :rules="[rules.required]"
-        v-model="siteLocation"
+        v-model="location"
         label="Site Location *"
         placeholder="Street/Barangay/Municipality/City/Province"
         variant="outlined"
@@ -61,7 +74,7 @@
         </v-row>
       </div>
       <v-text-field
-        v-model="scheduleDate"
+        v-model="schedule_date"
         label="Schedule Date *"
         append-inner-icon="mdi-calendar"
         variant="outlined"
@@ -70,7 +83,7 @@
       ></v-text-field>
       <v-dialog v-model="showDatePicker">
         <v-row justify="end">
-          <v-date-picker v-model="scheduleDate" show-adjacent-months></v-date-picker>
+          <v-date-picker v-model="schedule_date" show-adjacent-months></v-date-picker>
         </v-row>
       </v-dialog>
       <v-select
@@ -82,13 +95,14 @@
         :items="[
           '08:00 AM - 10:00 AM',
           '10:00 AM - 12:00 PM',
-          '12:00 PM - 02:00 PM',
-          '02:00 PM - 04:00 PM',
-          '04:00 PM - 06:00 PM'
+          '12:00 PM - 2:00 PM',
+          '2:00 PM - 4:00 PM',
+          '4:00 PM - 6:00 PM'
         ]"
       ></v-select>
       <v-textarea v-model="note" label="Note"></v-textarea>
       <v-btn type="submit" color="blue" size="large" @click="validateForm">Submit</v-btn>
+      <v-btn type="submit" color="blue" size="large" variant="outlined" @click="cancelBooking">Cancel</v-btn>
     </v-card>
   </div>
   <v-dialog v-model="showConfirmationModal" max-width="500px">
@@ -98,11 +112,11 @@
         <p>Are you sure you want to submit this booking?</p>
         <p><strong>Data Subject Type:</strong> {{ dataSubjectType }}</p>
         <p><strong>Service:</strong> {{ serviceType }}</p>
-        <p><strong>Schedule Date:</strong> {{ scheduleDate }}</p>
+        <p><strong>Schedule Date:</strong> {{ schedule_date }}</p>
         <p><strong>Time:</strong> {{ selectedTimeRange }}</p>
-        <p><strong>Full Name:</strong> {{ fullName }}</p>
-        <p><strong>Contact Number:</strong> {{ contactNumber }}</p>
-        <p><strong>Site Location:</strong> {{ siteLocation }}</p>
+        <p><strong>Full Name:</strong> {{ first_name }} {{ middle_name }} {{ last_name }}</p>
+        <p><strong>Contact Number:</strong> {{ contact_number }}</p>
+        <p><strong>Site Location:</strong> {{ location }}</p>
         <p><strong>Email:</strong> {{ email }}</p>
       </v-card-text>
       <v-card-actions class="actions">
@@ -147,19 +161,20 @@ export default {
     return {
       serviceTypes: serviceTypes,
       showDatePicker: false,
-      scheduleDate: null,
+      schedule_date: null,
       showPopup: false,
-      agreement: false,
       dataSubjectTypes: dataSubjectTypes,
       dataSubjectType: 'Private Individual',
-      selectedTimeRange: '02:00 PM - 04:00 PM',
+      selectedTimeRange: '2:00 PM - 4:00 PM',
       showConfirmationModal: false,
       popupType: '',
       popupTitle: '',
       popupMessage: '',
-      fullName: null,
-      contactNumber: null,
-      siteLocation: null,
+      first_name: null,
+      middle_name: null,
+      last_name: null,
+      contact_number: null,
+      location: null,
       email: null,
       serviceType: this.preSelectedService || 'Home Repair Services',
       note: null,
@@ -171,8 +186,8 @@ export default {
   },
   computed: {
     formattedDate() {
-      if (this.scheduleDate) {
-        const date = new Date(this.scheduleDate)
+      if (this.schedule_date) {
+        const date = new Date(this.schedule_date)
         const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }
         return date.toLocaleDateString(undefined, options)
       }
@@ -183,16 +198,16 @@ export default {
     const today = new Date()
     today.setDate(today.getDate())
 
-    this.scheduleDate = today.toISOString().substr(0, 10)
+    this.schedule_date = today.toISOString().substr(0, 10)
   },
   methods: {
     validateForm() {
       if (
-        !this.fullName ||
-        !this.contactNumber ||
-        !this.siteLocation ||
-        !this.email ||
-        !this.scheduleDate
+        !this.first_name ||
+        !this.last_name ||
+        !this.contact_number ||
+        !this.location ||
+        !this.email
       ) {
         alert('Please fill in all required fields.')
         return
@@ -204,31 +219,46 @@ export default {
       try {
         const data = {
           type: this.dataSubjectType,
-          fullName: this.fullName,
-          mobileNumber: this.contactNumber,
+          first_name: this.first_name,
+          middle_name: this.middle_name,
+          last_name: this.last_name,
+          inspection_date: this.selectedTimeRange,
+          mobile_number: this.contact_number,
           email: this.email,
-          location: this.siteLocation,
+          location: this.location,
           service: this.serviceType,
-          scheduleDate: this.scheduleDate,
+          schedule_date: this.schedule_date,
           note: this.note
         }
 
         await addBooking(data)
 
-        const successMessage = 'The booking has been successfully booked.'
+        const successMessage =
+          'The booking has been successfully booked. You will receive a call within 24 hours.'
         this.showPopupMessage('success', 'Success', successMessage)
 
         this.showConfirmationModal = false
 
-        this.fullName = ''
-        this.contactNumber = ''
-        this.email = ''
-        this.siteLocation = ''
-        this.note = ''
+        this.first_name = null
+        this.middle_name = null
+        this.last_name = null
+        this.contact_number = null
+        this.email = null
+        this.location = null
+        this.note = null
       } catch (error) {
         this.showPopupMessage('error', 'Error', 'Something went wrong')
         console.error(error)
       }
+    },
+    cancelBooking() {
+      this.first_name = null
+      this.middle_name = null
+      this.last_name = null
+      this.contact_number = null
+      this.email = null
+      this.location = null
+      this.note = null
     },
     showConfirmation() {
       this.showConfirmationModal = true
@@ -244,7 +274,7 @@ export default {
 
       setTimeout(() => {
         this.hidePopupMessage()
-      }, 4000)
+      }, 6000)
     },
     hidePopupMessage() {
       this.showPopup = false

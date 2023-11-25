@@ -42,6 +42,22 @@
         </v-card-text>
       </v-card> -->
     </div>
+    <v-row class="mt-8 mb-8">
+      <v-col cols="12" sm="4" class="mt-n4">
+        <v-card class="mx-auto" height="100%">
+          <v-card-item title="Projects">
+            <Doughnut />
+          </v-card-item>
+        </v-card>
+      </v-col>
+      <v-col cols="12" sm="8" class="mt-n4">
+        <v-card class="mx-auto" height="100%">
+          <v-card-item title="Reports">
+            <Bar class="mt-n4" />
+          </v-card-item>
+        </v-card>
+      </v-col>
+    </v-row>
     <div class="sub-cards">
       <v-card class="new-booking-card">
         <v-container>
@@ -120,22 +136,6 @@
         </v-container>
       </v-card>
     </div>
-    <v-row>
-  <v-col cols="12" sm="4" class="mt-n4">
-    <v-card class="mx-auto" height="400px">
-      <v-card-item title="Projects">
-        <Doughnut/>
-      </v-card-item>
-    </v-card>
-  </v-col>
-  <v-col cols="12" sm="8" class="mt-n4">
-    <v-card class="mx-auto" height="400px">
-      <v-card-item title="Reports">
-        <Bar class="mt-n4"/>
-      </v-card-item>
-    </v-card>
-  </v-col>
-</v-row>
   </div>
 </template>
 
@@ -191,9 +191,9 @@ export default {
       return sortedBookings.slice(0, 12)
     }
   },
-  components:{
+  components: {
     Doughnut,
-    Bar,
+    Bar
   },
 
   methods: {
