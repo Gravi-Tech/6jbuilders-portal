@@ -121,14 +121,18 @@ export const checkTaskStatus = async (taskId) => {
   }
 }
 
-export const cancelTask = async (taskId) => {
+export const cancelTask = async (taskId, reasonId, otherReason) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.put(`/tasks/${taskId}/cancel`, null, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
+    const response = await api.put(
+      `/tasks/${taskId}/cancel`,
+      { reasonId, otherReason },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
       }
-    })
+    )
     return response.data
   } catch (error) {
     console.error(error)

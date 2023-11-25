@@ -9,90 +9,104 @@
       ></v-progress-circular>
     </div>
     <v-card v-else flat>
-      <v-card-title>
-        <div class="headline">
-          <span>Services</span>
-          <v-btn @click="handleAddService" color="primary">Add Service</v-btn>
-        </div>
-      </v-card-title>
-      <div class="sub__headers">
-        <div class="items-per-page">
-          <label class="items-per-page__label" for="itemsPerPage">Items per Page:</label>
-          <div class="items-per-page__select">
-            <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
-              <option v-for="option in options" :key="option" :value="option">{{ option }}</option>
-            </select>
+      <v-tabs v-model="tab" color="primary">
+        <v-tab value="service">
+          <v-icon start> mdi-format-list-bulleted </v-icon>
+          list of services
+        </v-tab>
+        <!-- <v-tab value="option-2">
+          <v-icon start> mdi-account-question </v-icon>
+          data subject
+        </v-tab>
+        <v-tab value="option-3">
+          <v-icon start> mdi-wrench-clock </v-icon>
+          Inspection Time
+        </v-tab> -->
+      </v-tabs>
+      <v-window v-model="tab">
+        <v-window-item value="service">
+          <div class="sub__headers">
+            <div class="items-per-page">
+              <label class="items-per-page__label" for="itemsPerPage">Items per Page:</label>
+              <div class="items-per-page__select">
+                <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
+                  <option v-for="option in options" :key="option" :value="option">
+                    {{ option }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <v-btn @click="handleAddService" color="primary">Add Service</v-btn>
+            <div class="search">
+              <v-text-field
+                class="mr-4"
+                v-model="search"
+                append-inner-icon="mdi-magnify"
+                density="compact"
+                label="Search"
+                single-line
+                flat
+                hide-details
+                variant="solo-filled"
+              ></v-text-field>
+            </div>
           </div>
-        </div>
-        <div class="search">
-          <v-text-field
-            class="mr-4"
-            v-model="search"
-            append-inner-icon="mdi-magnify"
-            density="compact"
-            label="Search"
-            single-line
-            flat
-            hide-details
-            variant="solo-filled"
-          ></v-text-field>
-        </div>
-      </div>
-
-      <table class="table">
-        <thead style="font-size: 13px">
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Short Title</th>
-            <th>Created Date</th>
-            <th>Updated Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody style="font-size: 13px">
-          <template v-if="displayedServices.length > 0">
-            <tr v-for="service in displayedServices" :key="service._id">
-              <td>{{ service._id }}</td>
-              <td>{{ service.title }}</td>
-              <td>{{ service.short_title }}</td>
-              <td>{{ formatDate(service.createdDate) }}</td>
-              <td>{{ formatDate(service.updatedDate) }}</td>
-              <td>{{ service.status }}</td>
-              <td>
-                <v-btn
-                  size="small"
-                  @click="handleEditService(service._id)"
-                  color="secondary"
-                  flat
-                  class="mr-6"
-                  >Edit</v-btn
-                >
-                <v-btn
-                  size="small"
-                  @click="handleDeleteService(service._id)"
-                  color="error"
-                  variant="outlined"
-                  flat
-                  >Delete</v-btn
-                >
-              </td>
-            </tr>
-          </template>
-          <template v-else>
-            <tr>
-              <td colspan="6" class="not-found">Not Service found</td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-      <v-pagination
-        v-model="currentPage"
-        :length="totalPages"
-        @input="handlePageChange"
-        class="mt-4"
-      ></v-pagination>
+          <table class="table">
+            <thead style="font-size: 13px">
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Short Title</th>
+                <th>Created Date</th>
+                <th>Updated Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody style="font-size: 13px">
+              <template v-if="displayedServices.length > 0">
+                <tr v-for="service in displayedServices" :key="service._id">
+                  <td>{{ service._id }}</td>
+                  <td>{{ service.title }}</td>
+                  <td>{{ service.short_title }}</td>
+                  <td>{{ formatDate(service.createdDate) }}</td>
+                  <td>{{ formatDate(service.updatedDate) }}</td>
+                  <td>{{ service.status }}</td>
+                  <td>
+                    <v-btn
+                      size="small"
+                      @click="handleEditService(service._id)"
+                      color="secondary"
+                      flat
+                      class="mr-6"
+                      >Edit</v-btn
+                    >
+                    <v-btn
+                      size="small"
+                      @click="handleDeleteService(service._id)"
+                      color="error"
+                      variant="outlined"
+                      flat
+                      >Delete</v-btn
+                    >
+                  </td>
+                </tr>
+              </template>
+              <template v-else>
+                <tr>
+                  <td colspan="6" class="not-found">Not Service found</td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <v-pagination
+            v-model="currentPage"
+            :length="totalPages"
+            @input="handlePageChange"
+            class="mt-4"
+          ></v-pagination>
+        </v-window-item>
+      </v-window>
     </v-card>
     <v-dialog v-model="showAddDialog" max-width="500px">
       <v-card>
@@ -201,6 +215,7 @@ import {
 export default {
   data() {
     return {
+      tab: 'service',
       search: '',
       services: [],
       itemsPerPage: 10,
