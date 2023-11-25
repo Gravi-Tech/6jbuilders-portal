@@ -45,6 +45,15 @@
                   hide-details
                   variant="solo-filled"
                 ></v-text-field>
+                <v-tooltip v-model="showToolTip" location="top">
+                  <template v-slot:activator="{ props }">
+                    <v-btn icon v-bind="props" variant="text" @click="handleDownloadTask">
+                      <v-icon color="primary">mdi-tray-arrow-down</v-icon>
+                    </v-btn>
+                    <pdf-embed :src="pdfData" v-if="pdfData"></pdf-embed>
+                  </template>
+                  <span>Download Data</span>
+                </v-tooltip>
               </div>
             </div>
             <table class="table">
@@ -132,7 +141,7 @@
                     >Update task</v-btn
                   >
                   <v-btn
-                    v-if="!(task.isCancelled || task.isCompleted)"
+                    v-if="!(this.task.isCancelled || this.task.isCompleted)"
                     prepend-icon="mdi-close-circle"
                     color="#FF0000"
                     variant="tonal"
@@ -177,12 +186,10 @@
                         </div>
                       </v-card-text>
                       <v-card-actions>
-                        <v-btn size="large" color="secondary" @click="cancelCancellation"
-                          >Cancel</v-btn
-                        >
                         <v-btn size="large" color="primary" @click="submitCancellation"
                           >Submit</v-btn
                         >
+                        <v-btn size="large" @click="cancelCancellation">Cancel</v-btn>
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
@@ -230,7 +237,7 @@
               <v-card variant="text">
                 <v-card-text>
                   <v-container>
-                    <v-row v-if="task.isVisited === false" class="inspect-place">
+                    <v-row v-if="task.isVisited === false" class="inspect-place mb-4">
                       <div>
                         <v-alert
                           class="task-notification-header"
@@ -257,10 +264,42 @@
                       </div>
                     </v-row>
                     <div class="file-view">
-                      <v-btn variant="text" color="primary" @click="previewDownload">
-                        <v-icon size="x-large" class="mr-2"> mdi-eye </v-icon>
-                        Preview Details
-                      </v-btn>
+                      <div>
+                        <v-btn variant="text" color="primary" @click="previewTask">
+                          <v-icon size="x-large" class="mr-2"> mdi-eye </v-icon>
+                          Preview Details
+                        </v-btn>
+                        <v-btn
+                          v-if="this.task.isCancelled"
+                          variant="text"
+                          color="red"
+                          @click="handleViewReason(this.task.reasonId)"
+                        >
+                          <v-icon size="x-large" class="mr-2"> mdi-book-cancel </v-icon>
+                          View Reason
+                        </v-btn>
+                      </div>
+                      <v-dialog v-model="previewReason" max-width="400" max-height="100%">
+                        <v-card>
+                          <v-container>
+                            <v-card-title>{{ selectedReason.reason }}</v-card-title>
+                            <v-card-subtitle
+                              >Date Cancelled:
+                              {{ formatDate(this.task.date_cancelled) }}</v-card-subtitle
+                            >
+                            <v-card-text>
+                              <div class="text mb-2">
+                                <p><b>Description:</b></p>
+                                <span>{{ selectedReason.description }}</span>
+                              </div>
+                              <div class="text" v-if="this.task.otherReason">
+                                <p><b>Other Reason:</b></p>
+                                <span>{{ this.task.otherReason }}</span>
+                              </div>
+                            </v-card-text>
+                          </v-container>
+                        </v-card>
+                      </v-dialog>
                       <v-chip variant="outlined">
                         <v-icon class="mr-2">{{
                           editingEnabled ? 'mdi-pencil-outline' : 'mdi-eye-outline'
@@ -268,12 +307,16 @@
                         {{ editingEnabled ? 'Editing Mode' : 'View Mode' }}
                       </v-chip>
                     </div>
-                    <v-dialog v-model="previewDetails" max-width="600">
+                    <v-dialog v-model="previewDetails" max-width="900" max-height="100%">
                       <v-card>
                         <v-card-title>Preview</v-card-title>
                         <v-card-title><h2>Task Details</h2></v-card-title>
-                        <v-card-subtitle>ID: {{ this.task._id }}</v-card-subtitle>
-                        <v-card-text>
+                        <v-card-subtitle>Task ID: {{ this.task._id }}</v-card-subtitle>
+                        <v-card-text class="previewed__value">
+                          <h2 v-if="task.isCompleted">
+                            Project Cost: <v-icon size="x-small">mdi-currency-php</v-icon
+                            ><b>{{ this.task.total_amount }}</b>
+                          </h2>
                           <p>
                             Requested Service: <b>{{ this.task.service }}</b>
                           </p>
@@ -289,6 +332,11 @@
                           <p>
                             Task Status: <b>{{ this.task.status }}</b>
                           </p>
+                          <div v-if="this.task.isCancelled">
+                            <p>
+                              Date Cancelled: <b>{{ formatDate(this.task.date_cancelled) }}</b>
+                            </p>
+                          </div>
                           <p>
                             Mobile Number: <b>{{ this.task.mobileNumber }}</b>
                           </p>
@@ -310,21 +358,17 @@
                           <p>
                             Date Started: <b>{{ formatDate(this.task.date_started) }}</b>
                           </p>
-                          <p>
-                            Date Completed: <b>{{ formatDate(this.task.date_completed) }}</b>
-                          </p>
-                          <p>
+                          <div v-if="this.task.isCompleted">
+                            <p>
+                              Date Completed: <b>{{ formatDate(this.task.date_completed) }}</b>
+                            </p>
+                          </div>
+                          <p class="mt-4">
                             Note: <b>{{ this.task.note }}</b>
                           </p>
                         </v-card-text>
                         <v-card-actions>
-                          <v-btn color="primary">
-                            <v-icon size="x-large" @click="handleDownload">
-                              mdi-file-download
-                            </v-icon>
-                            Download</v-btn
-                          >
-                          <v-btn @click="handleCancelDownload">Cancel</v-btn>
+                          <v-btn color="primary" @click="handleClosePreview">Close</v-btn>
                         </v-card-actions>
                       </v-card>
                     </v-dialog>
@@ -340,11 +384,12 @@
                             variant="solo"
                             :items="workers"
                             :item-props="itemProps"
+                            :loading="loading"
                             v-model="selectedWorkers"
                             readonly
                           ></v-select>
                         </div>
-                        <div class="d-flex" v-if="!task.isVisited">
+                        <div class="d-flex" v-if="!this.task.isVisited">
                           <div class="detail">
                             <v-text-field
                               label="Schedule Inspection Date"
@@ -391,14 +436,14 @@
                   </v-container>
                 </v-card-text>
               </v-card>
-              <div class="project-summary" v-if="task.isCompleted">
+              <div class="project-summary" v-if="this.task.isCompleted">
                 <v-container>
                   <div class="summary">
                     <div class="summary-details">
                       <div class="cost">
                         <p>Project Cost:</p>
                         <v-text-field
-                          variant="text"
+                          text
                           density="compact"
                           prepend-inner-icon="mdi-currency-php"
                           :value="task.total_amount"
@@ -597,6 +642,21 @@
         >
           {{ popupMessage }}
         </v-alert>
+        <v-alert
+          class="popup-message"
+          v-model="handleNotVisited"
+          density="compact"
+          type="warning"
+          title="Task Not Visited"
+          closable
+          text="The task has not been visited yet. Are you sure you want to cancel it? If you continue, the task will be marked as visited."
+        >
+          <div class="button-container">
+            <v-btn class="d-block mt-2" size="small" variant="outlined" @click="handleCancelTask">
+              Continue
+            </v-btn>
+          </div>
+        </v-alert>
       </div>
     </transition>
   </div>
@@ -605,7 +665,11 @@
 <script>
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { getAllServices } from '../../apirequests/service'
-import { getAllReason } from '../../apirequests/reason'
+import { getAllReason, getReasonById } from '../../apirequests/reason'
+import { saveAs } from 'file-saver'
+import pdfMake from 'pdfmake/build/pdfmake'
+import pdfFonts from 'pdfmake/build/vfs_fonts'
+import PdfEmbed from 'vue-pdf-embed'
 
 import {
   getAllTask,
@@ -620,12 +684,16 @@ import { getAllWorkers } from '../../apirequests/workers'
 import { getAssigneesByTaskId } from '../../apirequests/assignees'
 import { dataSubjectTypes } from '@/dataUtils/dataSubjectType'
 
+pdfMake.vfs = pdfFonts.pdfMake.vfs
+
 export default {
   components: {
-    VDatePicker
+    VDatePicker,
+    PdfEmbed
   },
   data() {
     return {
+      pdfData: null,
       tab: 'task',
       search: '',
       services: [],
@@ -676,7 +744,14 @@ export default {
       task404: false,
       addCompleteForm: false,
       errorAmount: false,
-      previewDetails: false
+      previewDetails: false,
+      handleNotVisited: false,
+      showToolTip: false,
+      previewReason: false,
+      selectedReason: {
+        reason: '',
+        description: ''
+      }
     }
   },
   computed: {
@@ -898,14 +973,10 @@ export default {
       }
     },
     submitCancellation() {
-      if (!this.selectedCancellationReason) {
-        this.isReasonEmpty = true
-        return
-      }
-
       if (
-        this.selectedCancellationReason.reason === 'Other Reason' &&
-        this.otherReason.trim() === ''
+        !this.selectedCancellationReason ||
+        (this.selectedCancellationReason.reason === 'Other Reason' &&
+          this.otherReason.trim() === '')
       ) {
         this.isReasonEmpty = true
         return
@@ -913,14 +984,22 @@ export default {
 
       this.isReasonEmpty = false
 
-      const reasonId =
-        this.selectedCancellationReason.reason === 'Other Reason'
-          ? null
-          : this.selectedCancellationReason.id
-      const reason =
-        this.selectedCancellationReason.reason === 'Other Reason' ? this.otherReason.trim() : null
+      let reasonId = null
+      let reason = null
 
-      cancelTask(this.selectedTaskId, reasonId, reason)
+      if (this.selectedCancellationReason.reason === 'Other Reason') {
+        reasonId = this.selectedCancellationReason.id
+        reason = this.otherReason.trim()
+      } else {
+        reasonId = this.selectedCancellationReason.id
+      }
+
+      const updateTaskPromise = this.task.isVisited
+        ? Promise.resolve()
+        : updateTaskIsVisited(this.selectedTaskId, true)
+
+      updateTaskPromise
+        .then(() => cancelTask(this.selectedTaskId, reasonId, reason))
         .then((response) => {
           this.task = response.data
           const successMessage = 'Cancellation request has been successfully submitted. Thank you.'
@@ -929,8 +1008,14 @@ export default {
         })
         .catch((error) => {
           console.error(error)
-          const errorMessage = 'Failed to submit cancellation request. Please try again.'
-          this.showPopupMessage('error', 'Cancellation Failed', errorMessage)
+          const errorMessage = this.task.isVisited
+            ? 'Failed to submit cancellation request. Please try again.'
+            : 'Failed to update task visited status. Please try again.'
+          this.showPopupMessage(
+            'error',
+            this.task.isVisited ? 'Cancellation Failed' : 'Update Failed',
+            errorMessage
+          )
         })
 
       this.showCancellationForm = false
@@ -999,29 +1084,45 @@ export default {
     },
     updateTaskDetails(_id) {
       const url = new URL(window.location.href)
-      const urlSearchParams = url.searchParams
+      const params = url.searchParams
 
       this.selectedTaskId = _id
 
-      if (_id) {
-        urlSearchParams.set('id', _id)
-      } else {
-        urlSearchParams.delete('id')
-      }
+      _id ? params.set('id', _id) : params.delete('id')
+      this.previewDetails
+        ? params.set('preview-download', 'true')
+        : params.delete('preview-download')
 
       history.pushState(null, null, url.toString())
     },
     getTaskById(_id) {
       return this.taskRequest.find((task) => task._id === _id)
     },
-    cancelTask() {
+    handleCancelTask() {
+      this.handleNotVisited = false
       if (this.task.status === 'Cancelled') {
-        const failedMessage = 'The task has already been cancelled. You cannot cancel it again.'
-        this.showPopupMessage('error', 'Failed to Cancel', failedMessage)
+        this.showCancellationErrorMessage()
         return
       }
 
       this.showCancellationForm = true
+    },
+    cancelTask() {
+      if (this.task.status === 'Cancelled') {
+        this.showCancellationErrorMessage()
+        return
+      }
+
+      if (!this.task.isVisited) {
+        this.handleNotVisited = true
+        return
+      }
+
+      this.showCancellationForm = true
+    },
+    showCancellationErrorMessage() {
+      const failedMessage = 'The task has already been cancelled. You cannot cancel it again.'
+      this.showPopupMessage('error', 'Failed to Cancel', failedMessage)
     },
     cancelComplete() {
       this.addCompleteForm = false
@@ -1166,14 +1267,96 @@ export default {
         throw error
       }
     },
-    previewDownload() {
+    previewTask() {
       this.previewDetails = true
+      this.updateTaskDetails(this.selectedTaskId)
     },
-    handleDownload() {
-      alert('TODO: Download into pdf')
-    },
-    handleCancelDownload() {
+    handleClosePreview() {
       this.previewDetails = false
+      this.updateTaskDetails(this.selectedTaskId)
+    },
+    async handleDownloadTask() {
+      try {
+        const response = await getAllTask()
+        const tasks = response.data
+        console.log('Fetched tasks:', tasks)
+        this.generatePDF(tasks)
+      } catch (error) {
+        console.error('Error occurred while fetching tasks:', error)
+      }
+    },
+    generatePDF(tasks) {
+      const docDefinition = {
+        content: [
+          { text: 'Task Data', style: 'header' },
+          '\n',
+          {
+            table: {
+              headerRows: 1,
+              layout: 'fullwidth',
+              widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+              body: [
+                [
+                  { text: 'Task ID', style: 'tableHeader' },
+                  { text: 'Full Name', style: 'tableHeader' },
+                  { text: 'Mobile Number', style: 'tableHeader' },
+                  { text: 'Service', style: 'tableHeader' },
+                  { text: 'Location', style: 'tableHeader' },
+                  { text: 'Email', style: 'tableHeader' },
+                  { text: 'Status', style: 'tableHeader' }
+                ],
+                ...tasks.map((task) => [
+                  { text: task._id, style: 'tableValue' },
+                  { text: task.fullName, style: 'tableValue', width: 'auto' },
+                  { text: task.mobileNumber, style: 'tableValue' },
+                  { text: task.service, style: 'tableValue' },
+                  { text: task.location, style: 'tableValue' },
+                  { text: task.email, style: 'tableValue' },
+                  { text: task.status, style: 'tableValue' }
+                ])
+              ]
+            }
+          }
+        ],
+        styles: {
+          header: {
+            fontSize: 14,
+            bold: true,
+            alignment: 'center',
+            margin: [0, 0, 0, 5]
+          },
+          tableHeader: {
+            fontSize: 9,
+            bold: true,
+            alignment: 'left',
+            margin: [0, 2, 0, 2]
+          },
+          tableValue: {
+            fontSize: 8,
+            alignment: 'left',
+            margin: [0, 2, 0, 2]
+          }
+        }
+      }
+
+      const pdfDocGenerator = pdfMake.createPdf(docDefinition)
+      pdfDocGenerator.getBuffer((buffer) => {
+        const blob = new Blob([buffer], { type: 'application/pdf' })
+        saveAs(blob, `tasks-data.pdf`)
+      })
+    },
+    async handleViewReason(reasonId) {
+      try {
+        const response = await getReasonById(reasonId)
+        if (!response.error && response.data) {
+          this.selectedReason = response.data
+          this.previewReason = true
+        } else {
+          console.error('Failed to retrieve reason:', response.error)
+        }
+      } catch (error) {
+        console.error('Failed to retrieve reason:', error)
+      }
     }
   }
   //   watch: {
@@ -1438,6 +1621,8 @@ export default {
 }
 
 .search {
+  display: flex;
+  align-items: center;
   max-width: 400px;
   width: 100%;
 }
@@ -1478,5 +1663,14 @@ export default {
 .summary .summary-details {
   max-width: 400px;
   width: 300px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.previewed__value p {
+  margin-top: 5px;
 }
 </style>

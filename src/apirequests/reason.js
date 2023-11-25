@@ -28,7 +28,7 @@ export const addReason = async (data) => {
   }
 }
 
-export const getReasons = async (reasonId) => {
+export const getReasonById = async (reasonId) => {
   try {
     const accessToken = getAccessToken()
     const response = await api.get(`/reasons/${reasonId}`, {
