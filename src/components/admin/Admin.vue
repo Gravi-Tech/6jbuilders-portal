@@ -90,8 +90,8 @@ export default {
       activeItem: 'dashboard',
       menuItems: [
         { title: 'Dashboard', value: 'dashboard', icon: 'mdi-view-dashboard-outline' },
-        { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-check-outline' },
-        { title: 'Task', value: 'task', icon: 'mdi-checkbox-multiple-outline' },
+        { title: 'Booking Request', value: 'request', icon: 'mdi-book-multiple-outline' },
+        { title: 'Task', value: 'task', icon: 'mdi-calendar-check-outline' },
         { title: 'Project', value: 'projects', icon: 'mdi-folder-outline' },
         { title: 'Settings', value: 'services', icon: 'mdi-cogs' },
         { title: 'Workers', value: 'workers', icon: 'mdi-account-hard-hat-outline' },
