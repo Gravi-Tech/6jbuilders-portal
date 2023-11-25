@@ -45,7 +45,7 @@
           </div>
           <v-card class="new-booking-card">
             <div class="sub-header">
-              <div class="filter-container">
+              <!-- <div class="filter-container">
                 <v-autocomplete
                   chips
                   v-model="selectedFilter"
@@ -54,7 +54,7 @@
                   variant="solo"
                   class="filter-select"
                 ></v-autocomplete>
-              </div>
+              </div> -->
             </div>
           </v-card>
           
