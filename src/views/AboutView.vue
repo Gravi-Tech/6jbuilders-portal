@@ -1,15 +1,25 @@
 <template>
-  <div class="about">
-    <h1 class="bg-red">This is an about page</h1>
-  </div>
+  <Header />
+  <About />
+  <Team />
+  <Testimonial />
+  <Footer />
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<script>
+import Header from '../components/Header.vue';
+import About from '../components/About.vue';
+import Team from '../components/Team.vue';
+import Testimonial from '../components/Testimonial.vue';
+import Footer from '../components/Footer.vue';
+
+export default {
+  components: {
+    Header,
+    About,
+    Team,
+    Testimonial,
+    Footer
+  },
+};
+</script>
