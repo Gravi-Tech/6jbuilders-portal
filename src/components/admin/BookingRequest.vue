@@ -1,133 +1,117 @@
 <template>
   <div class="request_request">
-    <v-tabs v-model="tab" color="primary">
-      <v-tab value="request">
-        <v-icon start> mdi-table-eye </v-icon>
-        request
-      </v-tab>
-    </v-tabs>
-    <v-window v-model="tab">
-      <v-window-item value="request">
-        <div class="loading-container" v-if="isLoading">
-          <v-progress-circular
-            indeterminate
-            color="primary"
-            :size="44"
-            :width="4"
-          ></v-progress-circular>
+    <div class="loading-container" v-if="isLoading">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="44"
+        :width="4"
+      ></v-progress-circular>
+    </div>
+    <v-card v-else flat class="new-request-card">
+      <v-card-text class="table-container">
+        <div class="sub__headers">
+          <div class="items-per-page">
+            <label class="items-per-page__label" for="itemsPerPage">Items per page:</label>
+            <div class="items-per-page__select">
+              <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
+                <option v-for="option in options" :key="option" :value="option">
+                  {{ option }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="search">
+            <v-text-field
+              class="mr-4"
+              v-model="search"
+              append-inner-icon="mdi-magnify"
+              density="compact"
+              label="Search to filter table"
+              single-line
+              flat
+              hide-details
+              variant="solo-filled"
+            ></v-text-field>
+            <v-tooltip location="top">
+              <template v-slot:activator="{ props }">
+                <v-icon class="refresh-icon" @click="refreshPage" color="blue" v-bind="props">
+                  mdi-refresh
+                </v-icon>
+              </template>
+              <span>Refresh</span>
+            </v-tooltip>
+          </div>
         </div>
-        <v-card v-else flat class="new-request-card">
-          <v-card-text class="table-container">
-            <div class="sub__headers">
-              <div class="items-per-page">
-                <label class="items-per-page__label" for="itemsPerPage">Items per page:</label>
-                <div class="items-per-page__select">
-                  <select
-                    v-model="itemsPerPage"
-                    @change="handleItemsPerPageChange"
-                    id="itemsPerPage"
-                  >
-                    <option v-for="option in options" :key="option" :value="option">
-                      {{ option }}
-                    </option>
-                  </select>
-                </div>
+        <div class="text-end mb-6 mr-8">
+          <v-dialog v-model="manualBooking" max-width="900">
+            <template v-slot:activator="{ on }">
+              <div class="add-request">
+                <v-btn
+                  color="primary"
+                  prepend-icon="mdi-plus"
+                  @click="manualBooking = true"
+                  v-bind="on"
+                  >MANUAL BOOKING</v-btn
+                >
               </div>
-              <div class="search">
-                <v-text-field
-                  class="mr-4"
-                  v-model="search"
-                  append-inner-icon="mdi-magnify"
-                  density="compact"
-                  label="Search to filter table"
-                  single-line
-                  flat
-                  hide-details
-                  variant="solo-filled"
-                ></v-text-field>
-                <v-tooltip location="top">
-                  <template v-slot:activator="{ props }">
-                    <v-icon class="refresh-icon" @click="refreshPage" color="blue" v-bind="props">
-                      mdi-refresh
-                    </v-icon>
-                  </template>
-                  <span>Refresh</span>
-                </v-tooltip>
-              </div>
-            </div>
-            <div class="text-end mb-6 mr-8">
-              <v-dialog v-model="manualBooking" max-width="900">
-                <template v-slot:activator="{ on }">
-                  <div class="add-request">
-                    <v-btn
-                      color="primary"
-                      prepend-icon="mdi-plus"
-                      @click="manualBooking = true"
-                      v-bind="on"
-                      >MANUAL BOOKING</v-btn
-                    >
-                  </div>
+            </template>
+            <v-card>
+              <BookingForm />
+            </v-card>
+          </v-dialog>
+        </div>
+        <table class="table">
+          <thead style="font-size: 12px">
+            <tr>
+              <th v-for="column in tableColumns" :key="column.key">{{ column.label }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="displayedRequest.length === 0">
+              <td :colspan="tableColumns.length">No Booking available.</td>
+            </tr>
+            <tr v-for="row in displayedRequest" :key="row.id">
+              <td
+                v-for="column in tableColumns"
+                :key="column.key"
+                :class="{
+                  hoverable: row[column.key] && row[column.key].length > 8,
+                  'table-text': true
+                }"
+                :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''"
+              >
+                <template v-if="column.key === '_id'">
+                  <a @click="openBookingDetails(row._id)" style="color: blue">{{
+                    shortenId(row._id)
+                  }}</a>
                 </template>
-                <v-card>
-                  <BookingForm />
-                </v-card>
-              </v-dialog>
-            </div>
-            <table class="table">
-              <thead style="font-size: 12px">
-                <tr>
-                  <th v-for="column in tableColumns" :key="column.key">{{ column.label }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-if="displayedRequest.length === 0">
-                  <td :colspan="tableColumns.length">No Booking available.</td>
-                </tr>
-                <tr v-for="row in displayedRequest" :key="row.id">
-                  <td
-                    v-for="column in tableColumns"
-                    :key="column.key"
-                    :class="{
-                      hoverable: row[column.key] && row[column.key].length > 8,
-                      'table-text': true
-                    }"
-                    :data-tooltip="
-                      row[column.key] && row[column.key].length > 8 ? row[column.key] : ''
-                    "
+                <template v-else-if="column.key === 'status'">
+                  <v-chip
+                    size="small"
+                    :color="getStatusChipColor(row[column.key])"
+                    text-color="white"
+                    >{{ row[column.key] }}</v-chip
                   >
-                    <template v-if="column.key === '_id'">
-                      <a @click="openBookingDetails(row._id)" style="color: blue">{{
-                        shortenId(row._id)
-                      }}</a>
-                    </template>
-                    <template v-else-if="column.key === 'status'">
-                      <v-chip
-                        size="small"
-                        :color="getStatusChipColor(row[column.key])"
-                        text-color="white"
-                        >{{ row[column.key] }}</v-chip
-                      >
-                    </template>
-                    <template v-else-if="isDateColumn(column.key)">
-                      {{ formatDate(row[column.key]) }}
-                    </template>
-                    <template v-else>
-                      {{ row[column.key] ? shortenText(row[column.key], column.maxLength) : '-' }}
-                    </template>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <v-pagination
-              v-model="currentPage"
-              :length="totalPages"
-              @input="handlePageChange"
-              class="mt-4"
-            ></v-pagination>
-          </v-card-text>
-        </v-card>
-      </v-window-item>
-    </v-window>
+                </template>
+                <template v-else-if="isDateColumn(column.key)">
+                  {{ formatDate(row[column.key]) }}
+                </template>
+                <template v-else>
+                  {{ row[column.key] ? shortenText(row[column.key], column.maxLength) : '-' }}
+                </template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <v-pagination
+          v-model="currentPage"
+          :length="totalPages"
+          @input="handlePageChange"
+          class="mt-4"
+        ></v-pagination>
+      </v-card-text>
+    </v-card>
 
     <transition name="slide">
       <div v-if="selectedBookingId || hasIdParam" class="task-details-panel">
@@ -587,7 +571,6 @@ export default {
   },
   data() {
     return {
-      tab: 'request',
       search: '',
       services: [],
       reasons: [],
@@ -750,7 +733,7 @@ export default {
   },
   methods: {
     refreshPage() {
-      this.getAllBookings
+      this.getAllBookings()
     },
     async fetchServices() {
       try {
