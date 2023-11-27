@@ -24,7 +24,7 @@
       <v-text-field
         :rules="[rules.required]"
         v-model="last_name"
-        label="Lastname*"
+        label="Lastname *"
         placeholder="Cruz"
         variant="outlined"
       ></v-text-field>
@@ -86,23 +86,11 @@
           <v-date-picker v-model="schedule_date" show-adjacent-months></v-date-picker>
         </v-row>
       </v-dialog>
-      <v-select
-        prepend-inner-icon="mdi-clock-outline"
-        label="Select Time Range"
-        density="comfortable"
-        variant="solo"
-        v-model="selectedTimeRange"
-        :items="[
-          '08:00 AM - 10:00 AM',
-          '10:00 AM - 12:00 PM',
-          '12:00 PM - 2:00 PM',
-          '2:00 PM - 4:00 PM',
-          '4:00 PM - 6:00 PM'
-        ]"
-      ></v-select>
       <v-textarea v-model="note" label="Note"></v-textarea>
       <v-btn type="submit" color="blue" size="large" @click="validateForm">Submit</v-btn>
-      <v-btn type="submit" color="blue" size="large" variant="outlined" @click="cancelBooking">Cancel</v-btn>
+      <v-btn type="submit" color="blue" size="large" variant="outlined" @click="cancelBooking"
+        >Cancel</v-btn
+      >
     </v-card>
   </div>
   <v-dialog v-model="showConfirmationModal" max-width="500px">
@@ -112,12 +100,12 @@
         <p>Are you sure you want to submit this booking?</p>
         <p><strong>Data Subject Type:</strong> {{ dataSubjectType }}</p>
         <p><strong>Service:</strong> {{ serviceType }}</p>
-        <p><strong>Schedule Date:</strong> {{ schedule_date }}</p>
-        <p><strong>Time:</strong> {{ selectedTimeRange }}</p>
+        <p><strong>Schedule Date:</strong> {{ formatDate(schedule_date) }}</p>
         <p><strong>Full Name:</strong> {{ first_name }} {{ middle_name }} {{ last_name }}</p>
         <p><strong>Contact Number:</strong> {{ contact_number }}</p>
         <p><strong>Site Location:</strong> {{ location }}</p>
         <p><strong>Email:</strong> {{ email }}</p>
+        <p><strong>Note:</strong> {{ note }}</p>
       </v-card-text>
       <v-card-actions class="actions">
         <v-btn color="primary" @click="submitForm">Yes</v-btn>
@@ -165,7 +153,6 @@ export default {
       showPopup: false,
       dataSubjectTypes: dataSubjectTypes,
       dataSubjectType: 'Private Individual',
-      selectedTimeRange: '2:00 PM - 4:00 PM',
       showConfirmationModal: false,
       popupType: '',
       popupTitle: '',
@@ -201,6 +188,17 @@ export default {
     this.schedule_date = today.toISOString().substr(0, 10)
   },
   methods: {
+    formatDate(date) {
+      if (date) {
+        const formattedDate = new Date(date).toLocaleDateString('en', {
+          year: '2-digit',
+          month: '2-digit',
+          day: '2-digit'
+        })
+        return formattedDate.replace(/\//g, '/')
+      }
+      return '-'
+    },
     validateForm() {
       if (
         !this.first_name ||
@@ -222,7 +220,6 @@ export default {
           first_name: this.first_name,
           middle_name: this.middle_name,
           last_name: this.last_name,
-          inspection_date: this.selectedTimeRange,
           mobile_number: this.contact_number,
           email: this.email,
           location: this.location,
@@ -231,8 +228,8 @@ export default {
           note: this.note
         }
 
-        await addBooking(data)
-
+        const res = await addBooking(data)
+        console.log(res)
         const successMessage =
           'The booking has been successfully booked. You will receive a call within 24 hours.'
         this.showPopupMessage('success', 'Success', successMessage)
@@ -246,6 +243,7 @@ export default {
         this.email = null
         this.location = null
         this.note = null
+        this.dataSubjectType = 'Private Individual'
       } catch (error) {
         this.showPopupMessage('error', 'Error', 'Something went wrong')
         console.error(error)
@@ -259,6 +257,7 @@ export default {
       this.email = null
       this.location = null
       this.note = null
+      this.dataSubjectType = 'Private Individual'
     },
     showConfirmation() {
       this.showConfirmationModal = true

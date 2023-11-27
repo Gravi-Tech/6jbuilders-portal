@@ -133,6 +133,48 @@
                 </div>
                 <div class="actions">
                   <v-btn
+                    v-if="selectedWorkers.length === 0"
+                    variant="tonal"
+                    color="primary"
+                    prepend-icon="mdi-plus"
+                    @click="addAssignee = true"
+                    >add assignee</v-btn
+                  >
+                  <v-dialog v-model="addAssignee" max-width="700">
+                    <v-card>
+                      <v-container>
+                        <v-card-text>
+                          <v-select
+                            prepend-inner-icon="mdi-account-multiple"
+                            label="Select Task Assignees"
+                            density="comfortable"
+                            multiple
+                            chips
+                            variant="solo"
+                            :items="workers"
+                            :item-props="itemProps"
+                            :loading="loading"
+                            v-model="selectedWorkers"
+                          ></v-select>
+                          <v-alert
+                            class="task-notification-header"
+                            type="info"
+                            color="#2196F3"
+                            theme="dark"
+                            icon="mdi-information"
+                            text="Please note that the assignment of assignees for this task will remain unchanged. Any existing assignees will continue to be associated with the task. No modifications will be made to the current assignee list."
+                            variant="tonal"
+                            prominent
+                          ></v-alert>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-btn color="primary" @click="addAssignees">add</v-btn>
+                          <v-btn @click="addAssignee = false">cancel</v-btn>
+                        </v-card-actions>
+                      </v-container>
+                    </v-card>
+                  </v-dialog>
+                  <v-btn
                     class="edit-btn"
                     prepend-icon="mdi-pencil"
                     color="#FFC107"
@@ -194,13 +236,24 @@
                     </v-card>
                   </v-dialog>
                   <v-btn
-                    v-if="task.status !== 'Completed'"
+                    v-if="this.task.status !== 'Completed'"
                     prepend-icon="mdi-check-circle"
                     color="#00C853"
                     variant="outlined"
                     @click="openCompleteTaskDialog()"
                     >complete task</v-btn
                   >
+                  <v-tooltip v-model="deleteTip" location="top">
+                    <template v-slot:activator="{ props }">
+                      <v-icon
+                        color="red"
+                        v-bind="props"
+                        @click="handleDeleteTaskConfirmation = true"
+                        >mdi-delete</v-icon
+                      >
+                    </template>
+                    <span>Delete Task</span>
+                  </v-tooltip>
                   <v-dialog v-model="showCompleteTaskDialog" max-width="400px">
                     <v-card>
                       <v-card-title>Complete Task</v-card-title>
@@ -245,8 +298,8 @@
                           color="#2196F3"
                           theme="dark"
                           icon="mdi-information"
-                          title="Location Not Yet Visited"
-                          text="The task location has not been inspected by the management. Please inspect the location before starting the service."
+                          title="Pending Location Inspection"
+                          text="The task location has not been inspected by the management. Please inspect the location before starting the service. Clicking 'Inspect Place' will automatically set the starting date and, if the status is 'Pending', update it to 'In Progress'."
                           variant="tonal"
                           prominent
                           border
@@ -293,7 +346,7 @@
                                 <span>{{ selectedReason.description }}</span>
                               </div>
                               <div class="text" v-if="this.task.otherReason">
-                                <p><b>Other Reason:</b></p>
+                                <p><b>Reason:</b></p>
                                 <span>{{ this.task.otherReason }}</span>
                               </div>
                             </v-card-text>
@@ -309,67 +362,83 @@
                     </div>
                     <v-dialog v-model="previewDetails" max-width="900" max-height="100%">
                       <v-card>
-                        <v-card-title>Preview</v-card-title>
-                        <v-card-title><h2>Task Details</h2></v-card-title>
-                        <v-card-subtitle>Task ID: {{ this.task._id }}</v-card-subtitle>
-                        <v-card-text class="previewed__value">
-                          <h2 v-if="task.isCompleted">
-                            Project Cost: <v-icon size="x-small">mdi-currency-php</v-icon
-                            ><b>{{ this.task.total_amount }}</b>
-                          </h2>
-                          <p>
-                            Requested Service: <b>{{ this.task.service }}</b>
-                          </p>
-                          <p>
-                            Data Subject Type: <b>{{ this.task.type }}</b>
-                          </p>
-                          <p>
-                            Fullname: <b>{{ this.task.fullName }}</b>
-                          </p>
-                          <p>
-                            Email: <b>{{ this.task.email }}</b>
-                          </p>
-                          <p>
-                            Task Status: <b>{{ this.task.status }}</b>
-                          </p>
-                          <div v-if="this.task.isCancelled">
+                        <v-container>
+                          <v-card-title>Preview</v-card-title>
+                          <v-card-title><h2>Task Details</h2></v-card-title>
+                          <v-card-subtitle>Task ID: {{ this.task._id }}</v-card-subtitle>
+                          <v-card-text class="previewed__value">
+                            <h2 v-if="task.isCompleted">
+                              Project Cost: <v-icon size="x-small">mdi-currency-php</v-icon
+                              ><b>{{ this.task.total_amount }}</b>
+                            </h2>
                             <p>
-                              Date Cancelled: <b>{{ formatDate(this.task.date_cancelled) }}</b>
+                              Requested Service: <b>{{ this.task.service }}</b>
                             </p>
-                          </div>
-                          <p>
-                            Mobile Number: <b>{{ this.task.mobileNumber }}</b>
-                          </p>
-                          <p>
-                            Location: <b>{{ this.task.location }}</b>
-                          </p>
-                          <p>
-                            Date Requested: <b>{{ formatDate(this.task.date_created) }}</b>
-                          </p>
-                          <p>
-                            Date Schedule: <b>{{ formatDate(this.task.schedule_date) }}</b>
-                          </p>
-                          <p>
-                            Inspection Date: <b>{{ formatDate(this.task.inspection_date) }}</b>
-                          </p>
-                          <p>
-                            Inspection Time Range: <b>{{ this.task.inspection_time_range }}</b>
-                          </p>
-                          <p>
-                            Date Started: <b>{{ formatDate(this.task.date_started) }}</b>
-                          </p>
-                          <div v-if="this.task.isCompleted">
                             <p>
-                              Date Completed: <b>{{ formatDate(this.task.date_completed) }}</b>
+                              Data Subject Type: <b>{{ this.task.type }}</b>
                             </p>
-                          </div>
-                          <p class="mt-4">
-                            Note: <b>{{ this.task.note }}</b>
-                          </p>
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-btn color="primary" @click="handleClosePreview">Close</v-btn>
-                        </v-card-actions>
+                            <p>
+                              Fullname: <b>{{ this.task.fullName }}</b>
+                            </p>
+                            <p>
+                              Email: <b>{{ this.task.email }}</b>
+                            </p>
+                            <p>
+                              Task Status: <b>{{ this.task.status }}</b>
+                            </p>
+                            <div v-if="this.task.isCancelled">
+                              <p>
+                                Date Cancelled: <b>{{ formatDate(this.task.date_cancelled) }}</b>
+                              </p>
+                            </div>
+                            <p>
+                              Mobile Number: <b>{{ this.task.mobileNumber }}</b>
+                            </p>
+                            <p>
+                              Location: <b>{{ this.task.location }}</b>
+                            </p>
+                            <p>
+                              Date Requested: <b>{{ formatDate(this.task.date_created) }}</b>
+                            </p>
+                            <p>
+                              Date Schedule: <b>{{ formatDate(this.task.schedule_date) }}</b>
+                            </p>
+                            <p>
+                              Is Visited: <b>{{ this.task.isVisited }}</b>
+                            </p>
+                            <p>
+                              Inspection Date: <b>{{ formatDate(this.task.inspection_date) }}</b>
+                            </p>
+                            <p>
+                              Inspection Time Range: <b>{{ this.task.inspection_time_range }}</b>
+                            </p>
+                            <p>
+                              Date Started: <b>{{ formatDate(this.task.date_started) }}</b>
+                            </p>
+                            <div v-if="this.task.isCompleted">
+                              <p>
+                                Date Completed: <b>{{ formatDate(this.task.date_completed) }}</b>
+                              </p>
+                            </div>
+                            <p>
+                              Date Updated: <b>{{ formatDate(this.task.date_updated) }}</b>
+                            </p>
+                            <p>Selected Workers:</p>
+                            <div class="ml-4" v-if="selectedWorkers.length > 0">
+                              <ul>
+                                <li v-for="worker in selectedWorkers" :key="worker._id">
+                                  <b>{{ worker.fullName }}</b> - {{ worker.position }}
+                                </li>
+                              </ul>
+                            </div>
+                            <p class="mt-2">
+                              Note: <b>{{ this.task.note }}</b>
+                            </p>
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-btn color="primary" @click="handleClosePreview">Close</v-btn>
+                          </v-card-actions>
+                        </v-container>
                       </v-card>
                     </v-dialog>
                     <v-row justify="center">
@@ -385,8 +454,9 @@
                             :items="workers"
                             :item-props="itemProps"
                             :loading="loading"
-                            v-model="selectedWorkers"
                             readonly
+                            v-model="selectedWorkers"
+                            v-if="selectedWorkers.length !== 0"
                           ></v-select>
                         </div>
                         <div class="d-flex" v-if="!this.task.isVisited">
@@ -496,7 +566,8 @@
                     :class="{
                       'status-completed': task.status === 'Completed',
                       'status-onGoing': task.status === 'In Progress',
-                      'status-cancelled': task.status === 'Cancelled'
+                      'status-cancelled': task.status === 'Cancelled',
+                      'status-pending': task.status === 'Pending'
                     }"
                   >
                   </v-select>
@@ -516,7 +587,7 @@
                   ></v-select>
                 </div>
                 <div class="detail">
-                  <p>Location:</p>
+                  <p>Site Location:</p>
                   <v-text-field
                     variant="outlined"
                     density="compact"
@@ -558,11 +629,11 @@
                   ></v-text-field>
                 </div>
                 <div class="detail">
-                  <p>Updated On:</p>
+                  <p>Schedule Date On:</p>
                   <v-text-field
                     variant="outlined"
                     density="compact"
-                    :value="formatDate(task.date_updated)"
+                    :value="formatDate(task.schedule_date)"
                     readonly
                   ></v-text-field>
                 </div>
@@ -657,6 +728,29 @@
             </v-btn>
           </div>
         </v-alert>
+        <v-alert
+          class="popup-message"
+          v-model="handleDeleteTaskConfirmation"
+          density="compact"
+          type="warning"
+          title="Confirm Task Deletion"
+          closable
+          text="Deleting this task will permanently remove it from the database. This action cannot be undone. Are you sure you want to proceed?"
+        >
+          <div class="button-container">
+            <v-btn class="d-block mt-2" size="small" variant="outlined" @click="handleDeleteTask">
+              Delete
+            </v-btn>
+            <v-btn
+              class="d-block ml-6 mt-2"
+              size="small"
+              variant="outlined"
+              @click="handleDeleteTaskConfirmation = false"
+            >
+              Cancel
+            </v-btn>
+          </div>
+        </v-alert>
       </div>
     </transition>
   </div>
@@ -678,10 +772,15 @@ import {
   completeTask,
   updateTask,
   cancelTask,
-  checkTaskStatus
+  checkTaskStatus,
+  deleteTask
 } from '../../apirequests/task'
 import { getAllWorkers } from '../../apirequests/workers'
-import { getAssigneesByTaskId } from '../../apirequests/assignees'
+import {
+  getAssigneesByTaskId,
+  addAssigneeByTaskId,
+  deleteTaskAssigneesById
+} from '../../apirequests/assignees'
 import { dataSubjectTypes } from '@/dataUtils/dataSubjectType'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
@@ -711,6 +810,9 @@ export default {
       selectedTaskId: null,
       workers: [],
       selectedWorkers: [],
+      taskAssignees: [],
+      addAssignee: false,
+      handleDeleteTaskConfirmation: false,
       showCompleteTaskDialog: false,
       loading: false,
       isLoading: true,
@@ -734,7 +836,7 @@ export default {
         { key: 'total_amount', label: 'Total Amount(PHP)', maxLength: 8 },
         { key: 'status', label: 'Status', maxLength: null }
       ],
-      statusOptions: ['In Progress'],
+      statusOptions: ['In Progress', 'Pending'],
       cancelFormManuallyClosed: false,
       addMaterials: false,
       showPopup: false,
@@ -747,6 +849,7 @@ export default {
       previewDetails: false,
       handleNotVisited: false,
       showToolTip: false,
+      deleteTip: false,
       previewReason: false,
       selectedReason: {
         reason: '',
@@ -765,22 +868,39 @@ export default {
     },
     filteredTask() {
       const searchTerm = this.search.toLowerCase().trim()
+      const today = new Date()
+
       const sortedTasks = this.taskRequest.sort((a, b) => {
         const statusOrder = {
-          'In Progress': 1,
-          Completed: 2,
-          Cancelled: 3
+          Pending: 1,
+          'In Progress': 2,
+          Completed: 3,
+          Cancelled: 4
         }
 
         const statusA = a.status
         const statusB = b.status
 
-        if (statusOrder[statusA] < statusOrder[statusB]) {
-          return -1
-        }
-        if (statusOrder[statusA] > statusOrder[statusB]) {
-          return 1
-        }
+        if (statusOrder[statusA] < statusOrder[statusB]) return -1
+        if (statusOrder[statusA] > statusOrder[statusB]) return 1
+
+        const dateA = new Date(a.schedule_date)
+        const dateB = new Date(b.schedule_date)
+        const isVisitedA = a.isVisited
+        const isVisitedB = b.isVisited
+
+        const timeDiffA = Math.abs(dateA - today)
+        const timeDiffB = Math.abs(dateB - today)
+
+        if (dateA < today) return -1
+        if (dateB < today) return 1
+
+        if (timeDiffA < timeDiffB && !isVisitedA) return -1
+        if (timeDiffA < timeDiffB && !isVisitedB) return 1
+
+        if (timeDiffA === timeDiffB && !isVisitedA) return -1
+        if (timeDiffA === timeDiffB && !isVisitedB) return 1
+
         return 0
       })
 
@@ -856,8 +976,38 @@ export default {
         console.error(error)
       })
   },
-
   methods: {
+    async addAssignees() {
+      try {
+        const taskId = this.selectedTaskId
+        const data = this.selectedWorkers.map((worker) => ({
+          worker_id: worker._id
+        }))
+
+        const res = await addAssigneeByTaskId(taskId, data)
+
+        this.showPopupMessage(
+          'success',
+          'Assignees Added',
+          'Assignees have been successfully added. All selected workers are now assigned to the task.'
+        )
+
+        this.addAssignee = false
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async handleDeleteTask() {
+      try {
+        await deleteTaskAssigneesById(this.selectedTaskId)
+        await deleteTask(this.selectedTaskId)
+        this.updateTaskDetails(null)
+        this.getAllTasks()
+      } catch (error) {
+        console.log(error)
+        this.showPopupMessage('error', 'Error', error)
+      }
+    },
     updateInspectionDate() {
       const selectedDate = new Date(this.selectedDate)
       const year = selectedDate.getFullYear()
@@ -1082,16 +1232,28 @@ export default {
       panelElement.classList.add('slide-leave-to')
       panelElement.classList.add('slide-leave-active')
     },
-    updateTaskDetails(_id) {
+    updateTaskDetails(id) {
       const url = new URL(window.location.href)
       const params = url.searchParams
 
-      this.selectedTaskId = _id
+      this.selectedTaskId = id
+      id ? params.set('id', id) : params.delete('id')
 
-      _id ? params.set('id', _id) : params.delete('id')
-      this.previewDetails
-        ? params.set('preview-download', 'true')
-        : params.delete('preview-download')
+      const watchParams = [
+        { prop: 'previewDetails', param: 'preview-task-details' },
+        { prop: 'addAssignee', param: 'add-assignee' },
+        { prop: 'handleDeleteTaskConfirmation', param: 'delete-task' },
+        { prop: 'previewReason', param: 'preview-cancelled-reason' },
+        { prop: 'showCompleteTaskDialog', param: 'complete-task' },
+        { prop: 'editingEnabled', param: 'editing-task' }
+      ]
+
+      watchParams.forEach(({ prop, param }) => {
+        this.$watch(prop, (newValue) => {
+          newValue ? params.set(param, 'true') : params.delete(param)
+          history.pushState(null, null, url.toString())
+        })
+      })
 
       history.pushState(null, null, url.toString())
     },
@@ -1165,15 +1327,33 @@ export default {
 
         const statusResponse = await checkTaskStatus(taskId)
 
-        if (statusResponse.data === 'Cancelled') {
-          updatedData.isCancelled = false
-          updatedData.reasonId = null
-          updatedData.otherReason = null
+        switch (statusResponse.data) {
+          case 'Cancelled':
+            updatedData.isCancelled = false
+            updatedData.reasonId = null
+            updatedData.otherReason = null
+            updatedData.isVisited = false
+            updatedData.date_started = null
+            break
+          case 'Completed':
+            updatedData.isCompleted = false
+            updatedData.total_amount = null
+            updatedData.date_completed = null
+            break
+          case 'Pending':
+            updatedData.isVisited = true
+            updatedData.date_started = new Date()
+            break
+          case 'In Progress':
+            updatedData.isVisited = false
+            updatedData.date_started = null
+            break
         }
 
         await updateTask(taskId, updatedData)
 
-        const successMessage = 'Task updated successfully.'
+        const successMessage =
+          'The task has been successfully updated. All changes have been saved and recorded in the system.'
         this.showPopupMessage('success', 'Update Successful', successMessage)
 
         this.editingEnabled = false
@@ -1227,6 +1407,8 @@ export default {
           return '#28a745'
         case 'Cancelled':
           return '#f10000'
+        case 'Pending':
+          return '#ffa500'
         default:
           return 'gray'
       }
@@ -1248,6 +1430,12 @@ export default {
       }
 
       try {
+        const taskStatus = await checkTaskStatus(this.selectedTaskId)
+        const status = taskStatus.data
+        if (status === 'Pending') {
+          await updateTask(this.selectedTaskId, { status: 'In Progress', date_updated: new Date() })
+        }
+
         const task = await getTaskById(this.selectedTaskId)
         const currentDate = new Date()
         const formattedDate = currentDate.toLocaleDateString('en-US')
@@ -1359,14 +1547,6 @@ export default {
       }
     }
   }
-  //   watch: {
-  //   selectedWorkers: {
-  //     handler: function (newSelectedWorkers) {
-  //       console.log('Selected Workers:', newSelectedWorkers)
-  //     },
-  //     deep: true
-  //   }
-  // }
 }
 </script>
 
@@ -1376,29 +1556,15 @@ export default {
   flex-direction: column;
   height: 100%;
 }
-
-.header {
-  background-color: #007bff;
-  padding: 10px;
-}
-
-.task_request-title {
-  color: #ffffff;
-  margin: 0;
-}
-
 .new-task-card {
   margin-top: 20px;
   flex-grow: 1;
 }
 
-.filter-container,
-.refresh-container {
-  padding: 20px;
-}
-
-.filter-select {
-  width: 300px;
+.add-assignee {
+  cursor: pointer;
+  text-decoration: underline;
+  color: blue;
 }
 
 .table-container {
@@ -1556,6 +1722,9 @@ export default {
   color: #f10000;
 }
 
+.status-pending {
+  color: #ffa500;
+}
 .popup-message {
   position: fixed;
   top: 50%;

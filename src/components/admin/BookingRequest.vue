@@ -1,248 +1,502 @@
 <template>
-  <div class="booking_request">
-    <header class="header">
-      <h1 class="booking_request-title">Request</h1>
-    </header>
-    <v-card class="new-booking-card">
-      <div class="sub-header">
-        <div class="filter-container">
-          <v-autocomplete chips v-model="selectedFilter" label="Filter By Service" 
-          :items="services"  :loading="loading" variant="solo"
-          class="filter-select"></v-autocomplete>
+  <div class="request_request">
+    <v-tabs v-model="tab" color="primary">
+      <v-tab value="request">
+        <v-icon start> mdi-table-eye </v-icon>
+        request
+      </v-tab>
+    </v-tabs>
+    <v-window v-model="tab">
+      <v-window-item value="request">
+        <div class="loading-container" v-if="isLoading">
+          <v-progress-circular
+            indeterminate
+            color="primary"
+            :size="44"
+            :width="4"
+          ></v-progress-circular>
         </div>
-        <div class="refresh-container">
-          <v-tooltip location="top">
-            <template v-slot:activator="{ props }">
-              <v-icon class="refresh-icon" @click="refreshPage" color="blue" v-bind="props">
-                mdi-refresh
-              </v-icon>
-            </template>
-            <span>Refresh</span>
-          </v-tooltip>
-        </div>
-      </div>
-
-      <div class="search-request">
-        <div class="request">
-          <v-text-field v-model="requestId" density="compact" append-inner-icon="mdi-magnify"
-            @click:append-inner="searchRequest(requestId)" label="Search request by ID" flat variant="solo-filled" single-line
-            hide-details></v-text-field>
-          <span v-if="task404" style="font-style: italic; color: red">Task not found.</span>
-        </div>
-        <div class="text-center mt-6">
-          <v-dialog v-model="showModal" max-width="700">
-            <template v-slot:activator="{ on }">
-              <div class="add-request">
-                <v-btn color="success" prepend-icon="mdi-plus" @click="handleManualRequest" v-bind="on">MANUAL
-                  BOOKING</v-btn>
+        <v-card v-else flat class="new-request-card">
+          <v-card-text class="table-container">
+            <div class="sub__headers">
+              <div class="items-per-page">
+                <label class="items-per-page__label" for="itemsPerPage">Items per page:</label>
+                <div class="items-per-page__select">
+                  <select
+                    v-model="itemsPerPage"
+                    @change="handleItemsPerPageChange"
+                    id="itemsPerPage"
+                  >
+                    <option v-for="option in options" :key="option" :value="option">
+                      {{ option }}
+                    </option>
+                  </select>
+                </div>
               </div>
-            </template>
-            <v-card>
-              <BookingForm />
-            </v-card>
-          </v-dialog>
-        </div>
-      </div>
+              <div class="search">
+                <v-text-field
+                  class="mr-4"
+                  v-model="search"
+                  append-inner-icon="mdi-magnify"
+                  density="compact"
+                  label="Search to filter table"
+                  single-line
+                  flat
+                  hide-details
+                  variant="solo-filled"
+                ></v-text-field>
+                <v-tooltip location="top">
+                  <template v-slot:activator="{ props }">
+                    <v-icon class="refresh-icon" @click="refreshPage" color="blue" v-bind="props">
+                      mdi-refresh
+                    </v-icon>
+                  </template>
+                  <span>Refresh</span>
+                </v-tooltip>
+              </div>
+            </div>
+            <div class="text-end mb-6 mr-8">
+              <v-dialog v-model="manualBooking" max-width="900">
+                <template v-slot:activator="{ on }">
+                  <div class="add-request">
+                    <v-btn
+                      color="primary"
+                      prepend-icon="mdi-plus"
+                      @click="manualBooking = true"
+                      v-bind="on"
+                      >MANUAL BOOKING</v-btn
+                    >
+                  </div>
+                </template>
+                <v-card>
+                  <BookingForm />
+                </v-card>
+              </v-dialog>
+            </div>
+            <table class="table">
+              <thead style="font-size: 12px">
+                <tr>
+                  <th v-for="column in tableColumns" :key="column.key">{{ column.label }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="displayedRequest.length === 0">
+                  <td :colspan="tableColumns.length">No Booking available.</td>
+                </tr>
+                <tr v-for="row in displayedRequest" :key="row.id">
+                  <td
+                    v-for="column in tableColumns"
+                    :key="column.key"
+                    :class="{
+                      hoverable: row[column.key] && row[column.key].length > 8,
+                      'table-text': true
+                    }"
+                    :data-tooltip="
+                      row[column.key] && row[column.key].length > 8 ? row[column.key] : ''
+                    "
+                  >
+                    <template v-if="column.key === '_id'">
+                      <a @click="openBookingDetails(row._id)" style="color: blue">{{
+                        shortenId(row._id)
+                      }}</a>
+                    </template>
+                    <template v-else-if="column.key === 'status'">
+                      <v-chip
+                        size="small"
+                        :color="getStatusChipColor(row[column.key])"
+                        text-color="white"
+                        >{{ row[column.key] }}</v-chip
+                      >
+                    </template>
+                    <template v-else-if="isDateColumn(column.key)">
+                      {{ formatDate(row[column.key]) }}
+                    </template>
+                    <template v-else>
+                      {{ row[column.key] ? shortenText(row[column.key], column.maxLength) : '-' }}
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <v-pagination
+              v-model="currentPage"
+              :length="totalPages"
+              @input="handlePageChange"
+              class="mt-4"
+            ></v-pagination>
+          </v-card-text>
+        </v-card>
+      </v-window-item>
+    </v-window>
 
-      <v-card-text class="table-container">
-        <table class="table">
-          <thead style="font-size: 12px">
-            <tr>
-              <th v-for="column in tableColumns" :key="column.key">{{ column.label }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="filteredTableData.length === 0">
-              <td :colspan="tableColumns.length">No Request available.</td>
-            </tr>
-            <tr v-for="row in sortedTableData" :key="row.id">
-              <td v-for="column in tableColumns" :key="column.key" :class="{
-                hoverable: row[column.key] && row[column.key].length > 8,
-                'table-text': true
-              }" :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''">
-                <template v-if="column.key === 'id'">
-                  <a @click="openBookingDetails(row.id)" style="color: blue">{{
-                    shortenId(row.id)
-                  }}</a>
-                </template>
-                <template v-else-if="column.key === 'status'">
-                  <v-chip size="small" :color="getStatusChipColor(row[column.key])" text-color="white">{{ row[column.key]
-                  }}</v-chip>
-                </template>
-                <template v-else>
-                  {{ row[column.key] ? shortenText(row[column.key], column.maxLength) : '-' }}
-                </template>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="row-filter">
-          <label for="row-filter" class="row-filter__label">Row Filter:</label>
-          <select id="row-filter" class="row-filter__select" v-model="selectedRowFilter" @change="applyRowFilter"
-            :disabled="selectedFilter === 'All'">
-            <option v-for="rowFilterOption in rowFilterOptions" :key="rowFilterOption.value"
-              :value="rowFilterOption.value">
-              {{ rowFilterOption.label }}
-            </option>
-          </select>
-        </div>
-      </v-card-text>
-    </v-card>
     <transition name="slide">
-      <div v-if="selectedBookingId || hasIdParam" class="booking-details-panel">
-        <div class="booking-details-close" @click="closeBookingDetails">
+      <div v-if="selectedBookingId || hasIdParam" class="task-details-panel">
+        <div class="task-details-close" @click="closeBookingDetails">
           <v-icon>mdi-close</v-icon>
         </div>
 
-        <div class="booking-details-content">
-          <div class="request-details">
+        <div class="task-details-content">
+          <div class="task-details">
             <div class="details">
               <div class="header-details">
                 <div>
                   <v-breadcrumbs>
-                    <v-icon size="large" color="blue-lighten-1" icon="mdi-label"></v-icon>
-                    <a href="/6jbuilders/admin/request" style="text-decoration: none; color: black">
-                      <v-breadcrumbs-item>
-                        <h4>Booking Request</h4>
-                      </v-breadcrumbs-item>
-                    </a>
-                    <v-icon icon="mdi-chevron-right"></v-icon>
                     <v-breadcrumbs-item>
-                      <h4>Details</h4>
+                      <h4>Booking Details</h4>
                     </v-breadcrumbs-item>
                     <v-icon icon="mdi-chevron-right"></v-icon>
                     <v-breadcrumbs-item>
-                      <h4>{{ booking.id }}</h4>
+                      <h4>{{ booking._id }}</h4>
                     </v-breadcrumbs-item>
                   </v-breadcrumbs>
                 </div>
                 <div class="actions">
-                  <v-btn class="edit-btn" prepend-icon="mdi-pencil" color="#FFC107" variant="tonal"
-                    @click="editBooking">Edit Details</v-btn>
-                  <v-btn prepend-icon="mdi-close-circle" color="#FF0000" variant="tonal" @click="rejectBooking">Reject
-                    Booking</v-btn>
-                  <v-btn prepend-icon="mdi-check-circle" color="#00C853" variant="outlined" @click="acceptBooking">Accept
-                    Booking</v-btn>
+                  <v-btn
+                    class="edit-btn"
+                    prepend-icon="mdi-pencil"
+                    color="#FFC107"
+                    variant="tonal"
+                    @click="editBooking"
+                    >Update booking</v-btn
+                  >
+                  <v-btn
+                    prepend-icon="mdi-close-circle"
+                    color="#FF0000"
+                    variant="tonal"
+                    @click="previewRejectBooking"
+                  >
+                    reject booking
+                  </v-btn>
+                  <v-btn
+                    prepend-icon="mdi-check-circle"
+                    color="#00C853"
+                    variant="outlined"
+                    @click="handleAcceptBooking()"
+                    >accept booking</v-btn
+                  >
                 </div>
               </div>
               <v-card variant="text">
                 <v-card-text>
                   <v-container>
-                    <v-row v-if="booking.isVisited === false" class="inspect-place">
+                    <div class="file-view">
                       <div>
-                        <v-alert class="task-notification-header" type="info" color="#2196F3" theme="dark"
-                          icon="mdi-information" title="Location Not Yet Visited"
-                          text="The booking location has not been inspected by the management. Please inspect the location before accepting the service."
-                          variant="tonal" prominent border></v-alert>
+                        <v-btn variant="text" color="primary" @click="previewBooking">
+                          <v-icon size="x-large" class="mr-2"> mdi-eye </v-icon>
+                          Preview Details
+                        </v-btn>
                       </div>
-                      <div>
-                        <v-btn class="task-inspect-btn" prepend-icon="mdi-map-marker" variant="tonal" size="small"
-                          @click="updateIsVisited()">inspect place</v-btn>
-                      </div>
-                    </v-row>
-                    <div class="btn-mode">
-                      <v-chip variant="outlined">{{ mode }}</v-chip>
+                      <v-chip variant="outlined">
+                        <v-icon class="mr-2">{{
+                          editingEnabled ? 'mdi-pencil-outline' : 'mdi-eye-outline'
+                        }}</v-icon>
+                        {{ editingEnabled ? 'Editing Mode' : 'View Mode' }}
+                      </v-chip>
                     </div>
-                    <v-row justify="center">
+
+                    <v-dialog v-model="previewDetails" max-width="800" max-height="100%">
+                      <v-card>
+                        <v-container>
+                          <v-card-title>{{ dialogTitle }}</v-card-title>
+                          <v-card-title><h2>Booking Details</h2></v-card-title>
+                          <v-card-subtitle>Booking ID: {{ this.booking._id }}</v-card-subtitle>
+                          <v-card-text class="previewed__value">
+                            <h2 v-if="booking.isCompleted">
+                              Project Cost: <v-icon size="x-small">mdi-currency-php</v-icon
+                              ><b>{{ this.booking.total_amount }}</b>
+                            </h2>
+                            <p>
+                              Requested Service: <b>{{ this.booking.service }}</b>
+                            </p>
+                            <p>
+                              Data Subject Type: <b>{{ this.booking.type }}</b>
+                            </p>
+                            <p>
+                              Firstname: <b>{{ this.booking.first_name }}</b>
+                            </p>
+                            <p>
+                              Middlename: <b>{{ this.booking.middle_name }}</b>
+                            </p>
+                            <p>
+                              Lastname: <b>{{ this.booking.last_name }}</b>
+                            </p>
+                            <p>
+                              Email: <b>{{ this.booking.email }}</b>
+                            </p>
+                            <p>
+                              Booking Status: <b>{{ this.booking.status }}</b>
+                            </p>
+                            <p>
+                              Mobile Number: <b>{{ this.booking.mobile_number }}</b>
+                            </p>
+                            <p>
+                              Location: <b>{{ this.booking.location }}</b>
+                            </p>
+                            <p>
+                              Scheduled Inspection Date:
+                              <b>{{ formatDate(this.inspection_date) }}</b>
+                            </p>
+                            <p>
+                              Time Range: <b>{{ this.selectedTimeRange }}</b>
+                            </p>
+                            <p>
+                              Date Requested: <b>{{ formatDate(this.booking.date_created) }}</b>
+                            </p>
+                            <p>
+                              Date Schedule: <b>{{ formatDate(this.booking.schedule_date) }}</b>
+                            </p>
+                            <div v-if="this.booking.isRejected">
+                              <p>
+                                Date Rejected: <b>{{ formatDate(this.booking.date_rejected) }}</b>
+                              </p>
+                            </div>
+                            <p>
+                              Date Updated: <b>{{ formatDate(this.booking.date_updated) }}</b>
+                            </p>
+                            <p class="mt-4">
+                              Note: <b>{{ this.booking.note }}</b>
+                            </p>
+                            <v-alert
+                              v-if="showAcceptButton"
+                              class="mt-4"
+                              type="info"
+                              color="#2196F3"
+                              theme="dark"
+                              icon="mdi-information"
+                              text="Please be advised that this booking will be automatically transferred to the task section for further processing. This process is an integral part of our streamlined workflow, designed to ensure efficient handling of all bookings. As a result, the booking will be removed from the booking section."
+                              variant="tonal"
+                              prominent
+                            ></v-alert>
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-btn v-if="showRejectButton" color="red" @click="handleRejectBooking"
+                              >Reject Booking</v-btn
+                            >
+                            <v-btn v-if="showAcceptButton" color="green" @click="acceptBooking"
+                              >Accept Booking</v-btn
+                            >
+                            <v-btn
+                              v-if="showRejectButton || showAcceptButton || closePreviewBtn"
+                              color="primary"
+                              @click="handleClosePreview"
+                              >Close</v-btn
+                            >
+                          </v-card-actions>
+                        </v-container>
+                      </v-card>
+                    </v-dialog>
+                    <v-alert
+                      class="mb-6"
+                      v-if="this.booking.isRejected"
+                      type="info"
+                      color="#2196F3"
+                      theme="dark"
+                      icon="mdi-information"
+                      title="Read-Only Fields"
+                      text="Inspection date, and inspection time cannot be modified as the booking has been rejected. To make changes, update the status to 'Pending'."
+                      variant="tonal"
+                      prominent
+                      border="top"
+                    ></v-alert>
+                    <v-row justify="end">
                       <div class="group-details">
-                        <div class="workers">
-                          <v-select prepend-inner-icon="mdi-account-multiple" label="Assign Constuction Worker*"
-                            density="comfortable" multiple chips variant="solo" :items="workers" :item-props="itemProps"
-                            :disabled="isBookingRejected()" v-model="selectedWorkers" required></v-select>
-                        </div>
-                        <div class="detail">
-                          <v-text-field label="Schedule Inspection Date*" append-inner-icon="mdi-calendar"
-                            density="comfortable" variant="solo" v-model="selectedDate" :readonly="!editingEnabled"
-                            @click:append-inner="showDatePicker = true" :disabled="isBookingRejected()"
-                            :value="formattedDate"></v-text-field>
-                        </div>
-                        <div class="detail">
-                          <v-select prepend-inner-icon="mdi-clock-outline" label="Select Time Range" density="comfortable"
-                            variant="solo" v-model="selectedTimeRange" :disabled="isBookingRejected()"
-                            :readonly="!editingEnabled" :items="[
-                              '08:00 AM - 10:00 AM',
-                              '10:00 AM - 12:00 PM',
-                              '12:00 PM - 02:00 PM',
-                              '02:00 PM - 04:00 PM',
-                              '04:00 PM - 06:00 PM'
-                            ]"></v-select>
+                        <div class="d-flex">
+                          <div class="detail">
+                            <v-text-field
+                              v-model="inspection_date"
+                              label="Set Inspection Date *"
+                              append-inner-icon="mdi-calendar"
+                              density="comfortable"
+                              variant="solo"
+                              @click:append-inner="showDatePicker = !this.booking.isRejected"
+                              :readonly="this.booking.isRejected"
+                              :value="formattedDate"
+                            ></v-text-field>
+                            <v-dialog v-model="showDatePicker">
+                              <v-row justify="end">
+                                <v-date-picker
+                                  v-model="inspection_date"
+                                  show-adjacent-months
+                                ></v-date-picker>
+                              </v-row>
+                            </v-dialog>
+                          </div>
+                          <div class="detail">
+                            <v-select
+                              prepend-inner-icon="mdi-clock-outline"
+                              label="Set Inspection Time *"
+                              density="comfortable"
+                              variant="solo"
+                              v-model="selectedTimeRange"
+                              :readonly="this.booking.isRejected"
+                              :items="[
+                                '08:00 AM - 10:00 AM',
+                                '10:00 AM - 12:00 PM',
+                                '12:00 PM - 2:00 PM',
+                                '2:00 PM - 4:00 PM',
+                                '4:00 PM - 6:00 PM'
+                              ]"
+                            ></v-select>
+                          </div>
                         </div>
                       </div>
                     </v-row>
-                    <v-dialog v-model="showDatePicker">
-                      <v-row justify="end">
-                        <v-date-picker v-model="selectedDate" show-adjacent-months></v-date-picker>
-                      </v-row>
-                    </v-dialog>
                   </v-container>
                 </v-card-text>
               </v-card>
               <div class="group-details">
                 <div class="detail">
                   <p>Booking ID:</p>
-                  <v-text-field variant="outlined" density="compact" :value="booking.id" :disabled="isBookingRejected()"
-                    readonly></v-text-field>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :value="this.booking._id"
+                    readonly
+                  ></v-text-field>
                 </div>
                 <div class="detail">
-                  <p>Data Subject Type:</p>
-                  <v-select variant="outlined" density="compact" v-model="booking.type" :value="booking.type"
-                    :items="dataSubjectTypes" :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-select>
+                  <p>Firstname:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :value="booking.first_name"
+                    v-model="booking.first_name"
+                    :readonly="!editingEnabled"
+                  ></v-text-field>
                 </div>
                 <div class="detail">
-                  <p>Fullname:</p>
-                  <v-text-field variant="outlined" density="compact" v-model="booking.fullName" :value="booking.fullName"
-                    :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-text-field>
+                  <p>Middlename:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :value="booking.middle_name"
+                    v-model="booking.middle_name"
+                    :readonly="!editingEnabled"
+                  ></v-text-field>
                 </div>
                 <div class="detail">
-                  <p>Book Status:</p>
-                  <v-select variant="outlined" density="compact" :value="booking.status" :disabled="isBookingRejected()"
-                    readonly :class="{
-                      'status-pending': booking.status === 'Pending',
-                      'status-rejected': booking.status === 'Rejected'
-                    }">
-                    ></v-select>
+                  <p>Lastname:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :value="booking.last_name"
+                    v-model="booking.last_name"
+                    :readonly="!editingEnabled"
+                  ></v-text-field>
                 </div>
               </div>
               <div class="group-details">
                 <div class="detail">
+                  <p>Data ubject Type:</p>
+                  <v-select
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.type"
+                    :value="booking.type"
+                    :items="dataSubjectType"
+                    :readonly="!editingEnabled"
+                  ></v-select>
+                </div>
+                <div class="detail">
                   <p>Email:</p>
-                  <v-text-field variant="outlined" density="compact" v-model="booking.email" :value="booking.email"
-                    :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-text-field>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.email"
+                    :value="booking.email"
+                    :readonly="!editingEnabled"
+                  ></v-text-field>
                 </div>
                 <div class="detail">
                   <p>Requested Service:</p>
-                  <v-select variant="outlined" density="compact" v-model="booking.service" :value="booking.service"
-                  :items="services"  :loading="loading" :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-select>
+                  <v-select
+                    variant="outlined"
+                    density="compact"
+                    :items="services"
+                    v-model="booking.service"
+                    :value="booking.service"
+                    :loading="loading"
+                    :readonly="!editingEnabled"
+                  ></v-select>
                 </div>
                 <div class="detail">
-                  <p>Location:</p>
-                  <v-text-field variant="outlined" density="compact" v-model="booking.location" :value="booking.location"
-                    :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Mobile Number:</p>
-                  <v-text-field variant="outlined" density="compact" v-model="booking.mobileNumber"
-                    :value="booking.mobileNumber" :disabled="isBookingRejected()"
-                    :readonly="!editingEnabled"></v-text-field>
+                  <p>Book Status:</p>
+                  <v-select
+                    variant="outlined"
+                    density="compact"
+                    :items="statusOptions"
+                    :readonly="!editingEnabled"
+                    v-model="booking.status"
+                    :value="booking.status"
+                    :class="{
+                      'status-pending': booking.status === 'Pending',
+                      'status-rejected': booking.status === 'Rejected'
+                    }"
+                  >
+                  </v-select>
                 </div>
               </div>
               <div class="group-details">
                 <div class="detail">
-                  <p>Scheduled Date:</p>
-                  <v-text-field variant="outlined" density="compact" :value="booking.scheduleDate"
-                    :disabled="isBookingRejected()" readonly></v-text-field>
+                  <p>Created On:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :value="formatDate(booking.date_created)"
+                    readonly
+                  ></v-text-field>
                 </div>
                 <div class="detail">
-                  <p>Created On:</p>
-                  <v-text-field variant="outlined" density="compact" :value="booking.createdDate"
-                    :disabled="isBookingRejected()" readonly></v-text-field>
+                  <p>Schedule Date:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :value="formatDate(booking.schedule_date)"
+                    readonly
+                  ></v-text-field>
+                </div>
+                <div class="detail">
+                  <p>Site Location:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.location"
+                    :value="booking.location"
+                    :readonly="!editingEnabled"
+                  ></v-text-field>
+                </div>
+                <div class="detail">
+                  <p>Mobile Number:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.mobile_number"
+                    :value="booking.mobile_number"
+                    :readonly="!editingEnabled"
+                  ></v-text-field>
+                </div>
+              </div>
+              <div class="group-details">
+                <div v-if="this.booking.isRejected" class="detail">
+                  <p>Date Rejected:</p>
+                  <v-text-field
+                    variant="outlined"
+                    density="compact"
+                    :value="formatDate(booking.date_rejected)"
+                    readonly
+                  ></v-text-field>
                 </div>
               </div>
               <div class="group-details">
                 <div class="note">
                   <p>Note:</p>
-                  <v-textarea variant="outlined" density="compact" v-model="booking.note" :value="booking.note"
-                    :disabled="isBookingRejected()" :readonly="!editingEnabled"></v-textarea>
+                  <v-textarea
+                    variant="outlined"
+                    density="compact"
+                    v-model="booking.note"
+                    :value="booking.note"
+                    :readonly="!editingEnabled"
+                  ></v-textarea>
                 </div>
               </div>
               <v-card variant="text">
@@ -251,10 +505,24 @@
                     <div v-if="editingEnabled" class="edit-actions">
                       <v-row justify="end">
                         <div class="form-actions-btn">
-                          <v-btn density="compact" prepend-icon="mdi-close" variant="tonal" size="large"
-                            color="red-lighten-1" @click="cancelEdit">Cancel</v-btn>
-                          <v-btn density="compact" prepend-icon="mdi-content-save" variant="tonal" size="large"
-                            color="blue-lighten-1" @click="saveEdit">Save</v-btn>
+                          <v-btn
+                            density="compact"
+                            prepend-icon="mdi-close"
+                            variant="tonal"
+                            size="large"
+                            color="red-lighten-1"
+                            @click="cancelEdit"
+                            >Cancel</v-btn
+                          >
+                          <v-btn
+                            density="compact"
+                            prepend-icon="mdi-content-save"
+                            variant="tonal"
+                            size="large"
+                            color="blue-lighten-1"
+                            @click="saveEdit"
+                            >Save</v-btn
+                          >
                         </div>
                       </v-row>
                     </div>
@@ -264,16 +532,32 @@
             </div>
           </div>
         </div>
-
-        <v-alert class="popup-message" v-if="showPopup" variant="tonal" :type="popupType" :title="popupTitle"
-          :value="true" dismissible @input="hidePopupMessage">
+        <v-alert
+          class="popup-message"
+          v-if="showPopup"
+          variant="tonal"
+          :type="popupType"
+          :title="popupTitle"
+          :value="true"
+          dismissible
+          @input="hidePopupMessage"
+        >
           {{ popupMessage }}
-          <template v-if="isBookingRejected() && acceptBookingClicked">
-            <div class="actions">
-              <v-btn color="red" variant="tonal" @click="cancelAction">No</v-btn>
-              <v-btn color="green" variant="outlined" @click="confirmAction">Yes</v-btn>
-            </div>
-          </template>
+        </v-alert>
+        <v-alert
+          class="popup-message"
+          v-model="handleNotVisited"
+          density="compact"
+          type="warning"
+          title="Task Not Visited"
+          closable
+          text="The task has not been visited yet. Are you sure you want to cancel it? If you continue, the task will be marked as visited."
+        >
+          <div class="button-container">
+            <v-btn class="d-block mt-2" size="small" variant="outlined" @click="handleCancelTask">
+              Continue
+            </v-btn>
+          </div>
         </v-alert>
       </div>
     </transition>
@@ -281,11 +565,20 @@
 </template>
 
 <script>
-import { requestData, workersData } from '../../dataUtils/tableData'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
-import { dataSubjectTypes } from '../../dataUtils/dataSubjectType'
-import BookingForm from '../Book.vue';
 import { getAllServices } from '../../apirequests/service'
+import BookingForm from '../Book.vue'
+
+import {
+  getAllBooking,
+  rejectBooking,
+  getBookingById,
+  updateBooking,
+  deleteBooking,
+  checkBookingStatus
+} from '../../apirequests/bookings'
+import { addTask } from '../../apirequests/task'
+import { dataSubjectTypes } from '@/dataUtils/dataSubjectType'
 
 export default {
   components: {
@@ -294,96 +587,135 @@ export default {
   },
   data() {
     return {
-      dataSubjectTypes: dataSubjectTypes,
+      tab: 'request',
+      search: '',
       services: [],
+      reasons: [],
+      itemsPerPage: 10,
+      currentPage: 1,
+      options: [10, 20, 50, 100],
+      bookingRequest: [],
+      selectedBookingId: null,
+      showCompleteTaskDialog: false,
       loading: false,
+      isLoading: true,
+      total_amount: '',
       editingEnabled: false,
       showDatePicker: false,
-      selectedDate: null,
-      selectedTimeRange: '02:00 PM - 04:00 PM',
-      workers: workersData,
-      selectedWorkers: null,
-      bookingRequests: [],
-      originalBooking: {},
-      selectedFilter: 'All',
-      selectedRowFilter: 'all',
+      inspection_date: null,
+      taskId: null,
       alertTimeout: null,
+      dataSubjectType: dataSubjectTypes,
       tableColumns: [
-        { key: 'id', label: 'ID', maxLength: 8 },
-        { key: 'type', label: 'Data Subject', maxLength: 11 },
-        { key: 'fullName', label: 'Full Name', maxLength: 11 },
-        { key: 'mobileNumber', label: 'Mobile Number', maxLength: 11 },
-        { key: 'email', label: 'Email', maxLength: 11 },
-        { key: 'service', label: 'Service', maxLength: 11 },
+        { key: '_id', label: 'ID', maxLength: 8 },
+        { key: 'type', label: 'Subject Type', maxLength: 8 },
+        { key: 'first_name', label: 'Firstname', maxLength: 8 },
+        { key: 'middle_name', label: 'Midlename', maxLength: 8 },
+        { key: 'last_name', label: 'Lastename', maxLength: 8 },
+        { key: 'mobile_number', label: 'Mobile Number', maxLength: 8 },
+        { key: 'service', label: 'Service', maxLength: 8 },
         { key: 'location', label: 'Location', maxLength: 20 },
-        { key: 'createdDate', label: 'Created On', maxLength: null },
-        { key: 'scheduleDate', label: 'Schedule Date', maxLength: null },
+        { key: 'date_created', label: 'Created On', maxLength: null },
+        { key: 'schedule_date', label: 'Schedule Date', maxLength: null },
         { key: 'status', label: 'Status', maxLength: null }
       ],
-      selectedBookingId: null,
+      statusOptions: ['Pending'],
+      selectedTimeRange: null,
+      cancelFormManuallyClosed: false,
+      addMaterials: false,
       showPopup: false,
       popupType: '',
       popupTitle: '',
       popupMessage: '',
-      isVisited: false,
-      showModal: false
+      task404: false,
+      addCompleteForm: false,
+      errorAmount: false,
+      previewDetails: false,
+      handleNotVisited: false,
+      showToolTip: false,
+      previewReason: false,
+      selectedReason: {
+        reason: '',
+        description: ''
+      },
+      manualBooking: false
     }
   },
   computed: {
-    mode() {
-      return this.editingEnabled ? 'Editing Mode' : 'View Mode'
-    },
-    sortedTableData() {
-      return this.filteredTableData.sort((a, b) => {
-        return new Date(a.scheduleDate) - new Date(b.scheduleDate)
-      })
-    },
     formattedDate() {
-      if (this.selectedDate) {
-        const date = new Date(this.selectedDate)
+      if (this.inspection_date) {
+        const date = new Date(this.inspection_date)
         const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }
-        return date.toLocaleDateString(undefined, options)
+        return date.toLocaleDateString('en-US', options)
       }
       return null
     },
-    filteredTableData() {
-      if (this.selectedFilter === 'All') {
-        return this.bookingRequests
-      }
+    filteredRequest() {
+      const searchTerm = this.search.toLowerCase().trim()
+      const today = new Date()
 
-      const searchText = this.selectedFilter.toLowerCase()
+      const sortedBooking = this.bookingRequest.sort((a, b) => {
+        const dateA = new Date(a.schedule_date)
+        const dateB = new Date(b.schedule_date)
 
-      let filteredData = this.bookingRequests.filter((row) => {
-        const rowData = row.service.toLowerCase()
-        return rowData.includes(searchText)
+        const isPendingA = a.status.toLowerCase() === 'pending'
+        const isPendingB = b.status.toLowerCase() === 'pending'
+
+        if (isPendingA && !isPendingB) return -1
+        if (!isPendingA && isPendingB) return 1
+
+        if (isPendingA && isPendingB) {
+          const timeDiffA = Math.abs(dateA - today)
+          const timeDiffB = Math.abs(dateB - today)
+
+          if (timeDiffA < timeDiffB) return -1
+          if (timeDiffA > timeDiffB) return 1
+
+          const durationA = dateA.getTime() - today.getTime()
+          const durationB = dateB.getTime() - today.getTime()
+
+          if (durationA > durationB) return -1
+          if (durationA < durationB) return 1
+        }
+
+        const statusOrder = { Pending: 1, Rejected: 2 }
+        const statusA = a.status
+        const statusB = b.status
+
+        if (statusOrder[statusA] < statusOrder[statusB]) return -1
+        if (statusOrder[statusA] > statusOrder[statusB]) return 1
+
+        return 0
       })
 
-      const selectedRowFilter = this.selectedRowFilter
-
-      if (['5', '10', '20', '50', 'all'].includes(selectedRowFilter)) {
-        const numEnd =
-          selectedRowFilter === 'all' ? filteredData.length : parseInt(selectedRowFilter)
-        filteredData = filteredData.slice(0, Math.min(numEnd, filteredData.length))
-      }
-
-      return filteredData
+      return sortedBooking.filter((booking) => {
+        return (
+          booking.first_name.toLowerCase().includes(searchTerm) ||
+          booking.mobile_number.toLowerCase().includes(searchTerm) ||
+          booking.service.toLowerCase().includes(searchTerm) ||
+          booking.status.toLowerCase().includes(searchTerm) ||
+          booking.location.toLowerCase().includes(searchTerm) ||
+          booking._id.toLowerCase().includes(searchTerm) ||
+          booking.type.toLowerCase().includes(searchTerm) ||
+          booking.last_name.toLowerCase().includes(searchTerm)
+        )
+      })
     },
-    rowFilterOptions() {
-      return [
-        { label: 'All Rows', value: 'all' },
-        { label: '5', value: '5' },
-        { label: '10', value: '10' },
-        { label: '20', value: '20' },
-        { label: '50', value: '50' }
-      ]
+    displayedRequest() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage
+      const endIndex = startIndex + this.itemsPerPage
+      return this.filteredRequest.slice(startIndex, endIndex)
+    },
+    totalPages() {
+      return Math.ceil(this.filteredRequest.length / this.itemsPerPage)
     },
     booking: {
       get() {
         let bookingId = null
         const urlSearchParams = new URLSearchParams(window.location.search)
 
-        if (urlSearchParams.has('id')) {
-          bookingId = urlSearchParams.get('id')
+        if (urlSearchParams.has('_id')) {
+          bookingId = urlSearchParams.get('_id')
         } else if (this.selectedBookingId) {
           bookingId = this.selectedBookingId
         }
@@ -394,31 +726,32 @@ export default {
           return null
         }
       },
-      set(value) { }
+      set(value) {}
     },
     hasIdParam() {
       const urlSearchParams = new URLSearchParams(window.location.search)
-      return urlSearchParams.has('id')
+      return urlSearchParams.has('_id')
     }
   },
   mounted() {
-    const today = new Date()
-    today.setDate(today.getDate())
-
-    this.selectedDate = today.toISOString().substr(0, 10)
-
     this.checkURLForBookingId()
   },
   created() {
     this.fetchServices()
-    this.bookingRequests = requestData
+    this.getAllBookings()
+    this.getBookingById()
     if (this.hasIdParam) {
       const urlSearchParams = new URLSearchParams(window.location.search)
-      const id = urlSearchParams.get('id')
+      const id = urlSearchParams.get('_id')
       this.openBookingDetails(id)
+    } else {
+      this.selectedWorkers = []
     }
   },
   methods: {
+    refreshPage() {
+      this.getAllBookings
+    },
     async fetchServices() {
       try {
         this.loading = true
@@ -430,253 +763,173 @@ export default {
         this.loading = false
       }
     },
-    refreshPage() {
-      location.reload()
+    async getAllBookings() {
+      try {
+        this.isLoading = true
+        const response = await getAllBooking()
+        this.bookingRequest = response.data
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.isLoading = false
+      }
+    },
+    async handleRejectBooking() {
+      try {
+        const bookingId = this.selectedBookingId
+        await rejectBooking(bookingId)
+        this.previewDetails = false
+        const successMessage = 'Booking rejected successfully'
+        this.showPopupMessage('success', 'Success', successMessage)
+        this.getAllBookings()
+      } catch (error) {
+        this.showPopupMessage('error', 'Update Failed', 'An error occurred')
+      }
+    },
+    handlePageChange(page) {
+      this.currentPage = page
+    },
+    handleItemsPerPageChange() {
+      this.currentPage = 1
     },
     shortenText(text, maxLength) {
-      if (maxLength && text.length > maxLength) {
+      if (text && maxLength && text.length > maxLength) {
         return text.substring(0, maxLength) + '...'
       } else {
         return text
       }
     },
-    shortenId(id) {
-      return id.substring(0, 8)
+    shortenId(_id) {
+      return _id.substring(0, 8)
+    },
+    formatDate(date) {
+      if (date) {
+        const formattedDate = new Date(date).toLocaleDateString('en', {
+          year: '2-digit',
+          month: '2-digit',
+          day: '2-digit'
+        })
+        return formattedDate.replace(/\//g, '/')
+      }
+      return '-'
+    },
+    isDateColumn(key) {
+      return ['date_created', 'schedule_date', 'date_completed'].includes(key)
+    },
+    openBookingDetails(_id) {
+      if (this.selectedBookingId === _id) {
+        return
+      }
+
+      this.selectedBookingId = _id
+      this.task = this.getBookingById(this.selectedBookingId)
+      this.updateBookingDetails(this.selectedBookingId)
     },
     checkURLForBookingId() {
       const urlSearchParams = new URLSearchParams(window.location.search)
       const urlId = urlSearchParams.get('id')
 
       if (urlId && urlId !== this.selectedBookingId) {
-        const panelElement = document.querySelector('.booking-details-panel')
-        panelElement.classList.remove('slide-leave')
-        panelElement.classList.remove('slide-leave-to')
-        panelElement.classList.remove('slide-leave-active')
-
-        this.closeBookingDetails()
         this.openBookingDetails(urlId)
       }
     },
-
-    openBookingDetails(id) {
-      this.selectedBookingId = id
-      this.booking = this.getBookingById(this.selectedBookingId)
-      this.updateBookingDetails(this.selectedBookingId)
-    },
-
     closeBookingDetails() {
       this.selectedBookingId = null
       this.updateBookingDetails(null)
 
-      const panelElement = document.querySelector('.booking-details-panel')
+      this.editingEnabled = false
+
+      const panelElement = document.querySelector('.task-details-panel')
       panelElement.classList.add('slide-leave')
       panelElement.classList.add('slide-leave-to')
       panelElement.classList.add('slide-leave-active')
-
-      // this.refreshPage()
     },
-
     updateBookingDetails(id) {
+      const url = new URL(window.location.href)
+      const params = url.searchParams
+
       this.selectedBookingId = id
+      id ? params.set('id', id) : params.delete('id')
 
-      const urlSearchParams = new URLSearchParams(window.location.search)
-      if (id) {
-        urlSearchParams.set('id', id)
-      } else {
-        urlSearchParams.delete('id')
-      }
+      const watchParams = [
+        { prop: 'previewDetails', param: 'preview-request-details' },
+        { prop: 'previewReason', param: 'preview-cancelled-reason' },
+        { prop: 'editingEnabled', param: 'editing-request' }
+      ]
 
-      const newUrl = `${window.location.origin}${window.location.pathname
-        }?${urlSearchParams.toString()}`
-      history.pushState(null, null, newUrl)
-    },
-    getBookingById(id) {
-      return this.bookingRequests.find((booking) => booking.id === id)
-    },
-    isBookingRejected() {
-      return this.booking.status === 'Rejected'
-    },
-    applyRowFilter() {
-      this.showAlert = true
-      clearTimeout(this.alertTimeout)
-      this.alertTimeout = setTimeout(() => {
-        this.showAlert = false
-      }, 3000)
-    },
-    rejectBooking() {
-      const successMessage =
-        'The booking has been successfully rejected. Thank you for notifying us.'
-
-      if (this.booking.status !== 'Accepted' && this.booking.status !== 'Rejected') {
-        const confirmMessage = 'Would you like to reject this booking?'
-        if (confirm(confirmMessage)) {
-          const reason = prompt('Please provide a reason for rejecting the booking:')
-          if (reason) {
-            this.booking.status = 'Rejected'
-            this.booking.rejectionReason = reason
-            this.showPopupMessage('success', 'Rejected', successMessage)
-            setTimeout(() => {
-              this.closeBookingDetails()
-            }, 3000)
-          } else {
-            // TODO: Handle case when reason is not provided
-          }
-        }
-      } else {
-        const errorMessage =
-          'Sorry, but we are unable to process your request to reject this booking. Please try again later or contact customer support for assistance.'
-        this.showPopupMessage('error', 'Error', errorMessage)
-      }
-    },
-    acceptBooking() {
-      this.acceptBookingClicked = true
-      if (this.booking.status !== 'Rejected' && this.booking.status !== 'Pending') {
-        this.showPopupMessage(
-          'error',
-          'Unable to Accept',
-          'This booking has already been accepted. You cannot accept it again.'
-        )
-        return
-      }
-
-      if (this.isBookingRejected()) {
-        const confirmMessage =
-          'The booking request is currently in a rejected status. Would you like to update the status to pending?'
-        this.showConfirmationPopup('Confirmation', confirmMessage, () => {
-          const reason = prompt('Please provide a reason for updating the status to pending:')
-          if (reason) {
-            this.booking.status = 'Pending'
-            this.booking.rejectionReason = reason
-            const successMessage =
-              'The booking has been successfully accepted and the status has been updated to pending.'
-            this.showPopupMessage('success', 'Updated', successMessage)
-          } else {
-            //TODO: Handle case when reason is not provided
-          }
+      watchParams.forEach(({ prop, param }) => {
+        this.$watch(prop, (newValue) => {
+          newValue ? params.set(param, 'true') : params.delete(param)
+          history.pushState(null, null, url.toString())
         })
-      } else {
-        // TODO:Perform the accept booking action
-
-        if (!this.booking.isVisited) {
-          this.showPopupMessage(
-            'error',
-            'Unable to Accept',
-            'This booking request has not been visited yet. Please visit the location before accepting.'
-          )
-          return
-        }
-
-        if (this.selectedWorkers === null) {
-          this.showPopupMessage(
-            'error',
-            'Unable to Accept',
-            'Please select at least one construction worker before accepting the booking.'
-          )
-          return
-        }
-
-        if (this.selectedDate === null) {
-          this.showPopupMessage(
-            'error',
-            'Unable to Accept',
-            'Please select a schedule inspection date before accepting the booking.'
-          )
-          return
-        }
-
-        const successMessage = 'The booking has been successfully accepted.'
-        this.showPopupMessage('success', 'Accepted', successMessage)
-        this.booking.status = 'Accepted'
-        this.acceptBookingClicked = false
-      }
-    },
-    editBooking() {
-      if (this.isBookingRejected()) {
-        this.showPopupMessage(
-          'error',
-          'Editing Not Allowed',
-          'Editing is not allowed for rejected bookings.'
-        )
-      } else {
-        this.editingEnabled = true
-        this.originalBooking = { ...this.booking }
-      }
-    },
-    cancelEdit() {
-      Object.assign(this.booking, {
-        type: this.originalBooking.type,
-        fullName: this.originalBooking.fullName,
-        email: this.originalBooking.email,
-        service: this.originalBooking.service,
-        location: this.originalBooking.location,
-        mobileNumber: this.originalBooking.mobileNumber,
-        zipCode: this.originalBooking.zipCode
       })
 
-      this.editingEnabled = false
+      history.pushState(null, null, url.toString())
     },
-    saveEdit() {
-      const invalidFields = this.getInvalidFields()
-      const isFieldsEdited = this.areFieldsEdited()
-
-      if (invalidFields.length > 0) {
-        const errorMessage = `Please fill in the following fields: ${invalidFields.join(', ')}`
-        this.showPopupMessage('error', 'Validation Error', errorMessage)
+    getBookingById(_id) {
+      return this.bookingRequest.find((booking) => booking._id === _id)
+    },
+    editBooking() {
+      this.editingEnabled = true
+    },
+    cancelEdit() {
+      if (this.editingEnabled) {
+        this.getAllBookings()
+        this.editingEnabled = false
+      }
+    },
+    async saveEdit() {
+      if (
+        this.booking.first_name.trim() === '' ||
+        this.booking.last_name.trim() === '' ||
+        this.booking.email.trim() === '' ||
+        this.booking.service.trim() === '' ||
+        this.booking.location.trim() === '' ||
+        this.booking.type.trim() === '' ||
+        this.booking.mobile_number.trim() === ''
+      ) {
+        const errorMessage = 'Please fill in all the required fields.'
+        this.showPopupMessage('error', 'Update Failed', errorMessage)
         return
       }
 
-      if (isFieldsEdited) {
-        Object.assign(this.originalBooking, {
-          type: this.booking.type,
-          fullName: this.booking.fullName,
+      try {
+        const bookingId = this.selectedBookingId
+        const updatedData = {
+          first_name: this.booking.first_name,
+          middle_name: this.booking.middle_name,
+          last_name: this.booking.last_name,
           email: this.booking.email,
           service: this.booking.service,
           location: this.booking.location,
-          mobileNumber: this.booking.mobileNumber
-        })
-
-        const successMessage = 'Changes saved successfully.'
-        this.showPopupMessage('success', 'Saved', successMessage)
-      } else {
-        const noChangesMessage = 'No changes were made.'
-        this.showPopupMessage('info', 'Oops', noChangesMessage)
-      }
-
-      this.editingEnabled = false
-    },
-    areFieldsEdited() {
-      const editableFields = ['type', 'fullName', 'email', 'service', 'location', 'mobileNumber']
-
-      for (const field of editableFields) {
-        const fieldValue = this.booking[field]
-        const originalFieldValue = this.originalBooking[field]
-
-        if (fieldValue !== originalFieldValue) {
-          return true
+          type: this.booking.type,
+          status: this.booking.status,
+          mobile_number: this.booking.mobile_number,
+          note: this.booking.note,
+          date_updated: new Date()
         }
-      }
 
-      return false
-    },
-    getInvalidFields() {
-      const invalidFields = []
-      if (!this.booking.type) {
-        invalidFields.push('Type')
-      }
-      if (!this.booking.fullName) {
-        invalidFields.push('Full Name')
-      }
-      if (!this.booking.service) {
-        invalidFields.push('Service')
-      }
-      if (!this.booking.location) {
-        invalidFields.push('Location')
-      }
-      if (!this.booking.mobileNumber) {
-        invalidFields.push('Mobile Number')
-      }
+        const statusResponse = await checkBookingStatus(bookingId)
 
-      return invalidFields
+        switch (statusResponse.data) {
+          case 'Rejected':
+            updatedData.isRejected = false
+            updatedData.date_rejected = null
+            break
+        }
+
+        await updateBooking(bookingId, updatedData)
+
+        const successMessage = 'Booking updated successfully.'
+        this.showPopupMessage('success', 'Update Successful', successMessage)
+
+        this.editingEnabled = false
+        this.getAllBookings()
+      } catch (error) {
+        console.error(error)
+        const errorMessage = 'Failed to update the booking. Please try again.'
+        this.showPopupMessage('error', 'Update Failed', errorMessage)
+      }
     },
     showPopupMessage(type, title, message) {
       this.popupType = type
@@ -688,7 +941,6 @@ export default {
         this.hidePopupMessage()
       }, 4000)
     },
-
     showConfirmationPopup(title, message, callback) {
       this.popupType = 'info'
       this.popupTitle = title
@@ -697,18 +949,16 @@ export default {
 
       this.confirmationCallback = callback
     },
-
     confirmAction() {
       if (typeof this.confirmationCallback === 'function') {
         this.confirmationCallback()
       }
       this.hidePopupMessage()
-      this.acceptBookingClicked = false
+      this.acceptTaskClicked = false
     },
-
     cancelAction() {
       this.hidePopupMessage()
-      this.acceptBookingClicked = false
+      this.acceptTaskClicked = false
     },
     hidePopupMessage() {
       this.showPopup = false
@@ -720,8 +970,6 @@ export default {
       switch (status) {
         case 'Pending':
           return 'orange'
-        case 'Approved':
-          return 'green'
         case 'Rejected':
           return 'red'
         default:
@@ -730,59 +978,125 @@ export default {
     },
     itemProps(item) {
       return {
-        title: item.name,
+        title: item.fullName,
         subtitle: item.position
       }
     },
-    searchRequest(id) {
-      const request = this.getBookingById(id)
-      if (request) {
-        this.request = request
-        this.updateBookingDetails(id)
-        this.selectedWorkers = this.getInitialSelectedWorkers(id)
-      } else {
-        this.resetRequest()
+    previewBooking() {
+      this.setPreviewDialog('Preview', false, false, true)
+      this.updateBookingDetails(this.selectedBookingId)
+    },
+    async previewRejectBooking() {
+      try {
+        const res = await checkBookingStatus(this.selectedBookingId)
+        const status = res.data
+        if (status === 'Rejected') {
+          this.showPopupMessage(
+            'error',
+            'Booking Rejected',
+            'We apologize for the inconvenience, but this booking has already been rejected. Please review the details and consider alternative options if needed.'
+          )
+          return
+        }
+
+        this.setPreviewDialog('Preview to Reject', true, false, true)
+        this.updateBookingDetails(this.selectedBookingId)
+      } catch (error) {}
+    },
+    async handleAcceptBooking() {
+      try {
+        const res = await checkBookingStatus(this.selectedBookingId)
+        const status = res.data
+        if (status === 'Rejected') {
+          this.showPopupMessage(
+            'error',
+            'Booking Rejected',
+            'The booking has been rejected. Please update the status to "Pending" before accepting the request.'
+          )
+          return
+        }
+
+        if (this.inspection_date && this.selectedTimeRange) {
+          this.setPreviewDialog('Review Before Accepting', false, true, true)
+        } else {
+          this.showPopupMessage(
+            'error',
+            'Missing Information',
+            'Please select an inspection date and time range.'
+          )
+          this.previewDetails = false
+        }
+      } catch (error) {
+        this.showPopupMessage(
+          'error',
+          'Something went wrong',
+          'An error occurred while processing the request. Please try again later.'
+        )
       }
     },
-    resetRequest() {
-      this.request = null
-      this.selectedWorkers = []
-      this.request404 = true
-    },
-    updateIsVisited(id) {
-      const booking = this.getBookingById(id)
-      const currentDate = new Date()
-      const formattedDate = currentDate.toLocaleDateString('en-US')
-      const formattedTime = currentDate.toLocaleTimeString('en-US')
-      const location = this.booking.location
+    async acceptBooking() {
+      try {
+        const fullNameParts = [
+          this.booking.first_name,
+          this.booking.middle_name,
+          this.booking.last_name
+        ]
+        const fullName = fullNameParts.filter((name) => name && name.trim().length > 0).join(' ')
 
-      const updateIsVisited = `Location Visit Update: Date: ${formattedDate}, Time: ${formattedTime}, Location: ${location}. Thank you for visiting the location and updating the status. The visit has been recorded successfully.`
+        const toTaskCollection = {
+          type: this.booking.type,
+          fullName: fullName,
+          email: this.booking.email,
+          service: this.booking.service,
+          location: this.booking.location,
+          mobileNumber: this.booking.mobile_number,
+          note: this.booking.note,
+          schedule_date: this.booking.schedule_date,
+          inspection_time_range: this.selectedTimeRange,
+          inspection_date: this.inspection_date
+        }
 
-      this.showPopupMessage('success', 'Visit Update', updateIsVisited)
-      this.booking.isVisited = true
-    },
-    handleManualRequest() {
-      this.showModal = true
-    },
-    handleManualRequestClose() {
-      this.showModal = false
-    }
-  },
-  destroyed() {
-    clearTimeout(this.alertTimeout)
-  },
-  watch: {
-    selectedFilter(newVal) {
-      if (newVal === 'All') {
-        this.selectedRowFilter = 'all'
+        await addTask(toTaskCollection)
+        this.previewDetails = false
+        const bookingId = this.selectedBookingId
+        await deleteBooking(bookingId)
+
+        this.showPopupMessage(
+          'success',
+          'Booking Accepted',
+          'The booking has been successfully added to tasks and removed from the bookings list.'
+        )
+
+        setTimeout(() => {
+          this.closeBookingDetails()
+        }, 3000)
+      } catch (error) {
+        console.error(error)
+        this.showPopupMessage(
+          'error',
+          'Error',
+          'An error occurred while processing the booking. Please try again later.'
+        )
       }
+    },
+    handleClosePreview() {
+      this.setPreviewDialog('Booking Details', false, false)
+      this.updateBookingDetails(this.selectedBookingId)
+      this.previewDetails = false
+    },
+    setPreviewDialog(title, showRejectButton, showAcceptButton, closePreviewBtn) {
+      this.dialogTitle = title
+      this.showRejectButton = showRejectButton
+      this.showAcceptButton = showAcceptButton
+      this.closePreviewBtn = closePreviewBtn
+      this.previewDetails = true
     }
-  },
+  }
 }
 </script>
 
 <style scoped>
-.booking_request {
+.request_request {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -793,23 +1107,14 @@ export default {
   padding: 10px;
 }
 
-.booking_request-title {
+.request_request-title {
   color: #ffffff;
   margin: 0;
 }
 
-.new-booking-card {
+.new-request-card {
   margin-top: 20px;
   flex-grow: 1;
-}
-
-.filter-container,
-.refresh-container {
-  padding: 20px;
-}
-
-.filter-select {
-  width: 300px;
 }
 
 .table-container {
@@ -888,26 +1193,26 @@ export default {
   transform: translateX(100%);
 }
 
-.booking-details-panel {
+.task-details-panel {
   position: fixed;
   top: 60px;
   right: 0;
   bottom: 0;
-  width: 95%;
+  width: 97%;
   background-color: white;
   z-index: 999;
   overflow-y: auto;
 }
 
-.booking-details-panel::-webkit-scrollbar {
+.task-details-panel::-webkit-scrollbar {
   display: none;
 }
 
-.booking-details-content {
+.task-details-content {
   margin: 10px;
 }
 
-.reuest-details {
+.task-details {
   padding: 20px;
 }
 
@@ -916,12 +1221,20 @@ export default {
   padding: 10px;
 }
 
+.reasonError {
+  font-size: 10px;
+  color: red;
+}
+
 .note {
-  width: 86%;
+  max-width: 100%;
+  width: 1185px;
 }
 
 .detail p,
-.note p {
+.note p,
+.cost p,
+.material-list p {
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 5px;
@@ -942,7 +1255,7 @@ export default {
   width: 180px;
 }
 
-.booking-details-close {
+.task-details-close {
   text-align: end;
   margin: 10px;
 }
@@ -953,10 +1266,6 @@ export default {
 
 .status-rejected {
   color: red;
-}
-
-.status-accepted {
-  color: green;
 }
 
 .popup-message {
@@ -996,28 +1305,6 @@ export default {
   margin: 5px;
 }
 
-.table-text {
-  font-size: 12px;
-}
-
-.btn-mode {
-  display: flex;
-  justify-content: end;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.search-request {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-}
-
-.search-request .request {
-  width: 500px;
-}
-
 .inspect-place {
   display: block;
 }
@@ -1025,5 +1312,77 @@ export default {
 .task-notification-header,
 .task-inspect-btn {
   margin-bottom: 15px;
+}
+
+.table-text {
+  font-size: 12px;
+}
+
+.file-view {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.sub__headers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  max-width: 400px;
+  width: 100%;
+}
+.items-per-page {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+}
+
+.items-per-page__label {
+  font-size: 10px;
+  margin-right: 0.5rem;
+  font-weight: 500;
+}
+
+.items-per-page__select select {
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+}
+
+.table tr:hover {
+  background-color: #f5f5ff;
+}
+.summary {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.summary .summary-details {
+  max-width: 400px;
+  width: 300px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.previewed__value p {
+  margin-top: 5px;
 }
 </style>
