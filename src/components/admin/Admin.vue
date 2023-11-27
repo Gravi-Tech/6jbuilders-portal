@@ -153,6 +153,10 @@ export default {
       history.replaceState(currentState, '', url)
 
       this.$router.push({ name: 'admin', params: { menuItem: this.activeItem } })
+
+      // setTimeout(() => {
+      //   this.rail = true
+      // }, Math.floor(Math.random() * 1000) + 3000)
     },
     async fetchAdminData() {
       try {

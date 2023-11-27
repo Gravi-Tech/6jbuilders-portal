@@ -1,9 +1,25 @@
 import axios from 'axios'
 const baseUrl = 'http://localhost:3000/api'
 
+const api = axios.create({
+  baseURL: baseUrl,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
+const getAccessToken = () => {
+  return localStorage.getItem('accessToken')
+}
+
 export const addBooking = async (data) => {
   try {
-    const response = await axios.post(`${baseUrl}/bookings`, data)
+    const accessToken = getAccessToken()
+    const response = await api.post('/bookings', data, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
     return response.data
   } catch (error) {
     console.error(error)
@@ -11,9 +27,14 @@ export const addBooking = async (data) => {
   }
 }
 
-export const getBooking = async (bookingId) => {
+export const getBookingById = async (bookingId) => {
   try {
-    const response = await axios.get(`${baseUrl}/bookings/${bookingId}`)
+    const accessToken = getAccessToken()
+    const response = await api.get(`/bookings/${bookingId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
     return response.data
   } catch (error) {
     console.error(error)
@@ -21,9 +42,14 @@ export const getBooking = async (bookingId) => {
   }
 }
 
-export const getAllBookings = async () => {
+export const getAllBooking = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/bookings`)
+    const accessToken = getAccessToken()
+    const response = await api.get('/bookings', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
     return response.data
   } catch (error) {
     console.error(error)
@@ -33,7 +59,31 @@ export const getAllBookings = async () => {
 
 export const updateBooking = async (bookingId, data) => {
   try {
-    const response = await axios.put(`${baseUrl}/bookings/${bookingId}`, data)
+    const accessToken = getAccessToken()
+    const response = await api.put(`/bookings/${bookingId}`, data, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const rejectBooking = async (bookingId) => {
+  try {
+    const accessToken = getAccessToken()
+    const response = await api.put(
+      `/bookings/${bookingId}/reject`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    )
     return response.data
   } catch (error) {
     console.error(error)
@@ -43,7 +93,28 @@ export const updateBooking = async (bookingId, data) => {
 
 export const deleteBooking = async (bookingId) => {
   try {
-    const response = await axios.delete(`${baseUrl}/bookings/${bookingId}`)
+    const accessToken = getAccessToken()
+    const response = await api.delete(`/bookings/${bookingId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+
+export const checkBookingStatus = async (taskId) => {
+  try {
+    const accessToken = getAccessToken()
+    const response = await api.get(`/bookings/${taskId}/status`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
     return response.data
   } catch (error) {
     console.error(error)
