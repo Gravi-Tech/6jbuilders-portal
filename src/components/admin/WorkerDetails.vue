@@ -1,409 +1,469 @@
 <template>
-  <div class="booking_request">
-    <header class="header">
-      <h1 class="booking_request-title">Request</h1>
-    </header>
-    <v-card class="new-booking-card">
-      <div class="sub-header">
-        <div class="filter-container">
-          <v-autocomplete chips v-model="selectedFilter" label="Filter By Position" :items="positionTypes" variant="solo"
-            class="filter-select"></v-autocomplete>
-        </div>
-        <div class="refresh-container">
-          <v-tooltip location="top">
-            <template v-slot:activator="{ props }">
-              <v-icon class="refresh-icon" @click="refreshPage" color="blue" v-bind="props">
-                mdi-refresh
-              </v-icon>
-            </template>
-            <span>Refresh</span>
-          </v-tooltip>
-        </div>
-      </div>
-      <div class="search-request">
-        <div class="sub__headers">
-        <div class="items-per-page">
-          <label class="items-per-page__label" for="itemsPerPage">Items per Page:</label>
-          <div class="items-per-page__select">
-            <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
-              <option v-for="option in options" :key="option" :value="option">{{ option }}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-        <div class="text-center mt-6">
-          <v-dialog v-model="showModal" max-width="700">
-            <template v-slot:activator="{ on }">
-              <div class="add-request">
-                <v-btn color="success" prepend-icon="mdi-plus" @click="handleManualWorker" v-bind="on">add worker</v-btn>
+  <div>
+    <div class="loading-container" v-if="isLoading">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="44"
+        :width="4"
+      ></v-progress-circular>
+    </div>
+    <v-card v-else flat>
+      <v-tabs v-model="tab" color="primary">
+        <v-tab value="workers">
+          <v-icon start> mdi-format-list-bulleted </v-icon>
+          list of Workers
+        </v-tab>
+      </v-tabs>
+      <v-window v-model="tab">
+        <v-window-item value="workers">
+          <div class="sub__headers">
+            <div class="items-per-page">
+              <label class="items-per-page__label" for="itemsPerPage">Items per Page:</label>
+              <div class="items-per-page__select">
+                <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
+                  <option v-for="option in options" :key="option" :value="option">
+                    {{ option }}
+                  </option>
+                </select>
               </div>
-            </template>
-            <v-card>
-              <v-card-title>Worker Details</v-card-title>
-              <v-card-text>
-                <v-select v-model="position" label="Select Position" :items="positionTypes" variant="solo"
-                  density="compact">
-                </v-select>
-                <div class="group-details">
-
-                  <div class="detail">
-                    <p>Fullname *:</p>
-                    <v-text-field v-model="name" variant="outlined" density="compact"></v-text-field>
-                  </div>
-                  <div class="detail">
-                    <p>Contact Number *:</p>
-                    <v-text-field v-model="contact" variant="outlined" density="compact"></v-text-field>
-                  </div>
-                </div>
-                <div class="group-details">
-                  <div class="detail">
-                    <p>Address *:</p>
-                    <v-text-field v-model="address" variant="outlined" density="compact"></v-text-field>
-                  </div>
-                  <div class="detail">
-                    <p>Experience *:</p>
-                    <v-text-field v-model="experience" variant="outlined" density="compact"></v-text-field>
-                  </div>
-                </div>
-              </v-card-text>
-              <v-card-actions class="actions">
-                <v-btn variant="tonal" color="red" @click="handleCancelWorker">Cancel</v-btn>
-                <v-btn variant="tonal" color="blue" @click="handleAddWorker">Add</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </div>
-      </div>
-
-      <v-card-text class="table-container">
-        <table class="table">
-          <thead style="font-size: 12px">
-            <tr>
-              <th v-for="column in tableColumns" :key="column.key">{{ column.label }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="filteredTableData.length === 0">
-              <td :colspan="tableColumns.length">No Worker available.</td>
-            </tr>
-            <tr v-for="row in sortedTableData" :key="row.id">
-              <td v-for="column in tableColumns" :key="column.key" :class="{
-                hoverable: row[column.key] && row[column.key].length > 8,
-                'table-text': true
-              }" :data-tooltip="row[column.key] && row[column.key].length > 8 ? row[column.key] : ''">
-                <template v-if="column.key === 'id'">
-                  <a @click="openWorkerDetail(row.id)" style="color: blue">{{
-                    shortenId(row.id)
-                  }}</a>
-                </template>
-                <template v-else>
-                  {{ row[column.key] ? shortenText(row[column.key], column.maxLength) : '-' }}
-                </template>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="row-filter">
-          <label for="row-filter" class="row-filter__label">Row Filter:</label>
-          <select id="row-filter" class="row-filter__select" v-model="selectedRowFilter" @change="applyRowFilter"
-            :disabled="selectedFilter === 'All'">
-            <option v-for="rowFilterOption in rowFilterOptions" :key="rowFilterOption.value"
-              :value="rowFilterOption.value">
-              {{ rowFilterOption.label }}
-            </option>
-          </select>
-        </div>
-      </v-card-text>
-    </v-card>
-    <transition name="slide">
-      <div v-if="selectedWorkerId || hasIdParam" class="worker-details-panel">
-        <div class="worker-details-close" @click="closeBookingDetails">
-          <v-icon>mdi-close</v-icon>
-        </div>
-
-        <div class="worker-details-content">
-          <div class="worker-details">
-            <div class="details">
-              <div class="header-details">
-                <div>
-                  <v-breadcrumbs>
-                    <v-icon size="large" color="blue-lighten-1" icon="mdi-label"></v-icon>
-                    <a href="/6jbuilders/admin/workers" style="text-decoration: none; color: black">
-                      <v-breadcrumbs-item>
-                        <h4>Worker</h4>
-                      </v-breadcrumbs-item>
-                    </a>
-                    <v-icon icon="mdi-chevron-right"></v-icon>
-                    <v-breadcrumbs-item>
-                      <h4>Details</h4>
-                    </v-breadcrumbs-item>
-                    <v-icon icon="mdi-chevron-right"></v-icon>
-                    <v-breadcrumbs-item>
-                      <h4>{{ worker.id }}</h4>
-                    </v-breadcrumbs-item>
-                  </v-breadcrumbs>
-                </div>
-                <div class="actions">
-                  <v-btn class="edit-btn" prepend-icon="mdi-pencil" color="#FFC107" variant="tonal"
-                    @click="editWorker">Edit Details</v-btn>
-                  <v-btn prepend-icon="mdi-close-circle" color="#FF0000" variant="tonal" @click="deleteWorker">Delete
-                    Worker</v-btn>
-                </div>
-              </div>
-              <div class="group-details">
-                <div class="detail">
-                  <p>Task ID:</p>
-                  <v-text-field variant="outlined" density="compact" :value="worker.id" readonly></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Fullname:</p>
-                  <v-text-field variant="outlined" density="compact" v-model="worker.name" :value="worker.name"
-                    :readonly="!editingEnabled"></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Position:</p>
-                  <v-select :items="positionTypes" variant="outlined" density="compact" v-model="worker.position"
-                    :value="worker.position" :readonly="!editingEnabled"></v-select>
-                </div>
-                <div class="detail">
-                  <p>Contact:</p>
-                  <v-text-field variant="outlined" density="compact" v-model="worker.contact" :value="worker.contact"
-                    :readonly="!editingEnabled"></v-text-field>
-                </div>
-              </div>
-
-              <div class="group-details">
-                <div class="detail">
-                  <p>Address:</p>
-                  <v-text-field variant="outlined" density="compact" v-model="worker.address" :value="worker.address"
-                    :readonly="!editingEnabled"></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Experience (mos):</p>
-                  <v-text-field variant="outlined" density="compact" v-model="worker.experience"
-                    :value="worker.experience" :readonly="!editingEnabled"></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Created On:</p>
-                  <v-text-field variant="outlined" density="compact" v-model="worker.date_created"
-                    :value="worker.date_created" :readonly="!editingEnabled"></v-text-field>
-                </div>
-                <div class="detail">
-                  <p>Updated On:</p>
-                  <v-text-field variant="outlined" density="compact" v-model="worker.date_updated"
-                    :value="worker.date_updated" :readonly="!editingEnabled"></v-text-field>
-                </div>
-              </div>
-
-
-              <v-card variant="text">
-                <v-container>
-                  <v-card-text>
-                    <div v-if="editingEnabled" class="edit-actions">
-                      <v-row justify="end">
-                        <div class="form-actions-btn">
-                          <v-btn density="compact" prepend-icon="mdi-close" variant="tonal" size="large"
-                            color="red-lighten-1" @click="cancelEdit">Cancel</v-btn>
-                          <v-btn density="compact" prepend-icon="mdi-content-save" variant="tonal" size="large"
-                            color="blue-lighten-1" @click="saveEdit">Save</v-btn>
-                        </div>
-                      </v-row>
-                    </div>
-                  </v-card-text>
-                </v-container>
-              </v-card>
+            </div>
+            <v-btn @click="handleAddService" color="primary">Add Worker</v-btn>
+            <div class="search">
+              <v-text-field
+                class="mr-4"
+                v-model="search"
+                append-inner-icon="mdi-magnify"
+                density="compact"
+                label="Search"
+                single-line
+                flat
+                hide-details
+                variant="solo-filled"
+              ></v-text-field>
             </div>
           </div>
-        </div>
-        <v-alert class="popup-message" v-if="showPopup" variant="tonal" :type="popupType" :title="popupTitle"
-          :value="true" dismissible @input="hidePopupMessage">
-          {{ popupMessage }}
-        </v-alert>
-      </div>
-    </transition>
+          <v-card class="new-booking-card">
+            <div class="sub-header">
+              <!-- <div class="filter-container">
+                <v-autocomplete
+                  chips
+                  v-model="selectedFilter"
+                  label="Filter By Position"
+                  :items="positionTypes"
+                  variant="solo"
+                  class="filter-select"
+                ></v-autocomplete>
+              </div> -->
+            </div>
+          </v-card>
+          
+          <table class="table">
+            <thead style="font-size: 13px">
+              <tr>
+                <th>ID</th>
+                <th>Fullname</th>
+                <th>Position</th>
+                <th>Contact</th>
+                <th>Address</th>
+                <th>Experience (mos)</th>
+                <th>Updated On</th>
+
+              </tr>
+            </thead>
+            <tbody style="font-size: 13px">
+              <template v-if="displayedServices.length > 0">
+                <tr v-for="worker in displayedServices" :key="worker._id">
+                  <td>{{ worker._id }}</td>
+                  <td>{{ worker.fullname }}</td>
+                  <td>{{ worker.position }}</td>
+                  <td>{{ worker.contact }}</td>
+                  <td>{{ worker.address }}</td>
+                  <td>{{ worker.experience}}</td>
+                  <td>{{ formatDate(worker.created_date) }}</td>
+                  <td>{{ formatDate(worker.updated_date) }}</td>
+                  <td>  
+                    <v-btn
+                      size="small"
+                      @click="handleEditService(worker._id)"
+                      color="secondary"
+                      flat
+                      class="mr-6"
+                      >Edit</v-btn
+                    >
+                    <v-btn
+                      size="small"
+                      @click="handleDeleteService(worker._id)"
+                      color="error"
+                      variant="outlined"
+                      flat
+                      >Delete</v-btn
+                    >
+                  </td>
+                </tr>
+              </template>
+              <template v-else>
+                <tr>
+                  <td colspan="6" class="not-found">No worker found</td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <v-pagination
+            v-model="currentPage"
+            :length="totalPages"
+            @input="handlePageChange"
+            class="mt-4"
+          ></v-pagination>
+        </v-window-item>
+      </v-window>
+    </v-card>
+    <v-dialog v-model="showAddDialog" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Add Worker</span>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="newService.fullname"
+            label="Fullname *"
+            variant="outlined"
+            dense
+            :error-messages="titleErrorMessage"
+            required
+          ></v-text-field>
+         <v-select
+            class="mt-4"
+            v-model="editServiceData.position"
+            label="Position"
+            :items="['Manager', 'Foreman', 'General Worker', 'Painter', 'Electrician' ,'Plumber']"
+            variant="outlined"
+            dense
+          ></v-select>
+          <v-text-field
+            class="mt-4"
+            v-model="newService.contact"
+            label="Contact Number"
+            variant="outlined"
+            dense
+          ></v-text-field>
+          <v-text-field
+            class="mt-4"
+            v-model="newService.address"
+            label="Home Address"
+            variant="outlined"
+            dense
+          ></v-text-field>
+          <v-text-field
+            class="mt-4"
+            v-model="newService.experience"
+            label="Experience(mos)"
+            variant="outlined"
+            dense
+          ></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" @click="createService">Add</v-btn>
+          <v-btn @click="cancelAddService">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="showDeleteConfirmation" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Delete Worker</span>
+        </v-card-title>
+        <v-card-text>
+          <p>Are you sure you want to delete the following worker's information?</p>
+          <p><strong>Fullname:</strong> {{ deleteServiceData.fullname }}</p>
+          <p><strong>Position:</strong> {{ deleteServiceData.position }}</p>
+          <p><strong>Contact:</strong> {{ deleteServiceData.contact }}</p>
+          <p><strong>Address:</strong> {{ deleteServiceData.address }}</p>
+          <p><strong>Experience(mos):</strong> {{ deleteServiceData.experience }}</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" @click="confirmDeleteService">Continue</v-btn>
+          <v-btn @click="cancelDeleteService">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="showEditDialog" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Edit Service</span>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="editServiceData.fullname"
+            label="Fullname *"
+            variant="outlined"
+            dense
+            :error-messages="titleErrorMessage"
+            required
+          ></v-text-field>
+          <v-select
+            class="mt-4"
+            v-model="editServiceData.position"
+            label="Position"
+            :items="['Manager', 'Foreman', 'General Worker', 'Painter', 'Electrician' ,'Plumber']"
+            variant="outlined"
+            dense
+          ></v-select>
+          <v-text-field
+            class="mt-4"
+            v-model="editServiceData.address"
+            label="Home Address"
+            variant="outlined"
+            dense
+          ></v-text-field>
+          <v-text-field
+            class="mt-4"
+            v-model="editServiceData.contact"
+            label="Contact Number"
+            variant="outlined"
+            dense
+          ></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" @click="saveEditedService">Save</v-btn>
+          <v-btn @click="cancelEditService">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-alert
+      class="popup-message"
+      v-if="showPopup"
+      variant="tonal"
+      :type="popupType"
+      :title="popupTitle"
+      :value="true"
+      dismissible
+      @input="hidePopupMessage"
+    >
+      {{ popupMessage }}
+    </v-alert>
   </div>
 </template>
 
 <script>
-import { workersData } from '../../dataUtils/tableData'
-import { dataSubjectTypes } from '../../dataUtils/dataSubjectType'
-import { positionTypes } from '../../dataUtils/positionType'
+import {
+  addService,
+  getAllServices,
+  updateService,
+  deleteService,
+  updateServiceStatus
+} from '../../apirequests/service'
 
 export default {
   data() {
     return {
-      dataSubjectTypes: dataSubjectTypes,
-      positionTypes: positionTypes,
-      editingEnabled: false,
-      selectedWorkers: null,
-      workerRequest: [],
-      originalBooking: {},
-      selectedFilter: 'All',
-      selectedRowFilter: 'all',
-      alertTimeout: null,
-      tableColumns: [
-        { key: 'id', label: 'ID', maxLength: 8 },
-        { key: 'name', label: 'Fullname', maxLength: 11 },
-        { key: 'position', label: 'Position', maxLength: 11 },
-        { key: 'contact', label: 'Contact', maxLength: 11 },
-        { key: 'address', label: 'Address', maxLength: 11 },
-        { key: 'experience', label: 'Experience (mos)', maxLength: 11 },
-        { key: 'date_created', label: 'Created On', maxLength: null },
-        { key: 'date_updated', label: 'Updated On', maxLength: null },
-      ],
-      selectedWorkerId: null,
+      tab: 'workers',
+      search: '',
+      workers: [],
+      itemsPerPage: 5,
+      currentPage: 1,
+      options: [5,10, 20, 50, 100],
+      isLoading: true,
       showPopup: false,
       popupType: '',
       popupTitle: '',
       popupMessage: '',
-      showModal: false,
-      name:'',
-      position: null,
-      address:'',
-      experience:'',
-      contact:''
-
+      showAddDialog: false,
+      newService: {
+        fullname: '',
+        position: '',
+        contact: '',
+        address: '',
+        experience: '',
+        updated_date: null
+      },
+      titleErrorMessage: '',
+      showDeleteConfirmation: false,
+      deleteServiceData: {
+        id: null,
+        fullname: '',
+        position: '',
+        contact: '',
+        address: '',
+        experience: '',
+      },
+      showEditDialog: false,
+      editServiceData: {
+        id: null,
+        fullname: '',
+        position: '',
+        contact: '',
+        address: '',
+        experience: '',
+        updated_date: null
+      }
     }
   },
   computed: {
-    mode() {
-      return this.editingEnabled ? 'Editing Mode' : 'View Mode'
-    },
-    sortedTableData() {
-      return this.filteredTableData.sort((a, b) => {
-        return new Date(a.scheduleDate) - new Date(b.scheduleDate)
+    filteredServices() {
+      const searchTerm = this.search.toLowerCase().trim()
+      return this.services.filter((service) => {
+        return (
+          service.title.toLowerCase().includes(searchTerm) ||
+          service.short_title.toLowerCase().includes(searchTerm)
+        )
       })
     },
-    filteredTableData() {
-      if (this.selectedFilter === 'All') {
-        return this.workerRequest
-      }
-
-      const searchText = this.selectedFilter.toLowerCase()
-
-      let filteredData = this.workerRequest.filter((row) => {
-        const rowData = row.position.toLowerCase()
-        return rowData.includes(searchText)
-      })
-
-      const selectedRowFilter = this.selectedRowFilter
-
-      if (['5', '10', '20', '50', 'all'].includes(selectedRowFilter)) {
-        const numEnd =
-          selectedRowFilter === 'all' ? filteredData.length : parseInt(selectedRowFilter)
-        filteredData = filteredData.slice(0, Math.min(numEnd, filteredData.length))
-      }
-
-      return filteredData
+    displayedServices() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage
+      const endIndex = startIndex + this.itemsPerPage
+      return this.filteredServices.slice(startIndex, endIndex)
     },
-    rowFilterOptions() {
-      return [
-        { label: 'All Rows', value: 'all' },
-        { label: '5', value: '5' },
-        { label: '10', value: '10' },
-        { label: '20', value: '20' },
-        { label: '50', value: '50' }
-      ]
-    },
-    worker: {
-      get() {
-        let workerId = null
-        const urlSearchParams = new URLSearchParams(window.location.search)
-
-        if (urlSearchParams.has('id')) {
-          workerId = urlSearchParams.get('id')
-        } else if (this.selectedWorkerId) {
-          workerId = this.selectedWorkerId
-        }
-
-        if (workerId) {
-          return this.getWorkerById(workerId)
-        } else {
-          return null
-        }
-      },
-      set(value) { }
-    },
-    hasIdParam() {
-      const urlSearchParams = new URLSearchParams(window.location.search)
-      return urlSearchParams.has('id')
+    totalPages() {
+      return Math.ceil(this.filteredServices.length / this.itemsPerPage)
     }
   },
   mounted() {
-    const today = new Date()
-    today.setDate(today.getDate())
-
-    this.checkURLForWorkerId()
+    this.fetchServices()
   },
   methods: {
-    refreshPage() {
-      location.reload()
-    },
-    shortenText(text, maxLength) {
-      if (maxLength && text.length > maxLength) {
-        return text.substring(0, maxLength) + '...'
-      } else {
-        return text
+    async fetchServices() {
+      try {
+        this.isLoading = true
+        // await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000))
+        const response = await getAllServices()
+        this.services = response.data
+      } catch (error) {
+        console.error(error)
+        // Handle error
+      } finally {
+        this.isLoading = false
       }
     },
-    shortenId(id) {
-      return id.substring(0, 8)
+    handleAddService() {
+      this.newService.fullname = ''
+      this.newService.position = ''
+      this.newService.address = ''
+      this.newService.contact = ''
+      this.newService.experience = ''
+      this.titleErrorMessage = ''
+
+      this.showAddDialog = true
     },
-    checkURLForWorkerId() {
-      const urlSearchParams = new URLSearchParams(window.location.search)
-      const urlId = urlSearchParams.get('id')
+    async createService() {
+      const titleExists = this.services.some((service) => service.title === this.newService.title)
+      if (titleExists) {
+        this.titleErrorMessage = 'Title already exists. Please use another title.'
+        return
+      }
+      try {
+        await addService(this.newService)
 
-      if (urlId && urlId !== this.selectedWorkerId) {
-        const panelElement = document.querySelector('.booking-details-panel')
-        panelElement.classList.remove('slide-leave')
-        panelElement.classList.remove('slide-leave-to')
-        panelElement.classList.remove('slide-leave-active')
+        this.showPopupMessage('success', 'Created', 'Service added successfully.')
 
-        this.closeBookingDetails()
-        this.openWorkerDetail(urlId)
+        this.fetchServices()
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.showAddDialog = false
       }
     },
-    openWorkerDetail(id) {
-      this.selectedWorkerId = id
-      this.worker = this.getWorkerById(this.selectedWorkerId)
-      this.updateWorkerDetails(this.selectedWorkerId)
+    cancelAddService() {
+      this.showAddDialog = false
     },
+    async handleEditService(serviceId) {
+      const serviceToEdit = this.services.find((service) => service._id === serviceId)
 
-    closeBookingDetails() {
-      this.selectedWorkerId = null
-      this.updateWorkerDetails(null)
-
-      const panelElement = document.querySelector('.booking-details-panel')
-      panelElement.classList.add('slide-leave')
-      panelElement.classList.add('slide-leave-to')
-      panelElement.classList.add('slide-leave-active')
-
-      // this.refreshPage()
-    },
-
-    updateWorkerDetails(id) {
-      this.selectedWorkerId = id
-
-      const urlSearchParams = new URLSearchParams(window.location.search)
-      if (id) {
-        urlSearchParams.set('id', id)
-      } else {
-        urlSearchParams.delete('id')
+      this.editServiceData = {
+        id: serviceId,
+        title: serviceToEdit.title,
+        short_title: serviceToEdit.short_title,
+        status: serviceToEdit.status,
+        updatedDate: serviceToEdit.updatedDate
       }
 
-      const newUrl = `${window.location.origin}${window.location.pathname
-        }?${urlSearchParams.toString()}`
-      history.pushState(null, null, newUrl)
+      this.showEditDialog = true
     },
-    getWorkerById(id) {
-      return this.workerRequest.find((worker) => worker.id === id)
+    async saveEditedService() {
+      const serviceIndex = this.services.findIndex(
+        (service) => service._id === this.editServiceData.id
+      )
+
+      if (serviceIndex !== -1) {
+        const existingService = this.services.find(
+          (service, index) =>
+            service.title.toLowerCase() === this.editServiceData.title.toLowerCase() &&
+            index !== serviceIndex
+        )
+        if (existingService) {
+          this.titleErrorMessage = 'Title already exists. Please use another title.'
+          return
+        }
+
+        this.services[serviceIndex].title = this.editServiceData.title
+        this.services[serviceIndex].short_title = this.editServiceData.short_title
+        this.services[serviceIndex].status = this.editServiceData.status
+        this.services[serviceIndex].updatedDate = new Date()
+      }
+
+      try {
+        await Promise.all([
+          updateService(this.editServiceData.id, {
+            title: this.editServiceData.title,
+            short_title: this.editServiceData.short_title
+          }),
+          updateServiceStatus(this.editServiceData.id, this.editServiceData.status)
+        ])
+
+        await this.fetchServices()
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.showEditDialog = false
+        this.showPopupMessage('success', 'Updated', 'Service updated successfully.')
+      }
     },
-    applyRowFilter() {
-      this.showAlert = true
-      clearTimeout(this.alertTimeout)
-      this.alertTimeout = setTimeout(() => {
-        this.showAlert = false
-      }, 3000)
+    cancelEditService() {
+      this.showEditDialog = false
+    },
+    async handleDeleteService(serviceId) {
+      try {
+        const serviceToDelete = this.services.find((service) => service._id === serviceId)
+        this.deleteServiceData = {
+          id: serviceId,
+          fullname: serviceToDelete.fullname,
+          position: serviceToDelete.position,
+          contact: serviceToDelete.contact,
+          address: serviceToDelete.address,
+          experience: serviceToDelete.experience,
+        }
+        this.showDeleteConfirmation = true
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async confirmDeleteService() {
+      try {
+        await deleteService(this.deleteServiceData.id)
+        this.services = this.services.filter((service) => service._id !== this.deleteServiceData.id)
+        const successMessage = 'The service has been successfully deleted.'
+        this.showPopupMessage('success', 'Deleted', successMessage)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.showDeleteConfirmation = false
+      }
+    },
+    cancelDeleteService() {
+      this.showDeleteConfirmation = false
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString)
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      return `${year}-${month}-${day}`
+    },
+    handlePageChange(page) {
+      this.currentPage = page
+    },
+    handleItemsPerPageChange() {
+      this.currentPage = 1
     },
     showPopupMessage(type, title, message) {
       this.popupType = type
@@ -420,99 +480,60 @@ export default {
       this.popupType = ''
       this.popupTitle = ''
       this.popupMessage = ''
-    },
-    itemProps(item) {
-      return {
-        title: item.title,
-      }
-    },
-    handleManualWorker() {
-      this.showModal = true
-    },
-    handleManualWorkerClose() {
-      this.showModal = false
-    },
-    handleAddWorker() { },
-    handleCancelWorker() {
-      this.showModal = false
-    },
-    editWorker() {
-      this.editingEnabled = true
-    },
-    deleteWorker() { 
-      // TODO: ****************
-    },
-    cancelEdit() {
-      this.editingEnabled = false
-    },
-    saveEdit() {
-      this.editingEnabled = false
-    }
-  },
-  destroyed() {
-    clearTimeout(this.alertTimeout)
-  },
-  watch: {
-    selectedFilter(newVal) {
-      if (newVal === 'All') {
-        this.selectedRowFilter = 'all'
-      }
-    }
-  },
-  created() {
-    this.workerRequest = workersData
-    if (this.hasIdParam) {
-      const urlSearchParams = new URLSearchParams(window.location.search)
-      const id = urlSearchParams.get('id')
-      this.openWorkerDetail(id)
     }
   }
 }
 </script>
 
 <style scoped>
-.booking_request {
+.headline {
   display: flex;
-  flex-direction: column;
-  height: 100%;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.header {
-  background-color: #007bff;
-  padding: 10px;
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+.sub__headers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem;
 }
 
-.booking_request-title {
-  color: #ffffff;
-  margin: 0;
-}
-
-.new-booking-card {
-  margin-top: 20px;
-  flex-grow: 1;
-}
-
-.filter-container,
-.refresh-container {
-  padding: 20px;
-}
-
-.filter-select {
+.search {
   width: 300px;
 }
-
-.table-container {
-  padding: 10px;
+.items-per-page {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
 }
 
+.items-per-page__label {
+  margin-right: 0.5rem;
+  font-weight: 600;
+  font-size: 10px;
+}
+
+.items-per-page__select select {
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 .table {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 20px;
 }
 
 .table th,
 .table td {
-  padding: 10px;
+  padding: 5px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
@@ -521,126 +542,12 @@ export default {
   font-weight: bold;
 }
 
-.row-filter {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
+.table tr:hover {
+  background-color: #f5f5ff;
 }
 
-.row-filter__label {
-  margin-right: 10px;
-}
-
-.row-filter__select {
-  width: 200px;
-}
-
-.hoverable {
-  position: relative;
-  cursor: pointer;
-}
-
-.hoverable:hover::before {
-  content: attr(data-tooltip);
-  position: absolute;
-  top: -30px;
-  left: 0;
-  background-color: #4f4f4f;
-  color: #fff;
-  padding: 5px;
-  border-radius: 5px;
-  white-space: wrap;
-}
-
-.alert {
-  margin-top: 10px;
-}
-
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.8s ease-in-out;
-}
-
-.slide-enter {
-  transform: translateX(100%);
-}
-
-.slide-enter-to {
-  transform: translateX(0);
-}
-
-.slide-leave {
-  transform: translateX(0);
-}
-
-.slide-leave-to {
-  transform: translateX(100%);
-}
-
-.worker-details-panel {
-  position: fixed;
-  top: 60px;
-  right: 0;
-  bottom: 0;
-  width: 95%;
-  background-color: white;
-  z-index: 999;
-  overflow-y: auto;
-}
-
-.worker-details-panel::-webkit-scrollbar {
-  display: none;
-}
-
-.worker-details-content {
-  margin: 10px;
-}
-
-.worker-details {
-  padding: 20px;
-}
-
-.detail {
-  width: 300px;
-  padding: 10px;
-}
-
-.detail p {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 5px;
-}
-
-.group-details {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.actions {
-  text-align: end;
-}
-
-.actions .v-btn {
-  margin-right: 30px;
-  width: 180px;
-}
-
-.worker-details-close {
-  text-align: end;
-  margin: 10px;
-}
-
-.status-pending {
-  color: orange;
-}
-
-.status-rejected {
-  color: red;
-}
-
-.status-accepted {
-  color: green;
+.table td:last-child {
+  white-space: nowrap;
 }
 
 .popup-message {
@@ -654,60 +561,26 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.refresh-icon {
-  cursor: pointer;
-  font-size: 34px;
-  margin-right: 20px;
+.booking_request {
+  display: flex;
+  flex-direction: row; /* Change the flex direction to row */
+  height: 100%;
+}
+
+.new-booking-card {
+  margin-top: 20px;
+  flex-grow: 1;
+  
 }
 
 .sub-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Align items in a row */
   align-items: center;
 }
 
-.workers {
-  width: 600px;
-}
-
-.header-details {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.form-actions-btn .v-btn {
-  margin: 5px;
-}
-
-.table-text {
-  font-size: 12px;
-}
-
-.btn-mode {
-  display: flex;
-  justify-content: end;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.search-request {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.filter-container {
   padding: 20px;
-}
-
-.search-request .request {
-  width: 500px;
-}
-
-.inspect-place {
-  display: block;
-}
-
-.task-notification-header,
-.task-inspect-btn {
-  margin-bottom: 15px;
+  width: 20%;
 }
 </style>
