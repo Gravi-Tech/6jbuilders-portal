@@ -9,197 +9,181 @@
       ></v-progress-circular>
     </div>
     <v-card v-else flat>
-      <v-tabs v-model="tab" color="primary">
-        <v-tab value="service">
-          <v-icon start> mdi-format-list-bulleted </v-icon>
-          list of services
-        </v-tab>
-        <!-- <v-tab value="option-2">
-          <v-icon start> mdi-account-question </v-icon>
-          data subject
-        </v-tab>
-        <v-tab value="option-3">
-          <v-icon start> mdi-wrench-clock </v-icon>
-          Inspection Time
-        </v-tab> -->
-      </v-tabs>
-      <v-window v-model="tab">
-        <v-window-item value="service">
-          <div class="sub__headers">
-            <div class="items-per-page">
-              <label class="items-per-page__label" for="itemsPerPage">Items per Page:</label>
-              <div class="items-per-page__select">
-                <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
-                  <option v-for="option in options" :key="option" :value="option">
-                    {{ option }}
-                  </option>
-                </select>
-              </div>
-            </div>
-            <v-btn @click="handleAddService" color="primary">Add Service</v-btn>
-            <div class="search">
-              <v-text-field
-                class="mr-4"
-                v-model="search"
-                append-inner-icon="mdi-magnify"
-                density="compact"
-                label="Search"
-                single-line
-                flat
-                hide-details
-                variant="solo-filled"
-              ></v-text-field>
-            </div>
+      <div class="sub__headers">
+        <div class="items-per-page">
+          <label class="items-per-page__label" for="itemsPerPage">Items per Page:</label>
+          <div class="items-per-page__select">
+            <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
+              <option v-for="option in options" :key="option" :value="option">
+                {{ option }}
+              </option>
+            </select>
           </div>
-          <table class="table">
-            <thead style="font-size: 13px">
-              <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Short Title</th>
-                <th>Created Date</th>
-                <th>Updated Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody style="font-size: 13px">
-              <template v-if="displayedServices.length > 0">
-                <tr v-for="service in displayedServices" :key="service._id">
-                  <td>{{ service._id }}</td>
-                  <td>{{ service.title }}</td>
-                  <td>{{ service.short_title }}</td>
-                  <td>{{ formatDate(service.createdDate) }}</td>
-                  <td>{{ formatDate(service.updatedDate) }}</td>
-                  <td>{{ service.status }}</td>
-                  <td>
-                    <v-btn
-                      size="small"
-                      @click="handleEditService(service._id)"
-                      color="secondary"
-                      flat
-                      class="mr-6"
-                      >Edit</v-btn
-                    >
-                    <v-btn
-                      size="small"
-                      @click="handleDeleteService(service._id)"
-                      color="error"
-                      variant="outlined"
-                      flat
-                      >Delete</v-btn
-                    >
-                  </td>
-                </tr>
-              </template>
-              <template v-else>
-                <tr>
-                  <td colspan="6" class="not-found">Not Service found</td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-          <v-pagination
-            v-model="currentPage"
-            :length="totalPages"
-            @input="handlePageChange"
-            class="mt-4"
-          ></v-pagination>
-        </v-window-item>
-      </v-window>
+        </div>
+        <div class="search">
+          <v-text-field
+            class="mr-4"
+            v-model="search"
+            append-inner-icon="mdi-magnify"
+            density="compact"
+            label="Search"
+            single-line
+            flat
+            hide-details
+            variant="solo-filled"
+          ></v-text-field>
+        </div>
+      </div>
+      <div class="mb-6 mr-8 text-end">
+        <v-btn @click="handleAddService" color="primary">Add Service</v-btn>
+      </div>
+      <table class="table">
+        <thead style="font-size: 13px">
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Short Title</th>
+            <th>Created Date</th>
+            <th>Updated Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody style="font-size: 13px">
+          <template v-if="displayedServices.length > 0">
+            <tr v-for="service in displayedServices" :key="service._id">
+              <td>{{ service._id }}</td>
+              <td>{{ service.title }}</td>
+              <td>{{ service.short_title }}</td>
+              <td>{{ formatDate(service.createdDate) }}</td>
+              <td>{{ formatDate(service.updatedDate) }}</td>
+              <td>{{ service.status }}</td>
+              <td>
+                <v-btn
+                  size="small"
+                  @click="handleEditService(service._id)"
+                  color="secondary"
+                  flat
+                  class="mr-6"
+                  >Edit</v-btn
+                >
+                <v-btn
+                  size="small"
+                  @click="handleDeleteService(service._id)"
+                  color="error"
+                  variant="outlined"
+                  flat
+                  >Delete</v-btn
+                >
+              </td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr>
+              <td colspan="6" class="not-found">Not Service found</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <v-pagination
+        v-model="currentPage"
+        :length="totalPages"
+        @input="handlePageChange"
+        class="mt-4"
+      ></v-pagination>
+      <v-dialog v-model="showAddDialog" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Add Service</span>
+          </v-card-title>
+          <v-card-text>
+            <v-text-field
+              v-model="newService.title"
+              label="Title *"
+              variant="outlined"
+              dense
+              :error-messages="titleErrorMessage"
+              required
+            ></v-text-field>
+            <v-text-field
+              class="mt-4"
+              v-model="newService.short_title"
+              label="Short Title"
+              variant="outlined"
+              dense
+            ></v-text-field>
+            <v-card-actions>
+              <v-btn color="primary" @click="createService">Create</v-btn>
+              <v-btn @click="cancelAddService">Cancel</v-btn>
+            </v-card-actions>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="showDeleteConfirmation" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Delete Service</span>
+          </v-card-title>
+          <v-card-text>
+            <p>Are you sure you want to delete the following service?</p>
+            <p><strong>Title:</strong> {{ deleteServiceData.title }}</p>
+            <p><strong>Short Title:</strong> {{ deleteServiceData.short_title }}</p>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" @click="confirmDeleteService">Continue</v-btn>
+            <v-btn @click="cancelDeleteService">Cancel</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="showEditDialog" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Edit Service</span>
+          </v-card-title>
+          <v-card-text>
+            <v-text-field
+              v-model="editServiceData.title"
+              label="Title *"
+              variant="outlined"
+              dense
+              :error-messages="titleErrorMessage"
+              required
+            ></v-text-field>
+            <v-text-field
+              class="mt-4"
+              v-model="editServiceData.short_title"
+              label="Short Title"
+              variant="outlined"
+              dense
+            ></v-text-field>
+            <v-select
+              class="mt-4"
+              v-model="editServiceData.status"
+              label="Status"
+              :items="['available', 'soon', 'unavailable']"
+              variant="outlined"
+              dense
+            ></v-select>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" @click="saveEditedService">Save</v-btn>
+            <v-btn @click="cancelEditService">Cancel</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-alert
+        class="popup-message"
+        v-if="showPopup"
+        variant="tonal"
+        :type="popupType"
+        :title="popupTitle"
+        :value="true"
+        dismissible
+        @input="hidePopupMessage"
+      >
+        {{ popupMessage }}
+      </v-alert>
     </v-card>
-    <v-dialog v-model="showAddDialog" max-width="500px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Add Service</span>
-        </v-card-title>
-        <v-card-text>
-          <v-text-field
-            v-model="newService.title"
-            label="Title *"
-            variant="outlined"
-            dense
-            :error-messages="titleErrorMessage"
-            required
-          ></v-text-field>
-          <v-text-field
-            class="mt-4"
-            v-model="newService.short_title"
-            label="Short Title"
-            variant="outlined"
-            dense
-          ></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" @click="createService">Create</v-btn>
-          <v-btn @click="cancelAddService">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="showDeleteConfirmation" max-width="500px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Delete Service</span>
-        </v-card-title>
-        <v-card-text>
-          <p>Are you sure you want to delete the following service?</p>
-          <p><strong>Title:</strong> {{ deleteServiceData.title }}</p>
-          <p><strong>Short Title:</strong> {{ deleteServiceData.short_title }}</p>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" @click="confirmDeleteService">Continue</v-btn>
-          <v-btn @click="cancelDeleteService">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="showEditDialog" max-width="500px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Edit Service</span>
-        </v-card-title>
-        <v-card-text>
-          <v-text-field
-            v-model="editServiceData.title"
-            label="Title *"
-            variant="outlined"
-            dense
-            :error-messages="titleErrorMessage"
-            required
-          ></v-text-field>
-          <v-text-field
-            class="mt-4"
-            v-model="editServiceData.short_title"
-            label="Short Title"
-            variant="outlined"
-            dense
-          ></v-text-field>
-          <v-select
-            class="mt-4"
-            v-model="editServiceData.status"
-            label="Status"
-            :items="['available', 'soon', 'unavailable']"
-            variant="outlined"
-            dense
-          ></v-select>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" @click="saveEditedService">Save</v-btn>
-          <v-btn @click="cancelEditService">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-alert
-      class="popup-message"
-      v-if="showPopup"
-      variant="tonal"
-      :type="popupType"
-      :title="popupTitle"
-      :value="true"
-      dismissible
-      @input="hidePopupMessage"
-    >
-      {{ popupMessage }}
-    </v-alert>
   </div>
 </template>
 

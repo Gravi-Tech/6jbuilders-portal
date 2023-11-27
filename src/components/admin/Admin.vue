@@ -1,6 +1,13 @@
 <template>
   <div>
-    <v-skeleton-loader v-if="loading" boilerplate type="icon card, chip"></v-skeleton-loader>
+    <div v-if="loading">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="24"
+        :width="3"
+      ></v-progress-circular>
+    </div>
     <template v-else>
       <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
         <v-list-item>
@@ -74,7 +81,7 @@
 import Dashboard from './DashboardDetails.vue'
 import Service from './Service.vue'
 import Booking from './BookingRequest.vue'
-import Setting from './SettingsDetails.vue'
+import Profile from './Profile.vue'
 import Task from './TaskDetails.vue'
 import Worker from './WorkerDetails.vue'
 import Project from './ProjectDetails.vue'
@@ -90,11 +97,11 @@ export default {
       activeItem: 'dashboard',
       menuItems: [
         { title: 'Dashboard', value: 'dashboard', icon: 'mdi-view-dashboard-outline' },
-        { title: 'Booking Request', value: 'request', icon: 'mdi-book-multiple-outline' },
-        { title: 'Task', value: 'task', icon: 'mdi-calendar-check-outline' },
-        { title: 'Project', value: 'projects', icon: 'mdi-folder-outline' },
-        { title: 'Settings', value: 'services', icon: 'mdi-cogs' },
-        { title: 'Workers', value: 'workers', icon: 'mdi-account-hard-hat-outline' },
+        { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-clock' },
+        { title: 'Task', value: 'task', icon: 'mdi-checkbox-marked-circle-outline' },
+        { title: 'Project', value: 'projects', icon: 'mdi-folder-multiple-outline' },
+        { title: 'Services', value: 'services', icon: 'mdi-hammer-wrench' },
+        { title: 'Workers', value: 'workers', icon: 'mdi-account-hard-hat' },
         { title: 'Profile', value: 'profile', icon: 'mdi-account-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }
       ],
@@ -123,7 +130,7 @@ export default {
         case 'feedback':
           return Feedback
         case 'profile':
-          return Setting
+          return Profile
         default:
           return Dashboard
       }
