@@ -813,7 +813,6 @@ export default {
       inspection_date: null,
       taskId: null,
       alertTimeout: null,
-      dataSubjectType: dataSubjectTypes,
       tableColumns: [
         { key: '_id', label: 'ID', maxLength: 8 },
         { key: 'type', label: 'Subject Type', maxLength: 8 },

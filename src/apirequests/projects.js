@@ -1,43 +1,33 @@
 import axios from 'axios'
-require('dotenv').config();
-const baseUrl = process.env.BASE_URL;
+
+const baseUrl = 'http://localhost:3000/api'
+
+const api = axios.create({
+  baseURL: baseUrl,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
+const getAccessToken = () => {
+  return localStorage.getItem('accessToken')
+}
 
 export const createProject = async (projectData) => {
-    try {
-      const response = await axios.post(`${baseUrl}/projects`, projectData)
-      return response.data
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
+  try {
+    const accessToken = getAccessToken()
+    const response = await api.post(
+      `${baseUrl}/projects`,
+      { data: projectData },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
   }
-  
-  export const getProject = async (projectId) => {
-    try {
-      const response = await axios.get(`${baseUrl}/projects/${projectId}`)
-      return response.data
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
-  }
-  
-  export const updateProject = async (projectId, updatedData) => {
-    try {
-      const response = await axios.put(`${baseUrl}/projects/${projectId}`, updatedData)
-      return response.data
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
-  }
-  
-  export const deleteProject = async (projectId) => {
-    try {
-      const response = await axios.delete(`${baseUrl}/projects/${projectId}`)
-      return response.data
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
-  }
+}
