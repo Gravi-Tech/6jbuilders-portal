@@ -117,7 +117,7 @@
             class="mt-4"
             v-model="newWorker.position"
             label="Select Position *"
-            :items="['Manager', 'Foreman', 'General Worker', 'Painter', 'Electrician', 'Plumber']"
+            :items="position"
             variant="outlined"
             dense
           ></v-select>
@@ -240,6 +240,7 @@ export default {
     return {
       search: '',
       workers: [],
+      position:[],
       itemsPerPage: 10,
       currentPage: 1,
       options: [10, 20, 50, 100],
@@ -349,16 +350,16 @@ export default {
 
       this.editWorkerData = {
         id: workerId,
-        fullname: workerToEdit.fullName,
-        position: workerToEdit.short_title,
+        fullName: workerToEdit.fullName,
+        position: workerToEdit.position,
         address: workerToEdit.address,
         contact: workerToEdit.contact,
         experience: workerToEdit.experience,
         created_date: workerToEdit.created_date,
         updated_date: workerToEdit.updated_date
       }
-
-      this.showEditDialog = true
+     
+      this.showEditDialog = true;
     },
     async saveEditedWorker() {
       const workerIndex = this.workers.findIndex((worker) => worker._id === this.editWorkerData.id)
@@ -370,7 +371,7 @@ export default {
             index !== workerIndex
         )
         if (existingWorker) {
-          this.titleErrorMessage = 'Title already exists. Please use another title.'
+          this.titleErrorMessage = 'Worker already exists. Please input other name.'
           return
         }
 
@@ -442,7 +443,7 @@ export default {
     handleItemsPerPageChange() {
       this.currentPage = 1
     },
-    showPopupMessage(type, title, message) {
+    showPopupMessage(type, title  , message) {
       this.popupType = type
       this.popupTitle = title
       this.popupMessage = message
