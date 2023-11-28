@@ -81,6 +81,7 @@ export const deleteType = async (typeId) => {
         Authorization: `Bearer ${accessToken}`
       }
     })
+    console.log(response)
     return response.data
   } catch (error) {
     console.error(error)

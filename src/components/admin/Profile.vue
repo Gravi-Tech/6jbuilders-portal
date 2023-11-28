@@ -254,7 +254,7 @@ export default {
 }
 
 .profile-details {
-  max-width: 500px;
+  max-width: 700px;
   width: 100%;
 }
 .profile-details .profile-name {
