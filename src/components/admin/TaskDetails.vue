@@ -591,9 +591,10 @@
                   <v-select
                     variant="outlined"
                     density="compact"
-                    :items="dataSubjectType"
+                    :items="types"
                     v-model="task.type"
                     :value="task.type"
+                    :loading="loading"
                     :readonly="!editingEnabled"
                   ></v-select>
                 </div>
@@ -750,6 +751,7 @@
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { getAllServices } from '../../apirequests/service'
 import { getAllReason, getReasonById } from '../../apirequests/reason'
+import { getAllTypes } from '../../apirequests/data_type'
 import { saveAs } from 'file-saver'
 import pdfMake from 'pdfmake/build/pdfmake'
 import pdfFonts from 'pdfmake/build/vfs_fonts'
@@ -771,7 +773,6 @@ import {
   addAssigneeByTaskId,
   deleteTaskAssigneesById
 } from '../../apirequests/assignees'
-import { dataSubjectTypes } from '@/dataUtils/dataSubjectType'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -785,6 +786,7 @@ export default {
       pdfData: null,
       search: '',
       services: [],
+      types: [],
       reasons: [],
       selectedCancellationReason: null,
       showOtherReason: false,
@@ -947,6 +949,7 @@ export default {
   },
   created() {
     this.fetchServices()
+    this.fetchDataTypes()
     this.fetchReasons()
     this.getAllTasks()
     this.updateIsVisited()
@@ -1081,6 +1084,17 @@ export default {
         this.loading = true
         const response = await getAllServices()
         this.services = response.data.map((service) => service.title)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
+    async fetchDataTypes() {
+      try {
+        this.loading = true
+        const response = await getAllTypes()
+        this.types = response.data.map((type) => type.title)
       } catch (error) {
         console.error(error)
       } finally {

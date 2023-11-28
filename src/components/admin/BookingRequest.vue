@@ -380,7 +380,8 @@
                     density="compact"
                     v-model="booking.type"
                     :value="booking.type"
-                    :items="dataSubjectType"
+                    :items="types"
+                    :loading="loading"
                     :readonly="!editingEnabled"
                   ></v-select>
                 </div>
@@ -565,7 +566,7 @@ import {
   checkBookingStatus
 } from '../../apirequests/bookings'
 import { addTask } from '../../apirequests/task'
-import { dataSubjectTypes } from '@/dataUtils/dataSubjectType'
+import { getAllTypes } from '../../apirequests/data_type'
 
 export default {
   components: {
@@ -591,7 +592,7 @@ export default {
       inspection_date: null,
       taskId: null,
       alertTimeout: null,
-      dataSubjectType: dataSubjectTypes,
+      types: [],
       tableColumns: [
         { key: '_id', label: 'ID', maxLength: 8 },
         { key: 'type', label: 'Subject Type', maxLength: 8 },
@@ -726,6 +727,7 @@ export default {
     this.fetchServices()
     this.getAllBookings()
     this.getBookingById()
+    this.fetchDataTypes()
     if (this.hasIdParam) {
       const urlSearchParams = new URLSearchParams(window.location.search)
       const id = urlSearchParams.get('_id')
@@ -1063,6 +1065,17 @@ export default {
           'Error',
           'An error occurred while processing the booking. Please try again later.'
         )
+      }
+    },
+    async fetchDataTypes() {
+      try {
+        this.loading = true
+        const response = await getAllTypes()
+        this.types = response.data.map((type) => type.title)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
       }
     },
     handleClosePreview() {

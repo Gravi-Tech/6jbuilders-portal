@@ -3,8 +3,8 @@
     <v-card variant="text" class="form-card">
       <v-card-title class="form-title">Book a Service</v-card-title>
       <v-select
-        v-model="dataSubjectType"
-        :items="dataSubjectTypes"
+        v-model="type"
+        :items="types"
         label="Data Subject Type *"
         variant="outlined"
       ></v-select>
@@ -130,7 +130,7 @@
 <script>
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { serviceTypes } from '@/dataUtils/serviceType'
-import { dataSubjectTypes } from '@/dataUtils/dataSubjectType'
+import { getAllTypes } from '@/apirequests/data_type';
 import { addBooking } from '@/apirequests/bookings'
 export default {
   name: 'BookingForm',
@@ -151,8 +151,8 @@ export default {
       showDatePicker: false,
       schedule_date: null,
       showPopup: false,
-      dataSubjectTypes: dataSubjectTypes,
-      dataSubjectType: 'Private Individual',
+      types: [],
+      type: 'Individual Customers',
       showConfirmationModal: false,
       popupType: '',
       popupTitle: '',
@@ -181,6 +181,9 @@ export default {
       return null
     }
   },
+  created() {
+    this.fetchDataTypes()
+  },
   mounted() {
     const today = new Date()
     today.setDate(today.getDate())
@@ -188,6 +191,17 @@ export default {
     this.schedule_date = today.toISOString().substr(0, 10)
   },
   methods: {
+    async fetchDataTypes() {
+      try {
+        this.loading = true
+        const response = await getAllTypes()
+        this.types = response.data.map((type) => type.title)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
     formatDate(date) {
       if (date) {
         const formattedDate = new Date(date).toLocaleDateString('en', {
@@ -216,7 +230,7 @@ export default {
     async submitForm() {
       try {
         const data = {
-          type: this.dataSubjectType,
+          type: this.type,
           first_name: this.first_name,
           middle_name: this.middle_name,
           last_name: this.last_name,
@@ -229,7 +243,6 @@ export default {
         }
 
         const res = await addBooking(data)
-        console.log(res)
         const successMessage =
           'The booking has been successfully booked. You will receive a call within 24 hours.'
         this.showPopupMessage('success', 'Success', successMessage)
@@ -243,7 +256,7 @@ export default {
         this.email = null
         this.location = null
         this.note = null
-        this.dataSubjectType = 'Private Individual'
+        this.type = 'Individual Customers'
       } catch (error) {
         this.showPopupMessage('error', 'Error', 'Something went wrong')
         console.error(error)
