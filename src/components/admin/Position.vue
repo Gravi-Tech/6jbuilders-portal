@@ -106,6 +106,7 @@
               variant="outlined"
               dense
               :error-messages="titleErrorMessage"
+              hint="Enter the title for the position."
               required
             ></v-text-field>
             <v-text-field
@@ -113,6 +114,7 @@
               v-model="newPosition.short_title"
               label="Short Title"
               variant="outlined"
+              hint="Enter a short title (optional)"
               dense
             ></v-text-field>
             <v-textarea
@@ -120,6 +122,7 @@
               v-model="newPosition.job_description"
               label="Job Description"
               variant="outlined"
+              hint="Enter a job description (optional)"
               dense
             ></v-textarea>
             <v-card-actions>
@@ -149,7 +152,7 @@
       <v-dialog v-model="showEditDialog" max-width="500px">
         <v-card>
           <v-card-title>
-            <span class="headline">Edit Position</span>
+            <span class="headline">Edit Data Type</span>
           </v-card-title>
           <v-card-text>
             <v-text-field
@@ -170,7 +173,7 @@
             <v-textarea
               class="mt-4"
               v-model="editPositionData.job_description"
-              label="Short Title"
+              label="Job Description"
               variant="outlined"
               rows="5"
               row-height="50"
@@ -250,7 +253,8 @@ export default {
       return this.positions.filter((position) => {
         return (
           position.title.toLowerCase().includes(searchTerm) ||
-          position.short_title.toLowerCase().includes(searchTerm)
+          position.short_title.toLowerCase().includes(searchTerm) ||
+          position._id.toLowerCase().includes(searchTerm)
         )
       })
     },
@@ -283,6 +287,7 @@ export default {
     handleAddPosition() {
       this.newPosition.title = ''
       this.newPosition.short_title = ''
+      this.job_description = ''
       this.titleErrorMessage = ''
 
       this.showAddDialog = true
@@ -375,8 +380,7 @@ export default {
     },
     async confirmDeletePosition() {
       try {
-        const res = await deletePosition(this.deletePositionData.id)
-        console.log(res)
+        await deletePosition(this.deletePositionData.id)
         this.positions = this.positions.filter(
           (position) => position._id !== this.deletePositionData.id
         )

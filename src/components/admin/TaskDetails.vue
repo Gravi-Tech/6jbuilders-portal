@@ -321,12 +321,13 @@
                       <v-dialog v-model="previewReason" max-width="400" max-height="100%">
                         <v-card>
                           <v-container>
-                            <v-card-title>{{ selectedReason.reason }}</v-card-title>
-                            <v-card-subtitle
-                              >Date Cancelled:
-                              {{ formatDate(this.task.date_cancelled) }}</v-card-subtitle
-                            >
-                            <v-card-text>
+                            <v-card-title v-if="selectedReason">{{
+                              selectedReason.reason
+                            }}</v-card-title>
+                            <v-card-subtitle v-if="selectedReason">
+                              Date Cancelled: {{ formatDate(this.task.date_cancelled) }}
+                            </v-card-subtitle>
+                            <v-card-text v-if="selectedReason">
                               <div class="text mb-2">
                                 <p><b>Description:</b></p>
                                 <span>{{ selectedReason.description }}</span>
@@ -336,6 +337,9 @@
                                 <span>{{ this.task.otherReason }}</span>
                               </div>
                             </v-card-text>
+                            <v-alert v-if="!selectedReason" type="error" dense outlined>
+                              The selected reason was moved or deleted from the categories.
+                            </v-alert>
                           </v-container>
                         </v-card>
                       </v-dialog>
@@ -1523,10 +1527,10 @@ export default {
         const response = await getReasonById(reasonId)
         if (!response.error && response.data) {
           this.selectedReason = response.data
-          this.previewReason = true
         } else {
-          console.error('Failed to retrieve reason:', response.error)
+          this.selectedReason = null
         }
+        this.previewReason = true
       } catch (error) {
         console.error('Failed to retrieve reason:', error)
       }

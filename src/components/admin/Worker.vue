@@ -286,7 +286,8 @@ export default {
           worker.position.toLowerCase().includes(searchTerm) ||
           worker.address.toLowerCase().includes(searchTerm) ||
           worker.contact.toLowerCase().includes(searchTerm) ||
-          worker.experience.toLowerCase().includes(searchTerm)
+          worker.experience.toLowerCase().includes(searchTerm) ||
+          worker._id.toLowerCase().includes(searchTerm)
         )
       })
     },
