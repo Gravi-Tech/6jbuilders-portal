@@ -1,5 +1,8 @@
 <template>
   <div class="request_request">
+    <header class="header">
+      <h1 class="dashboard-title">Booking</h1>
+    </header>
     <div class="loading-container" v-if="isLoading">
       <v-progress-circular
         indeterminate
@@ -1084,61 +1087,33 @@ export default {
   flex-direction: column;
   height: 100%;
 }
-
-.header {
-  background-color: #007bff;
-  padding: 10px;
+.dashboard-title {
+  font-size: 24px;
+  font-weight: 700;
 }
-
-.request_request-title {
-  color: #ffffff;
-  margin: 0;
-}
-
 .new-request-card {
-  margin-top: 20px;
   flex-grow: 1;
 }
-
 .table-container {
   padding: 10px;
 }
-
 .table {
   width: 100%;
   border-collapse: collapse;
 }
-
 .table th,
 .table td {
   padding: 10px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
-
 .table th {
   font-weight: bold;
 }
-
-.row-filter {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-}
-
-.row-filter__label {
-  margin-right: 10px;
-}
-
-.row-filter__select {
-  width: 200px;
-}
-
 .hoverable {
   position: relative;
   cursor: pointer;
 }
-
 .hoverable:hover::before {
   content: attr(data-tooltip);
   position: absolute;
@@ -1150,32 +1125,22 @@ export default {
   border-radius: 5px;
   white-space: wrap;
 }
-
-.alert {
-  margin-top: 10px;
-}
-
 .slide-enter-active,
 .slide-leave-active {
   transition: transform 0.8s ease-in-out;
 }
-
 .slide-enter {
   transform: translateX(100%);
 }
-
 .slide-enter-to {
   transform: translateX(0);
 }
-
 .slide-leave {
   transform: translateX(0);
 }
-
 .slide-leave-to {
   transform: translateX(100%);
 }
-
 .task-details-panel {
   position: fixed;
   top: 60px;
@@ -1186,34 +1151,27 @@ export default {
   z-index: 999;
   overflow-y: auto;
 }
-
 .task-details-panel::-webkit-scrollbar {
   display: none;
 }
-
 .task-details-content {
   margin: 10px;
 }
-
 .task-details {
   padding: 20px;
 }
-
 .detail {
   width: 300px;
   padding: 10px;
 }
-
 .reasonError {
   font-size: 10px;
   color: red;
 }
-
 .note {
   max-width: 100%;
   width: 1185px;
 }
-
 .detail p,
 .note p,
 .cost p,
@@ -1222,35 +1180,28 @@ export default {
   font-weight: 500;
   margin-bottom: 5px;
 }
-
 .group-details {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 .actions {
   text-align: end;
 }
-
 .actions .v-btn {
   margin-right: 30px;
   width: 180px;
 }
-
 .task-details-close {
   text-align: end;
   margin: 10px;
 }
-
 .status-pending {
   color: orange;
 }
-
 .status-rejected {
   color: red;
 }
-
 .popup-message {
   position: fixed;
   top: 50%;
@@ -1261,60 +1212,49 @@ export default {
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-
 .refresh-icon {
   cursor: pointer;
   font-size: 34px;
   margin-right: 20px;
 }
-
 .sub-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 .workers {
   width: 600px;
 }
-
 .header-details {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 .form-actions-btn .v-btn {
   margin: 5px;
 }
-
 .inspect-place {
   display: block;
 }
-
 .task-notification-header,
 .task-inspect-btn {
   margin-bottom: 15px;
 }
-
 .table-text {
   font-size: 12px;
 }
-
 .file-view {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
 }
-
 .sub__headers {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 1rem;
 }
-
 .search {
   display: flex;
   align-items: center;
@@ -1326,45 +1266,30 @@ export default {
   align-items: center;
   margin-left: 0.5rem;
 }
-
 .items-per-page__label {
   font-size: 10px;
   margin-right: 0.5rem;
   font-weight: 500;
 }
-
 .items-per-page__select select {
   padding: 0.3rem;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-
 .loading-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 70vh;
 }
-
 .table tr:hover {
   background-color: #f5f5ff;
-}
-.summary {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-}
-
-.summary .summary-details {
-  max-width: 400px;
-  width: 300px;
 }
 
 .button-container {
   display: flex;
   justify-content: flex-end;
 }
-
 .previewed__value p {
   margin-top: 5px;
 }
