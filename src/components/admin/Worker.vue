@@ -1,5 +1,8 @@
 <template>
   <div>
+    <header class="header">
+      <h1 class="dashboard-title">Workers</h1>
+    </header>
     <div class="loading-container" v-if="isLoading">
       <v-progress-circular
         indeterminate
@@ -9,100 +12,92 @@
       ></v-progress-circular>
     </div>
     <v-card v-else flat>
-      <header class="header">
-      <h1 class="dashboard-title">List of Workers</h1>
-    </header>
-      <v-window v-model="tab">
-        <v-window-item value="workers">
-          <div class="sub__headers">
-            <div class="items-per-page">
-              <label class="items-per-page__label" for="itemsPerPage">Items per Page:</label>
-              <div class="items-per-page__select">
-                <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
-                  <option v-for="option in options" :key="option" :value="option">
-                    {{ option }}
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="search">
-              <v-text-field
-                class="mr-4"
-                v-model="search"
-                append-inner-icon="mdi-magnify"
-                density="compact"
-                label="Search"
-                single-line
-                flat
-                hide-details
-                variant="solo-filled"
-              ></v-text-field>
-            </div>
+      <div class="sub__headers">
+        <div class="items-per-page">
+          <label class="items-per-page__label" for="itemsPerPage">Items per Page:</label>
+          <div class="items-per-page__select">
+            <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
+              <option v-for="option in options" :key="option" :value="option">
+                {{ option }}
+              </option>
+            </select>
           </div>
-            <div class="mb-6 mr-8 text-end">
-        <v-btn @click="handleAddWorker" color="primary">Add Worker
-        </v-btn>
+        </div>
+        <div class="search">
+          <v-text-field
+            class="mr-4"
+            v-model="search"
+            append-inner-icon="mdi-magnify"
+            density="compact"
+            label="Search"
+            single-line
+            flat
+            hide-details
+            variant="solo-filled"
+          ></v-text-field>
+        </div>
       </div>
-          <table class="table">
-            <thead style="font-size: 13px">
-              <tr>
-                <th>ID</th>
-                <th>Fullname</th>
-                <th>Position</th>
-                <th>Contact</th>
-                <th>Address</th>
-                <th>Experience (mos)</th>
-                <th>Created At</th>
-                <th>Updated On</th>
-
-              </tr>
-            </thead>
-            <tbody style="font-size: 13px">
-              <template v-if="displayedWorkers.length > 0">
-                <tr v-for="worker in displayedWorkers" :key="worker._id">
-                  <td>{{ worker._id }}</td>
-                  <td>{{ worker.fullName }}</td>
-                  <td>{{ worker.position }}</td>
-                  <td>{{ worker.contact }}</td>
-                  <td>{{ worker.address }}</td>
-                  <td>{{ worker.experience}}</td>
-                  <td>{{ formatDate(worker.created_date) }}</td>
-                  <td>{{ formatDate(worker.updated_date) }}</td>
-                  <td>  
-                    <v-btn
-                      size="small"
-                      @click="handleEditWorker(worker._id)"
-                      color="secondary"
-                      flat
-                      class="mr-6"
-                      >Edit</v-btn
-                    >
-                    <v-btn
-                      size="small"
-                      @click="handleDeleteWorker(worker._id)"
-                      color="error"
-                      variant="outlined"
-                      flat
-                      >Delete</v-btn
-                    >
-                  </td>
-                </tr>
-              </template>
-              <template v-else>
-                <tr>
-                  <td colspan="6" class="not-found">No worker found</td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-          <v-pagination
-            v-model="currentPage"
-            :length="totalPages"
-            @input="handlePageChange"
-            class="mt-4"
-          ></v-pagination>
-        </v-window-item>
-      </v-window>
+      <div class="mb-6 mr-8 text-end">
+        <v-btn @click="handleAddWorker" color="primary">Add Worker </v-btn>
+      </div>
+      <table class="table">
+        <thead style="font-size: 13px">
+          <tr>
+            <th>ID</th>
+            <th>Fullname</th>
+            <th>Position</th>
+            <th>Contact</th>
+            <th>Address</th>
+            <th>Experience (mos)</th>
+            <th>Created At</th>
+            <th>Updated On</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody style="font-size: 13px">
+          <template v-if="displayedWorkers.length > 0">
+            <tr v-for="worker in displayedWorkers" :key="worker._id">
+              <td>{{ worker._id }}</td>
+              <td>{{ worker.fullName }}</td>
+              <td>{{ worker.position }}</td>
+              <td>{{ worker.contact }}</td>
+              <td>{{ worker.address }}</td>
+              <td>{{ worker.experience }}</td>
+              <td>{{ formatDate(worker.created_date) }}</td>
+              <td>{{ formatDate(worker.updated_date) }}</td>
+              <td>
+                <v-btn
+                  size="small"
+                  @click="handleEditWorker(worker._id)"
+                  color="secondary"
+                  flat
+                  class="mr-6"
+                  >Edit</v-btn
+                >
+                <v-btn
+                  size="small"
+                  @click="handleDeleteWorker(worker._id)"
+                  color="error"
+                  variant="outlined"
+                  flat
+                  >Delete</v-btn
+                >
+              </td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr>
+              <td colspan="6" class="not-found">No worker found</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <v-pagination
+        v-model="currentPage"
+        :length="totalPages"
+        @input="handlePageChange"
+        class="mt-4"
+      ></v-pagination>
     </v-card>
     <v-dialog v-model="showAddDialog" max-width="500px">
       <v-card>
@@ -118,11 +113,11 @@
             :error-messages="titleErrorMessage"
             required
           ></v-text-field>
-         <v-select
+          <v-select
             class="mt-4"
-            v-model="editWorkerData.position"
-            label="Position"
-            :items="['Manager', 'Foreman', 'General Worker', 'Painter', 'Electrician' ,'Plumber']"
+            v-model="newWorker.position"
+            label="Select Position *"
+            :items="['Manager', 'Foreman', 'General Worker', 'Painter', 'Electrician', 'Plumber']"
             variant="outlined"
             dense
           ></v-select>
@@ -150,7 +145,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn color="primary" @click="createWorker">Add</v-btn>
-          <v-btn @click="cancelAddWorker">Cancel</v-btn>
+          <v-btn @click="this.showAddDialog = false">Cancel</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -169,7 +164,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn color="primary" @click="confirmDeleteWorker">Continue</v-btn>
-          <v-btn @click="cancelDeleteWorker">Cancel</v-btn>
+          <v-btn @click="this.showDeleteConfirmation = false">Cancel</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -181,7 +176,7 @@
         <v-card-text>
           <v-text-field
             v-model="editWorkerData.fullName"
-            label="Fullname *"
+            label="Fullname"
             variant="outlined"
             dense
             :error-messages="titleErrorMessage"
@@ -191,7 +186,7 @@
             class="mt-4"
             v-model="editWorkerData.position"
             label="Position"
-            :items="['Manager', 'Foreman', 'General Worker', 'Painter', 'Electrician' ,'Plumber']"
+            :items="['Manager', 'Foreman', 'General Worker', 'Painter', 'Electrician', 'Plumber']"
             variant="outlined"
             dense
           ></v-select>
@@ -209,10 +204,17 @@
             variant="outlined"
             dense
           ></v-text-field>
+          <v-text-field
+            class="mt-4"
+            v-model="editWorkerData.experience"
+            label="Experience (mos)"
+            variant="outlined"
+            dense
+          ></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-btn color="primary" @click="saveEditedWorker">Save</v-btn>
-          <v-btn @click="cancelEditWorker">Cancel</v-btn>
+          <v-btn @click="this.showEditDialog = false">Cancel</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -232,23 +234,15 @@
 </template>
 
 <script>
-import {
-  createWorker,
-  getAllWorkers,
-  updateWorker,
-  deleteWorker,
-
-} from '../../apirequests/workers'
-
+import { createWorker, getAllWorkers, updateWorker, deleteWorker } from '../../apirequests/workers'
 export default {
   data() {
     return {
-      tab: 'workers',
       search: '',
       workers: [],
-      itemsPerPage: 5,
+      itemsPerPage: 10,
       currentPage: 1,
-      options: [5,10, 20, 50, 100],
+      options: [10, 20, 50, 100],
       isLoading: true,
       showPopup: false,
       popupType: '',
@@ -266,16 +260,14 @@ export default {
       titleErrorMessage: '',
       showDeleteConfirmation: false,
       deleteWorkerData: {
-        id: null,
         fullName: '',
         position: '',
         contact: '',
         address: '',
-        experience: '',
+        experience: ''
       },
       showEditDialog: false,
       editWorkerData: {
-        id: null,
         fullName: '',
         position: '',
         contact: '',
@@ -352,9 +344,6 @@ export default {
         this.showAddDialog = false
       }
     },
-    cancelAddWorker() {
-      this.showAddDialog = false
-    },
     async handleEditWorker(workerId) {
       const workerToEdit = this.workers.find((worker) => worker._id === workerId)
 
@@ -362,18 +351,17 @@ export default {
         id: workerId,
         fullname: workerToEdit.fullName,
         position: workerToEdit.short_title,
-       address: workerToEdit.address,
-       contact: workerToEdit.contact,
-       created_date: workerToEdit.created_date,
+        address: workerToEdit.address,
+        contact: workerToEdit.contact,
+        experience: workerToEdit.experience,
+        created_date: workerToEdit.created_date,
         updated_date: workerToEdit.updated_date
       }
 
       this.showEditDialog = true
     },
     async saveEditedWorker() {
-      const workerIndex = this.workers.findIndex(
-        (worker) => worker._id === this.editWorkerData.id
-      )
+      const workerIndex = this.workers.findIndex((worker) => worker._id === this.editWorkerData.id)
 
       if (workerIndex !== -1) {
         const existingWorker = this.workers.find(
@@ -401,8 +389,8 @@ export default {
             position: this.editWorkerData.position,
             address: this.editWorkerData.address,
             contact: this.editWorkerData.contact,
-            experience: this.editWorkerData.experience,
-          }),
+            experience: this.editWorkerData.experience
+          })
         ])
 
         await this.fetchWorkers()
@@ -413,9 +401,6 @@ export default {
         this.showPopupMessage('success', 'Updated', 'A worker updated successfully.')
       }
     },
-    cancelEditWorker() {
-      this.showEditDialog = false
-    },
     async handleDeleteWorker(workerId) {
       try {
         const workerToDelete = this.workers.find((worker) => worker._id === workerId)
@@ -425,7 +410,7 @@ export default {
           position: workerToDelete.position,
           contact: workerToDelete.contact,
           address: workerToDelete.address,
-          experience: workerToDelete.experience,
+          experience: workerToDelete.experience
         }
         this.showDeleteConfirmation = true
       } catch (error) {
@@ -443,9 +428,6 @@ export default {
       } finally {
         this.showDeleteConfirmation = false
       }
-    },
-    cancelDeleteWorker() {
-      this.showDeleteConfirmation = false
     },
     formatDate(dateString) {
       const date = new Date(dateString)
@@ -481,6 +463,10 @@ export default {
 </script>
 
 <style scoped>
+.dashboard-title {
+  font-size: 24px;
+  font-weight: 700;
+}
 .headline {
   display: flex;
   justify-content: space-between;
@@ -565,7 +551,6 @@ export default {
 .new-booking-card {
   margin-top: 20px;
   flex-grow: 1;
-  
 }
 
 .sub-header {

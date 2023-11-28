@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="header">
-      <h1 class="dashboard-title">Services</h1>
+      <h1 class="dashboard-title">Position</h1>
     </header>
     <div class="loading-container" v-if="isLoading">
       <v-progress-circular
@@ -38,7 +38,7 @@
         </div>
       </div>
       <div class="mb-6 mr-8 text-end">
-        <v-btn @click="handleAddService" color="primary">Add Service</v-btn>
+        <v-btn @click="handleAddPosition" color="primary">Add Position</v-btn>
       </div>
       <table class="table">
         <thead style="font-size: 13px">
@@ -46,25 +46,25 @@
             <th>ID</th>
             <th>Title</th>
             <th>Short Title</th>
+            <th>Job Description</th>
             <th>Created Date</th>
             <th>Updated Date</th>
-            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody style="font-size: 13px">
-          <template v-if="displayedServices.length > 0">
-            <tr v-for="service in displayedServices" :key="service._id">
-              <td>{{ service._id }}</td>
-              <td>{{ service.title }}</td>
-              <td>{{ service.short_title }}</td>
-              <td>{{ formatDate(service.createdDate) }}</td>
-              <td>{{ formatDate(service.updatedDate) }}</td>
-              <td>{{ service.status }}</td>
+          <template v-if="displayedPosition.length > 0">
+            <tr v-for="position in displayedPosition" :key="position._id">
+              <td>{{ position._id }}</td>
+              <td>{{ position.title }}</td>
+              <td>{{ position.short_title }}</td>
+              <td>{{ position.job_description }}</td>
+              <td>{{ formatDate(position.date_created) }}</td>
+              <td>{{ formatDate(position.date_updated) }}</td>
               <td>
                 <v-btn
                   size="small"
-                  @click="handleEditService(service._id)"
+                  @click="handleEditPosition(position._id)"
                   color="secondary"
                   flat
                   class="mr-6"
@@ -72,7 +72,7 @@
                 >
                 <v-btn
                   size="small"
-                  @click="handleDeleteService(service._id)"
+                  @click="handleDeletePosition(position._id)"
                   color="error"
                   variant="outlined"
                   flat
@@ -83,7 +83,7 @@
           </template>
           <template v-else>
             <tr>
-              <td colspan="6" class="not-found">Not Service found</td>
+              <td colspan="6" class="not-found">Not Position found</td>
             </tr>
           </template>
         </tbody>
@@ -97,11 +97,11 @@
       <v-dialog v-model="showAddDialog" max-width="500px">
         <v-card>
           <v-card-title>
-            <span class="headline">Add Service</span>
+            <span class="headline">Add Position</span>
           </v-card-title>
           <v-card-text>
             <v-text-field
-              v-model="newService.title"
+              v-model="newPosition.title"
               label="Title *"
               variant="outlined"
               dense
@@ -110,14 +110,21 @@
             ></v-text-field>
             <v-text-field
               class="mt-4"
-              v-model="newService.short_title"
+              v-model="newPosition.short_title"
               label="Short Title"
               variant="outlined"
               dense
             ></v-text-field>
+            <v-textarea
+              class="mt-4"
+              v-model="newPosition.job_description"
+              label="Job Description"
+              variant="outlined"
+              dense
+            ></v-textarea>
             <v-card-actions>
-              <v-btn color="primary" @click="createService">Create</v-btn>
-              <v-btn @click="cancelAddService">Cancel</v-btn>
+              <v-btn color="primary" @click="createPosition">Create</v-btn>
+              <v-btn @click="this.showAddDialog = false">Cancel</v-btn>
             </v-card-actions>
           </v-card-text>
         </v-card>
@@ -125,27 +132,28 @@
       <v-dialog v-model="showDeleteConfirmation" max-width="500px">
         <v-card>
           <v-card-title>
-            <span class="headline">Delete Service</span>
+            <span class="headline">Delete Position</span>
           </v-card-title>
           <v-card-text>
-            <p>Are you sure you want to delete the following service?</p>
-            <p><strong>Title:</strong> {{ deleteServiceData.title }}</p>
-            <p><strong>Short Title:</strong> {{ deleteServiceData.short_title }}</p>
+            <p>Are you sure you want to delete the following position?</p>
+            <p><strong>Title:</strong> {{ deletePositionData.title }}</p>
+            <p><strong>Short Title:</strong> {{ deletePositionData.short_title }}</p>
+            <p><strong>Job Description:</strong> {{ deletePositionData.job_description }}</p>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" @click="confirmDeleteService">Continue</v-btn>
-            <v-btn @click="cancelDeleteService">Cancel</v-btn>
+            <v-btn color="primary" @click="confirmDeletePosition">Continue</v-btn>
+            <v-btn @click="this.showDeleteConfirmation = false">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
       <v-dialog v-model="showEditDialog" max-width="500px">
         <v-card>
           <v-card-title>
-            <span class="headline">Edit Service</span>
+            <span class="headline">Edit Position</span>
           </v-card-title>
           <v-card-text>
             <v-text-field
-              v-model="editServiceData.title"
+              v-model="editPositionData.title"
               label="Title *"
               variant="outlined"
               dense
@@ -154,23 +162,24 @@
             ></v-text-field>
             <v-text-field
               class="mt-4"
-              v-model="editServiceData.short_title"
+              v-model="editPositionData.short_title"
               label="Short Title"
               variant="outlined"
               dense
             ></v-text-field>
-            <v-select
+            <v-textarea
               class="mt-4"
-              v-model="editServiceData.status"
-              label="Status"
-              :items="['available', 'soon', 'unavailable']"
+              v-model="editPositionData.job_description"
+              label="Short Title"
               variant="outlined"
+              rows="5"
+              row-height="50"
               dense
-            ></v-select>
+            ></v-textarea>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" @click="saveEditedService">Save</v-btn>
-            <v-btn @click="cancelEditService">Cancel</v-btn>
+            <v-btn color="primary" @click="saveEditedPosition">Save</v-btn>
+            <v-btn @click="this.showEditDialog = false">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -192,18 +201,17 @@
 
 <script>
 import {
-  addService,
-  getAllServices,
-  updateService,
-  deleteService,
-  updateServiceStatus
-} from '../../apirequests/service'
+  createPosition,
+  getAllPositions,
+  updatePosition,
+  deletePosition
+} from '../../apirequests/position'
 
 export default {
   data() {
     return {
       search: '',
-      services: [],
+      positions: [],
       itemsPerPage: 10,
       currentPage: 1,
       options: [10, 20, 50, 100],
@@ -213,56 +221,58 @@ export default {
       popupTitle: '',
       popupMessage: '',
       showAddDialog: false,
-      newService: {
+      newPosition: {
         title: '',
-        short_title: ''
+        short_title: '',
+        job_description: ''
       },
       titleErrorMessage: '',
       showDeleteConfirmation: false,
-      deleteServiceData: {
-        id: null,
-        title: '',
-        short_title: ''
-      },
-      showEditDialog: false,
-      editServiceData: {
+      deletePositionData: {
         id: null,
         title: '',
         short_title: '',
-        status: '',
-        updatedDate: null
+        job_description: ''
+      },
+      showEditDialog: false,
+      editPositionData: {
+        id: null,
+        title: '',
+        short_title: '',
+        job_description: '',
+        date_updated: null
       }
     }
   },
   computed: {
-    filteredServices() {
+    filteredPositions() {
       const searchTerm = this.search.toLowerCase().trim()
-      return this.services.filter((service) => {
+      return this.positions.filter((position) => {
         return (
-          service.title.toLowerCase().includes(searchTerm) ||
-          service.short_title.toLowerCase().includes(searchTerm)
+          position.title.toLowerCase().includes(searchTerm) ||
+          position.short_title.toLowerCase().includes(searchTerm)
         )
       })
     },
-    displayedServices() {
+    displayedPosition() {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage
       const endIndex = startIndex + this.itemsPerPage
-      return this.filteredServices.slice(startIndex, endIndex)
+      return this.filteredPositions.slice(startIndex, endIndex)
     },
     totalPages() {
-      return Math.ceil(this.filteredServices.length / this.itemsPerPage)
+      return Math.ceil(this.filteredPositions.length / this.itemsPerPage)
     }
   },
   mounted() {
-    this.fetchServices()
+    this.fetchPositions()
   },
   methods: {
-    async fetchServices() {
+    async fetchPositions() {
       try {
         this.isLoading = true
         // await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000))
-        const response = await getAllServices()
-        this.services = response.data
+        const response = await getAllPositions()
+        this.positions = response.data
       } catch (error) {
         console.error(error)
         // Handle error
@@ -270,107 +280,107 @@ export default {
         this.isLoading = false
       }
     },
-    handleAddService() {
-      this.newService.title = ''
-      this.newService.short_title = ''
+    handleAddPosition() {
+      this.newPosition.title = ''
+      this.newPosition.short_title = ''
       this.titleErrorMessage = ''
 
       this.showAddDialog = true
     },
-    async createService() {
-      const titleExists = this.services.some((service) => service.title === this.newService.title)
+    async createPosition() {
+      const titleExists = this.positions.some(
+        (position) => position.title === this.newPosition.title
+      )
       if (titleExists) {
         this.titleErrorMessage = 'Title already exists. Please use another title.'
         return
       }
       try {
-        await addService(this.newService)
+        await createPosition(this.newPosition)
 
-        this.showPopupMessage('success', 'Created', 'Service added successfully.')
+        this.showPopupMessage('success', 'Created', 'Position added successfully.')
 
-        this.fetchServices()
+        this.fetchPositions()
       } catch (error) {
         console.error(error)
       } finally {
         this.showAddDialog = false
       }
     },
-    cancelAddService() {
-      this.showAddDialog = false
-    },
-    async handleEditService(serviceId) {
-      const serviceToEdit = this.services.find((service) => service._id === serviceId)
+    async handleEditPosition(positionId) {
+      const positionToEdit = this.positions.find((position) => position._id === positionId)
 
-      this.editServiceData = {
-        id: serviceId,
-        title: serviceToEdit.title,
-        short_title: serviceToEdit.short_title,
-        status: serviceToEdit.status,
-        updatedDate: serviceToEdit.updatedDate
+      this.editPositionData = {
+        id: positionId,
+        title: positionToEdit.title,
+        short_title: positionToEdit.short_title,
+        job_description: positionToEdit.job_description,
+        date_updated: positionToEdit.date_updated
       }
 
       this.showEditDialog = true
     },
-    async saveEditedService() {
-      const serviceIndex = this.services.findIndex(
-        (service) => service._id === this.editServiceData.id
+    async saveEditedPosition() {
+      const positionIndex = this.positions.findIndex(
+        (position) => position._id === this.editPositionData.id
       )
 
-      if (serviceIndex !== -1) {
-        const existingService = this.services.find(
-          (service, index) =>
-            service.title.toLowerCase() === this.editServiceData.title.toLowerCase() &&
-            index !== serviceIndex
+      if (positionIndex !== -1) {
+        const existingPosition = this.positions.find(
+          (position, index) =>
+            position.title.toLowerCase() === this.editPositionData.title.toLowerCase() &&
+            index !== positionIndex
         )
-        if (existingService) {
+        if (existingPosition) {
           this.titleErrorMessage = 'Title already exists. Please use another title.'
           return
         }
 
-        this.services[serviceIndex].title = this.editServiceData.title
-        this.services[serviceIndex].short_title = this.editServiceData.short_title
-        this.services[serviceIndex].status = this.editServiceData.status
-        this.services[serviceIndex].updatedDate = new Date()
+        this.positions[positionIndex].title = this.editPositionData.title
+        this.positions[positionIndex].short_title = this.editPositionData.short_title
+        this.positions[positionIndex].job_description = this.editPositionData.job_description
+        this.positions[positionIndex].date_updated = new Date()
       }
 
       try {
         await Promise.all([
-          updateService(this.editServiceData.id, {
-            title: this.editServiceData.title,
-            short_title: this.editServiceData.short_title
-          }),
-          updateServiceStatus(this.editServiceData.id, this.editServiceData.status)
+          updatePosition(this.editPositionData.id, {
+            title: this.editPositionData.title,
+            short_title: this.editPositionData.short_title,
+            job_description: this.editPositionData.job_description
+          })
         ])
 
-        await this.fetchServices()
+        await this.fetcPositions()
       } catch (error) {
         console.error(error)
       } finally {
         this.showEditDialog = false
-        this.showPopupMessage('success', 'Updated', 'Service updated successfully.')
+        this.showPopupMessage('success', 'Updated', 'Position updated successfully.')
       }
     },
-    cancelEditService() {
-      this.showEditDialog = false
-    },
-    async handleDeleteService(serviceId) {
+    async handleDeletePosition(positionId) {
       try {
-        const serviceToDelete = this.services.find((service) => service._id === serviceId)
-        this.deleteServiceData = {
-          id: serviceId,
-          title: serviceToDelete.title,
-          short_title: serviceToDelete.short_title
+        const positionToDelete = this.positions.find((position) => position._id === positionId)
+        this.deletePositionData = {
+          id: positionId,
+          title: positionToDelete.title,
+          short_title: positionToDelete.short_title,
+          job_description: positionToDelete.job_description
         }
         this.showDeleteConfirmation = true
       } catch (error) {
         console.error(error)
       }
     },
-    async confirmDeleteService() {
+    async confirmDeletePosition() {
       try {
-        await deleteService(this.deleteServiceData.id)
-        this.services = this.services.filter((service) => service._id !== this.deleteServiceData.id)
-        const successMessage = 'The service has been successfully deleted.'
+        const res = await deletePosition(this.deletePositionData.id)
+        console.log(res)
+        this.positions = this.positions.filter(
+          (position) => position._id !== this.deletePositionData.id
+        )
+        const successMessage = 'The position has been successfully deleted.'
         this.showPopupMessage('success', 'Deleted', successMessage)
       } catch (error) {
         console.error(error)
@@ -378,9 +388,7 @@ export default {
         this.showDeleteConfirmation = false
       }
     },
-    cancelDeleteService() {
-      this.showDeleteConfirmation = false
-    },
+
     formatDate(dateString) {
       const date = new Date(dateString)
       const year = date.getFullYear()

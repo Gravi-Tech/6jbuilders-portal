@@ -19,7 +19,7 @@
     </div>
     <v-row class="mt-8 mb-8">
       <v-col cols="12" sm="4" class="mt-n4">
-        <v-card class="new-notification-card">
+        <v-card class="new-notification-card" height="100%">
           <v-container>
             <div class="head">
               <v-icon color="blue" size="large">mdi-check-circle</v-icon>
@@ -72,7 +72,7 @@
       </v-col>
     </v-row>
     <div class="sub-cards">
-      <v-card class="new-booking-card">
+      <v-card class="new-booking-card" height="100%">
         <v-container>
           <div class="head">
             <v-icon color="blue" size="large">mdi-calendar-clock</v-icon>
@@ -97,7 +97,7 @@
                       shortenId(row._id)
                     }}</a>
                   </td>
-                  <td>{{ row.first_name }} {{ row.middle_name }} {{ row.laste_name }}</td>
+                  <td>{{ row.first_name }} {{ row.middle_name }} {{ row.last_name }}</td>
                   <td>{{ row.mobile_number }}</td>
                   <td>{{ row.service }}</td>
                   <td>{{ row.location }}</td>
@@ -238,7 +238,7 @@ export default {
         console.error(error)
       }
     },
-    getMostBookedService(bookings, services) {
+    getMostBookedService(bookings) {
       const serviceCounts = {}
 
       bookings.forEach((booking) => {
@@ -276,36 +276,38 @@ export default {
     updateDisplayedNotifications() {
       const currentDate = new Date()
 
-      const filteredRequests = this.bookingRequests
-        .filter((booking) => {
-          const schedule_date = new Date(booking.schedule_date)
-          return schedule_date >= currentDate && !booking.isVisited
+      const filteredRequests = this.task
+        .filter((task) => {
+          const schedule_date = new Date(task.schedule_date)
+          return schedule_date >= currentDate && !task.isVisited
         })
         .sort((a, b) => new Date(a.schedule_date) - new Date(b.schedule_date))
 
-      this.displayedNotifications = filteredRequests
-        .slice(0, this.maxDisplayCount)
-        .map((booking) => ({
-          id: booking._id,
-          schedule_date: booking.schedule_date,
-          location: booking.location,
-          date_created: booking.date_created,
-          message: `The pending booking with ID ${
-            booking._id
-          } is scheduled for inspection on ${this.formatDate(booking.schedule_date)} at ${
-            booking.location
-          }.`
-        }))
+      this.displayedNotifications = filteredRequests.slice(0, this.maxDisplayCount).map((task) => ({
+        id: task._id,
+        schedule_date: task.schedule_date,
+        location: task.location,
+        date_created: task.date_created,
+        message: `The pending task with ID ${
+          task._id
+        } is scheduled for inspection on ${this.formatDate(task.schedule_date)} at ${
+          task.location
+        }.`
+      }))
     },
     shortenId(id) {
       return id.substring(0, 8)
     },
     getDetailsPageUrl(id) {
-      return '/6jbuilders/admin/request?id=' + id
+      return `/6jbuilders/admin/request?id=${id}`
     },
-    viewDetails(request) {
-      const id = request.id
-      const detailsPageUrl = this.getDetailsPageUrl(id)
+
+    getTaskDetailsPageUrl(id) {
+      return `/6jbuilders/admin/task?id=${id}`
+    },
+    viewDetails(task) {
+      const id = task.id
+      const detailsPageUrl = this.getTaskDetailsPageUrl(id)
       window.location.href = detailsPageUrl
     }
   }
@@ -316,30 +318,24 @@ export default {
 .dashboard {
   padding: 24px;
 }
-
 .header {
   margin-bottom: 24px;
 }
-
 .dashboard-title {
   font-size: 24px;
   font-weight: 700;
 }
-
 .card-row {
   display: flex;
   gap: 16px;
   margin-bottom: 24px;
 }
-
 .overview-card {
   flex: 1;
 }
-
 .sub-cards {
   display: flex;
 }
-
 .head {
   display: flex;
   align-items: center;
@@ -348,14 +344,12 @@ export default {
   width: 100%;
   margin-bottom: 12px;
 }
-
 .new-booking-card,
 .new-notification-card {
   border-radius: 4px;
   border: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 .table-header {
   display: flex;
   align-items: center;
@@ -364,63 +358,31 @@ export default {
   font-weight: 700;
   font-size: 18px;
 }
-
-.filter-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.filter-select {
-  width: 400px;
-}
-
 .table {
   width: 100%;
   border-collapse: collapse;
 }
-
 .table th,
 .table td {
   padding: 10px;
   border-bottom: 1px solid #ccc;
   text-align: left;
 }
-
 .table th {
   font-weight: bold;
 }
-
-.status {
-  display: inline-block;
-  padding: 4px 8px;
-  color: #fff;
-}
-
-.status {
-  font-size: 14px;
-}
-
 .total {
   text-align: center;
   font-size: 20px;
   font-weight: 600;
   padding: 20px;
 }
-
-.link {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .notification-footer {
   display: flex;
   align-items: center;
   justify-content: space-around;
   margin-top: 10px;
 }
-
 .notification-card {
   margin-bottom: 10px;
 }

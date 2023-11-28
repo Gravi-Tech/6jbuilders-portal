@@ -83,7 +83,7 @@ import Service from './Service.vue'
 import Booking from './BookingRequest.vue'
 import Profile from './Profile.vue'
 import Task from './TaskDetails.vue'
-import Worker from './WorkerDetails.vue'
+import Table from './Table.vue'
 import Project from './ProjectDetails.vue'
 import { getAdmin } from '../../apirequests/admin'
 
@@ -101,7 +101,7 @@ export default {
         { title: 'Task', value: 'task', icon: 'mdi-checkbox-marked-circle-outline' },
         { title: 'Project', value: 'projects', icon: 'mdi-folder-multiple-outline' },
         { title: 'Services', value: 'services', icon: 'mdi-hammer-wrench' },
-        { title: 'Workers', value: 'workers', icon: 'mdi-account-hard-hat' },
+        { title: 'Employees', value: 'employees', icon: 'mdi-account-group' },
         { title: 'Profile', value: 'profile', icon: 'mdi-account-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }
       ],
@@ -123,8 +123,8 @@ export default {
           return Project
         case 'services':
           return Service
-        case 'workers':
-          return Worker
+        case 'employees':
+          return Table
         case 'task':
           return Task
         case 'feedback':
