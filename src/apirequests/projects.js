@@ -16,15 +16,11 @@ const getAccessToken = () => {
 export const createProject = async (projectData) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.post(
-      `${baseUrl}/projects`,
-      { data: projectData },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
+    const response = await api.post('/projects', projectData, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
       }
-    )
+    })
     return response.data
   } catch (error) {
     console.error(error)

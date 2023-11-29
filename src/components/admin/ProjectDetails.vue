@@ -1,38 +1,46 @@
 <template>
   <div class="project_request">
     <header class="header">
-      <h1 class="project_request-title">Project</h1>
+      <h1 class="dashboard-title">Project</h1>
     </header>
-    <v-card class="new-project-card">
-      <div class="sub-header">
-        <div class="filter-container">
-          <v-autocomplete
-            chips
-            v-model="selectedFilter"
-            label="Filter By Service"
-            :items="serviceTypes"
-            variant="solo"
-            class="filter-select"
-          ></v-autocomplete>
+    <div class="loading-container" v-if="isLoading">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="44"
+        :width="4"
+      ></v-progress-circular>
+    </div>
+    <v-card v-else class="new-project-card">
+      <v-card-text class="table-container">
+        <div class="sub__headers">
+          <div class="items-per-page">
+            <label class="items-per-page__label" for="itemsPerPage">Items per page:</label>
+            <div class="items-per-page__select">
+              <select v-model="itemsPerPage" @change="handleItemsPerPageChange" id="itemsPerPage">
+                <option v-for="option in options" :key="option" :value="option">
+                  {{ option }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="search">
+            <v-text-field
+              class="mr-4"
+              v-model="search"
+              append-inner-icon="mdi-magnify"
+              density="compact"
+              label="Search to filter table"
+              single-line
+              flat
+              hide-details
+              variant="solo-filled"
+            ></v-text-field>
+          </div>
         </div>
-        <div class="refresh-container">
-          <v-tooltip location="top">
-            <template v-slot:activator="{ props }">
-              <v-icon class="refresh-icon" @click="refreshPage" color="blue" v-bind="props">
-                mdi-refresh
-              </v-icon>
-            </template>
-            <span>Refresh</span>
-          </v-tooltip>
-        </div>
-      </div>
-      <div class="sub-header">
-        <div class="filter-container">
+        <div class="text-end mb-6 mr-8">
           <v-btn @click="handleAddProject" variant="tonal" color="primary">ADD PROJECT</v-btn>
         </div>
-      </div>
-
-      <v-card-text class="table-container">
         <table class="table">
           <thead style="font-size: 12px">
             <tr>
@@ -392,6 +400,9 @@ export default {
       showDatePicker: false,
       projectRequest: [],
       originalProject: {},
+      itemsPerPage: 10,
+      currentPage: 1,
+      options: [10, 20, 50, 100],
       serviceTypes: serviceTypes,
       selectedFilter: 'All Service',
       selectedRowFilter: 'all',
@@ -407,11 +418,11 @@ export default {
       selectedProjectId: null,
       projectId: null,
       addProject: false,
-      taskID: '',
-      title: '',
-      bg_project_img: '',
+      taskID: null,
+      title: null,
+      bg_project_img: [],
       project_imgs: [],
-      description: '',
+      description: null,
       toProjectDB: [],
       showPopup: false,
       popupType: '',
@@ -639,7 +650,7 @@ export default {
       if (
         !this.taskID ||
         !this.title ||
-        !this.bg_img ||
+        !this.bg_project_img ||
         this.project_imgs.length === 0 ||
         !this.description
       ) {
@@ -666,20 +677,19 @@ export default {
           return
         }
 
-        const bgImgArray = Array.from(this.bg_img)
-        const projectImgsArray = Array.from(this.project_imgs)
+        const formData = new FormData()
 
-        const projectData = {
-          taskId: this.taskID,
-          title: this.title,
-          bg_img: bgImgArray,
-          project_imgs: projectImgsArray,
-          description: this.description
+        formData.append('taskId', this.taskID)
+        formData.append('title', this.title)
+        formData.append('bg_img', this.bg_project_img)
+        for (const file of this.project_imgs) {
+          formData.append('images', file)
         }
+        formData.append('description', this.description)
 
-        console.log('Project Data:', projectData)
+        console.log('Project Data:', formData)
 
-        const res = await createProject(projectData)
+        const res = await createProject(formData)
 
         console.log('Project Response', res)
 
@@ -692,6 +702,7 @@ export default {
         this.showPopupMessage('error', 'Failed', errorMessage)
       }
     },
+
     showPopupMessage(type, title, message) {
       this.popupType = type
       this.popupTitle = title
@@ -750,28 +761,47 @@ export default {
   margin: 10px;
 }
 
-.header {
-  background-color: #007bff;
-  padding: 10px;
-}
-
-.project_request-title {
-  color: #ffffff;
-  margin: 0;
+.dashboard-title {
+  font-size: 24px;
+  font-weight: 700;
 }
 
 .new-project-card {
   margin-top: 20px;
   flex-grow: 1;
 }
-
-.filter-container,
-.refresh-container {
-  padding: 20px;
+.sub__headers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem;
 }
-
-.filter-select {
-  width: 300px;
+.search {
+  display: flex;
+  align-items: center;
+  max-width: 400px;
+  width: 100%;
+}
+.items-per-page {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+}
+.items-per-page__label {
+  font-size: 10px;
+  margin-right: 0.5rem;
+  font-weight: 500;
+}
+.items-per-page__select select {
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
 }
 
 .table-container {
