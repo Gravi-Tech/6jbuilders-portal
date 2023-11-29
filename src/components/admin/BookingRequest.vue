@@ -137,7 +137,7 @@
                     </v-breadcrumbs-item>
                   </v-breadcrumbs>
                 </div>
-                <div class="actions">
+                <div class="actions" v-if="!this.booking.isAccepted">
                   <v-btn
                     class="edit-btn"
                     prepend-icon="mdi-pencil"
@@ -250,7 +250,7 @@
                               color="#2196F3"
                               theme="dark"
                               icon="mdi-information"
-                              text="Please be advised that this booking will be automatically transferred to the task section for further processing. This process is an integral part of our streamlined workflow, designed to ensure efficient handling of all bookings. As a result, the booking will be removed from the booking section."
+                              :text="`Please be advised that this booking will be automatically transferred to the task section for further processing. This process is an integral part of our streamlined workflow, designed to ensure efficient handling of all bookings. As a result, you can only update the booking details in the task section.`"
                               variant="tonal"
                               prominent
                             ></v-alert>
@@ -418,7 +418,8 @@
                     :value="booking.status"
                     :class="{
                       'status-pending': booking.status === 'Pending',
-                      'status-rejected': booking.status === 'Rejected'
+                      'status-rejected': booking.status === 'Rejected',
+                      'status-accepted': booking.status === 'Accepted'
                     }"
                   >
                   </v-select>
@@ -560,9 +561,7 @@ import BookingForm from '../Book.vue'
 import {
   getAllBooking,
   rejectBooking,
-  getBookingById,
   updateBooking,
-  deleteBooking,
   checkBookingStatus
 } from '../../apirequests/bookings'
 import { addTask } from '../../apirequests/task'
@@ -665,7 +664,7 @@ export default {
           if (durationA < durationB) return 1
         }
 
-        const statusOrder = { Pending: 1, Rejected: 2 }
+        const statusOrder = { Pending: 1, Accepted: 2, Rejected: 3 }
         const statusA = a.status
         const statusB = b.status
 
@@ -960,6 +959,8 @@ export default {
           return 'orange'
         case 'Rejected':
           return 'red'
+        case 'Accepted':
+          return 'green'
         default:
           return 'gray'
       }
@@ -1047,17 +1048,21 @@ export default {
         await addTask(toTaskCollection)
         this.previewDetails = false
         const bookingId = this.selectedBookingId
-        await deleteBooking(bookingId)
+
+        const data = {
+          status: 'Accepted',
+          isAccepted: true,
+          date_updated: new Date()
+        }
+        await updateBooking(bookingId, data)
 
         this.showPopupMessage(
           'success',
           'Booking Accepted',
-          'The booking has been successfully added to tasks and removed from the bookings list.'
+          'The booking has been successfully added to tasks.'
         )
 
-        setTimeout(() => {
-          this.closeBookingDetails()
-        }, 3000)
+        this.getAllBookings()
       } catch (error) {
         console.error(error)
         this.showPopupMessage(
@@ -1210,10 +1215,13 @@ export default {
   margin: 10px;
 }
 .status-pending {
-  color: orange;
+  color: #ffa500;
 }
 .status-rejected {
-  color: red;
+  color: #ff0000;
+}
+.status-accepted {
+  color: #008000;
 }
 .popup-message {
   position: fixed;

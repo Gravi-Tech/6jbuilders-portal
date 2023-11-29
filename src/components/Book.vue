@@ -98,7 +98,7 @@
       <v-card-title>Confirm Booking</v-card-title>
       <v-card-text>
         <p>Are you sure you want to submit this booking?</p>
-        <p><strong>Data Subject Type:</strong> {{ dataSubjectType }}</p>
+        <p><strong>Data Subject Type:</strong> {{ type }}</p>
         <p><strong>Service:</strong> {{ serviceType }}</p>
         <p><strong>Schedule Date:</strong> {{ formatDate(schedule_date) }}</p>
         <p><strong>Full Name:</strong> {{ first_name }} {{ middle_name }} {{ last_name }}</p>
