@@ -9,7 +9,7 @@
       ></v-progress-circular>
     </div>
     <template v-else>
-      <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
+      <v-navigation-drawer :width="320" v-model="drawer" :rail="rail" permanent @click="rail = false">
         <v-list-item>
           <div class="flex-container">
             <div class="avatar mr-2">
