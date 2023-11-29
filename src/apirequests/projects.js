@@ -27,3 +27,19 @@ export const createProject = async (projectData) => {
     throw error
   }
 }
+
+export const fileUpload = async (formData) => {
+  try {
+    const accessToken = getAccessToken()
+    const response = await axios.post('/file-upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
