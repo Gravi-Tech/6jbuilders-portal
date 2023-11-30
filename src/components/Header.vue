@@ -67,7 +67,7 @@
         </v-col>
         <v-col cols="auto">
           <v-row class="d-flex justify-center align-center bg-blue-lighten-1">
-            <v-btn size="large" @click="navTo('book')">Book Now</v-btn>
+            <v-btn size="large" @click="navTo('book-now')">Book Now</v-btn>
           </v-row>
         </v-col>
         <v-col cols="auto" class="ml-4">

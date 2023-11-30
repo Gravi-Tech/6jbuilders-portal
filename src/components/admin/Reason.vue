@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="header">
-      <h1 class="dashboard-title">Services</h1>
+      <h1 class="dashboard-title">Cancellation Reasons</h1>
     </header>
     <div class="loading-container" v-if="isLoading">
       <v-progress-circular
@@ -38,33 +38,31 @@
         </div>
       </div>
       <div class="mb-6 mr-8 text-end">
-        <v-btn @click="handleAddService" color="primary">Add Service</v-btn>
+        <v-btn @click="handleAddPosition" color="primary">Add cancellation reason</v-btn>
       </div>
       <table class="table">
         <thead style="font-size: 13px">
           <tr>
             <th>ID</th>
-            <th>Title</th>
-            <th>Short Title</th>
+            <th>Reason</th>
+            <th>Description</th>
             <th>Created Date</th>
             <th>Updated Date</th>
-            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody style="font-size: 13px">
-          <template v-if="displayedServices.length > 0">
-            <tr v-for="service in displayedServices" :key="service._id">
-              <td>{{ service._id }}</td>
-              <td>{{ service.title }}</td>
-              <td>{{ service.short_title }}</td>
-              <td>{{ formatDate(service.createdDate) }}</td>
-              <td>{{ formatDate(service.updatedDate) }}</td>
-              <td>{{ service.status }}</td>
+          <template v-if="displayedType.length > 0">
+            <tr v-for="position in displayedType" :key="position._id">
+              <td>{{ position._id }}</td>
+              <td>{{ position.reason }}</td>
+              <td>{{ position.description }}</td>
+              <td>{{ formatDate(position.date_created) }}</td>
+              <td>{{ formatDate(position.date_updated) }}</td>
               <td>
                 <v-btn
                   size="small"
-                  @click="handleEditService(service._id)"
+                  @click="handleEditReason(position._id)"
                   color="secondary"
                   flat
                   class="mr-6"
@@ -72,7 +70,7 @@
                 >
                 <v-btn
                   size="small"
-                  @click="handleDeleteService(service._id)"
+                  @click="handleDeleteReason(position._id)"
                   color="error"
                   variant="outlined"
                   flat
@@ -83,7 +81,7 @@
           </template>
           <template v-else>
             <tr>
-              <td colspan="6" class="not-found">Not Service found</td>
+              <td colspan="6" class="not-found">Not Reason found</td>
             </tr>
           </template>
         </tbody>
@@ -97,84 +95,91 @@
       <v-dialog v-model="showAddDialog" max-width="500px">
         <v-card>
           <v-card-title>
-            <span class="headline">Add Service</span>
+            <span class="headline">Add Cancellation</span>
           </v-card-title>
           <v-card-text>
+            <v-alert
+              class="mb-4"
+              type="info"
+              color="#2196F3"
+              theme="dark"
+              icon="mdi-information"
+              text="Please provide the necessary details for adding a new reason. The reason will be added as an option in the list of reasons when cancelling a task."
+              variant="tonal"
+              prominent
+            ></v-alert>
             <v-text-field
-              v-model="newService.title"
-              label="Title *"
+              v-model="newReason.reason"
+              label="Reason *"
               variant="outlined"
               dense
               :error-messages="titleErrorMessage"
+              hint="Enter the reason for the reason"
               required
             ></v-text-field>
             <v-text-field
               class="mt-4"
-              v-model="newService.short_title"
-              label="Short Title"
+              v-model="newReason.description"
+              label="Description *"
               variant="outlined"
               dense
+              hint="Enter a description for the reason"
+              required
             ></v-text-field>
-            <v-card-actions>
-              <v-btn color="primary" @click="createService">Create</v-btn>
-              <v-btn @click="cancelAddService">Cancel</v-btn>
-            </v-card-actions>
           </v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" @click="addReason">Create</v-btn>
+            <v-btn @click="showAddDialog = false">Cancel</v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
       <v-dialog v-model="showDeleteConfirmation" max-width="500px">
         <v-card>
           <v-card-title>
-            <span class="headline">Delete Service</span>
+            <span class="headline">Delete Reason</span>
           </v-card-title>
           <v-card-text>
-            <p>Are you sure you want to delete the following service?</p>
-            <p><strong>Title:</strong> {{ deleteServiceData.title }}</p>
-            <p><strong>Short Title:</strong> {{ deleteServiceData.short_title }}</p>
-            <v-alert class="mt-4" type="warning" variant="tonal" outlined dense>
-              Deleting this service will permanently remove all associated data and cannot be
-              undone.
+            <p>Are you sure you want to delete the following reason?</p>
+            <p><strong>Reason:</strong> {{ deleteReasonData.reason }}</p>
+            <p><strong>Description:</strong> {{ deleteReasonData.description }}</p>
+            <v-alert class="mt-3" type="warning" variant="tonal" dense>
+              Deleting this reason will remove all associated tasks that were cancelled with this
+              reason.
             </v-alert>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" @click="confirmDeleteService">Continue</v-btn>
-            <v-btn @click="cancelDeleteService">Cancel</v-btn>
+            <v-btn color="primary" @click="confirmDeleteReason">Continue</v-btn>
+            <v-btn @click="showDeleteConfirmation = false">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
       <v-dialog v-model="showEditDialog" max-width="500px">
         <v-card>
           <v-card-title>
-            <span class="headline">Edit Service</span>
+            <span class="headline">Edit Cancellation</span>
           </v-card-title>
           <v-card-text>
             <v-text-field
-              v-model="editServiceData.title"
-              label="Title *"
+              v-model="editReasonData.reason"
+              label="Reason *"
               variant="outlined"
               dense
               :error-messages="titleErrorMessage"
               required
             ></v-text-field>
-            <v-text-field
+            <v-textarea
               class="mt-4"
-              v-model="editServiceData.short_title"
-              label="Short Title"
+              v-model="editReasonData.description"
+              label="Description"
               variant="outlined"
+              rows="5"
+              row-height="50"
               dense
-            ></v-text-field>
-            <v-select
-              class="mt-4"
-              v-model="editServiceData.status"
-              label="Status"
-              :items="['available', 'soon', 'unavailable']"
-              variant="outlined"
-              dense
-            ></v-select>
+            ></v-textarea>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" @click="saveEditedService">Save</v-btn>
-            <v-btn @click="cancelEditService">Cancel</v-btn>
+            <v-btn color="primary" @click="saveEditedReason">Save</v-btn>
+            <v-btn @click="this.showEditDialog = false">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -195,19 +200,13 @@
 </template>
 
 <script>
-import {
-  addService,
-  getAllServices,
-  updateService,
-  deleteService,
-  updateServiceStatus
-} from '../../apirequests/service'
+import { addReason, getAllReason, updateReason, deleteReason } from '../../apirequests/reason'
 
 export default {
   data() {
     return {
       search: '',
-      services: [],
+      reasons: [],
       itemsPerPage: 10,
       currentPage: 1,
       options: [10, 20, 50, 100],
@@ -217,166 +216,152 @@ export default {
       popupTitle: '',
       popupMessage: '',
       showAddDialog: false,
-      newService: {
+      newReason: {
         title: '',
-        short_title: ''
+        description: ''
       },
       titleErrorMessage: '',
       showDeleteConfirmation: false,
-      deleteServiceData: {
+      deleteReasonData: {
         id: null,
         title: '',
-        short_title: ''
+        description: ''
       },
       showEditDialog: false,
-      editServiceData: {
+      editReasonData: {
         id: null,
         title: '',
-        short_title: '',
-        status: '',
-        updatedDate: null
+        description: '',
+        date_updated: null
       }
     }
   },
   computed: {
-    filteredServices() {
+    filteredreasons() {
       const searchTerm = this.search.toLowerCase().trim()
-      return this.services.filter((service) => {
+      return this.reasons.filter((reason) => {
         return (
-          service.title.toLowerCase().includes(searchTerm) ||
-          service.short_title.toLowerCase().includes(searchTerm) ||
-          service._id.toLowerCase().includes(searchTerm)
+          reason.reason.toLowerCase().includes(searchTerm) ||
+          reason.description.toLowerCase().includes(searchTerm) ||
+          reason._id.toLowerCase().includes(searchTerm)
         )
       })
     },
-    displayedServices() {
+    displayedType() {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage
       const endIndex = startIndex + this.itemsPerPage
-      return this.filteredServices.slice(startIndex, endIndex)
+      return this.filteredreasons.slice(startIndex, endIndex)
     },
     totalPages() {
-      return Math.ceil(this.filteredServices.length / this.itemsPerPage)
+      return Math.ceil(this.filteredreasons.length / this.itemsPerPage)
     }
   },
   mounted() {
-    this.fetchServices()
+    this.fetchReasons()
   },
   methods: {
-    async fetchServices() {
+    async fetchReasons() {
       try {
         this.isLoading = true
-        // await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000))
-        const response = await getAllServices()
-        this.services = response.data
+        const response = await getAllReason()
+        this.reasons = response.data
       } catch (error) {
         console.error(error)
-        // Handle error
       } finally {
         this.isLoading = false
       }
     },
-    handleAddService() {
-      this.newService.title = ''
-      this.newService.short_title = ''
+    handleAddPosition() {
+      this.newReason.title = ''
+      this.newReason.description = ''
       this.titleErrorMessage = ''
 
       this.showAddDialog = true
     },
-    async createService() {
-      const titleExists = this.services.some((service) => service.title === this.newService.title)
+    async addReason() {
+      const titleExists = this.reasons.some((position) => position.title === this.newReason.title)
       if (titleExists) {
         this.titleErrorMessage = 'Title already exists. Please use another title.'
         return
       }
       try {
-        await addService(this.newService)
+        await addReason(this.newReason)
 
-        this.showPopupMessage('success', 'Created', 'Service added successfully.')
+        this.showPopupMessage('success', 'Created', 'Data type added successfully.')
 
-        this.fetchServices()
+        this.fetchReasons()
       } catch (error) {
         console.error(error)
       } finally {
         this.showAddDialog = false
       }
     },
-    cancelAddService() {
-      this.showAddDialog = false
-    },
-    async handleEditService(serviceId) {
-      const serviceToEdit = this.services.find((service) => service._id === serviceId)
+    async handleEditReason(typeId) {
+      const typeToEdit = this.reasons.find((type) => type._id === typeId)
 
-      this.editServiceData = {
-        id: serviceId,
-        title: serviceToEdit.title,
-        short_title: serviceToEdit.short_title,
-        status: serviceToEdit.status,
-        updatedDate: serviceToEdit.updatedDate
+      this.editReasonData = {
+        id: typeId,
+        reason: typeToEdit.reason,
+        description: typeToEdit.description,
+        job_description: typeToEdit.job_description,
+        date_updated: typeToEdit.date_updated
       }
 
       this.showEditDialog = true
     },
-    async saveEditedService() {
-      const serviceIndex = this.services.findIndex(
-        (service) => service._id === this.editServiceData.id
-      )
+    async saveEditedReason() {
+      const reasonIndex = this.reasons.findIndex((reason) => reason._id === this.editReasonData.id)
 
-      if (serviceIndex !== -1) {
-        const existingService = this.services.find(
-          (service, index) =>
-            service.title.toLowerCase() === this.editServiceData.title.toLowerCase() &&
-            index !== serviceIndex
+      if (reasonIndex !== -1) {
+        const existingReason = this.reasons.find(
+          (reason, index) =>
+            reason.reason.toLowerCase() === this.editReasonData.reason.toLowerCase() &&
+            index !== reasonIndex
         )
-        if (existingService) {
-          this.titleErrorMessage = 'Title already exists. Please use another title.'
+        if (existingReason) {
+          this.reasonErrorMessage = 'Reason already exists. Please use another reason.'
           return
         }
 
-        this.services[serviceIndex].title = this.editServiceData.title
-        this.services[serviceIndex].short_title = this.editServiceData.short_title
-        this.services[serviceIndex].status = this.editServiceData.status
-        this.services[serviceIndex].updatedDate = new Date()
+        this.reasons[reasonIndex].reason = this.editReasonData.reason
+        this.reasons[reasonIndex].description = this.editReasonData.description
+        this.reasons[reasonIndex].date_updated = new Date()
       }
 
       try {
         await Promise.all([
-          updateService(this.editServiceData.id, {
-            title: this.editServiceData.title,
-            short_title: this.editServiceData.short_title
-          }),
-          updateServiceStatus(this.editServiceData.id, this.editServiceData.status)
+          updateReason(this.editReasonData.id, {
+            reason: this.editReasonData.reason,
+            description: this.editReasonData.description
+          })
         ])
 
-        await this.fetchServices()
+        await this.fetchreasons()
       } catch (error) {
         console.error(error)
       } finally {
         this.showEditDialog = false
-        this.showPopupMessage('success', 'Updated', 'Service updated successfully.')
+        this.showPopupMessage('success', 'Updated', 'Cancellation reason updated successfully.')
       }
     },
-    cancelEditService() {
-      this.showEditDialog = false
-    },
-    async handleDeleteService(serviceId) {
+    async handleDeleteReason(reasonId) {
       try {
-        const serviceToDelete = this.services.find((service) => service._id === serviceId)
-        this.deleteServiceData = {
-          id: serviceId,
-          title: serviceToDelete.title,
-          short_title: serviceToDelete.short_title
+        const reasonToDelete = this.reasons.find((reason) => reason._id === reasonId)
+        this.deleteReasonData = {
+          id: reasonId,
+          reason: reasonToDelete.reason,
+          description: reasonToDelete.description
         }
         this.showDeleteConfirmation = true
       } catch (error) {
         console.error(error)
       }
     },
-    async confirmDeleteService() {
+    async confirmDeleteReason() {
       try {
-        await deleteService(this.deleteServiceData.id)
-        this.fetchServices()
-        this.services = this.services.filter((service) => service._id !== this.deleteServiceData.id)
-        const successMessage = 'The service has been successfully deleted.'
+        await deleteReason(this.deleteReasonData.id)
+        this.reasons = this.reasons.filter((type) => type._id !== this.deleteReasonData.id)
+        const successMessage = 'The reason for cancellation has been successfully deleted.'
         this.showPopupMessage('success', 'Deleted', successMessage)
       } catch (error) {
         console.error(error)
@@ -384,9 +369,7 @@ export default {
         this.showDeleteConfirmation = false
       }
     },
-    cancelDeleteService() {
-      this.showDeleteConfirmation = false
-    },
+
     formatDate(dateString) {
       const date = new Date(dateString)
       const year = date.getFullYear()

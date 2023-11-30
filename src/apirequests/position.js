@@ -11,11 +11,10 @@ const api = axios.create({
 const getAccessToken = () => {
   return sessionStorage.getItem('accessToken')
 }
-
-export const createWorker = async (workerData) => {
+export const createPosition = async (workerData) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.post('/workers', workerData, {
+    const response = await api.post('/positions', workerData, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -30,7 +29,7 @@ export const createWorker = async (workerData) => {
 export const getWorker = async (workerId) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.get(`/workers/${workerId}`, {
+    const response = await api.get(`/positions/${workerId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -42,10 +41,10 @@ export const getWorker = async (workerId) => {
   }
 }
 
-export const getAllWorkers = async () => {
+export const getAllPositions = async () => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.get('/workers', {
+    const response = await api.get('/positions', {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -57,10 +56,10 @@ export const getAllWorkers = async () => {
   }
 }
 
-export const updateWorker = async (workerId, updatedData) => {
+export const updatePosition = async (positionId, updatedData) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.put(`${baseUrl}/workers/${workerId}`, updatedData, {
+    const response = await api.put(`${baseUrl}/positions/${positionId}`, updatedData, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -72,10 +71,10 @@ export const updateWorker = async (workerId, updatedData) => {
   }
 }
 
-export const deleteWorker = async (workerId) => {
+export const deletePosition = async (positionId) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.delete(`${baseUrl}/workers/${workerId}`, {
+    const response = await api.delete(`${baseUrl}/positions/${positionId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }

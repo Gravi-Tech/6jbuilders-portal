@@ -12,20 +12,10 @@ const getAccessToken = () => {
   return sessionStorage.getItem('accessToken')
 }
 
-export const login = async (accountNumber, password) => {
-  try {
-    const response = await api.post(`${baseUrl}/login`, { accountNumber, password })
-    return response.data
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
-}
-
-export const addAdmin = async (adminData) => {
+export const addTask = async (data) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.post(`${baseUrl}/admins`, adminData, {
+    const response = await api.post('/tasks', data, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -37,10 +27,10 @@ export const addAdmin = async (adminData) => {
   }
 }
 
-export const getAdmin = async (adminId) => {
+export const getTaskById = async (taskId) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.get(`${baseUrl}/admins/${adminId}`, {
+    const response = await api.get(`/tasks/${taskId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -52,10 +42,10 @@ export const getAdmin = async (adminId) => {
   }
 }
 
-export const getAllAdmins = async () => {
+export const getAllTask = async () => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.get(`${baseUrl}/admins`, {
+    const response = await api.get('/tasks', {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -67,10 +57,10 @@ export const getAllAdmins = async () => {
   }
 }
 
-export const updateAdmin = async (adminId, updatedAdminData) => {
+export const updateTask = async (taskId, data) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.put(`${baseUrl}/admins/${adminId}`, updatedAdminData, {
+    const response = await api.put(`/tasks/${taskId}`, data, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -82,12 +72,12 @@ export const updateAdmin = async (adminId, updatedAdminData) => {
   }
 }
 
-export const checkAccountNumber = async (accountNumber) => {
+export const updateTaskIsVisited = async (taskId, isVisited) => {
   try {
     const accessToken = getAccessToken()
     const response = await api.put(
-      `${baseUrl}/admins/checkAccountNumber`,
-      { accountNumber },
+      `/tasks/${taskId}/visited`,
+      { isVisited },
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -96,16 +86,47 @@ export const checkAccountNumber = async (accountNumber) => {
     )
     return response.data
   } catch (error) {
-    console.error('Failed to check account number:', error)
+    console.error(error)
     throw error
   }
 }
-export const checkEmail = async (email) => {
+
+export const deleteTask = async (taskId) => {
+  try {
+    const accessToken = getAccessToken()
+    const response = await api.delete(`/tasks/${taskId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const checkTaskStatus = async (taskId) => {
+  try {
+    const accessToken = getAccessToken()
+    const response = await api.get(`/tasks/${taskId}/status`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const cancelTask = async (taskId, reasonId, otherReason) => {
   try {
     const accessToken = getAccessToken()
     const response = await api.put(
-      `${baseUrl}/admins/checkEmail`,
-      { email },
+      `/tasks/${taskId}/cancel`,
+      { reasonId, otherReason },
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -114,7 +135,26 @@ export const checkEmail = async (email) => {
     )
     return response.data
   } catch (error) {
-    console.error('Failed to check email address:', error)
+    console.error(error)
+    throw error
+  }
+}
+
+export const completeTask = async (taskId, totalAmount) => {
+  try {
+    const accessToken = getAccessToken()
+    const response = await api.put(
+      `/tasks/${taskId}/complete`,
+      { total_amount: totalAmount },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    console.error(error)
     throw error
   }
 }
