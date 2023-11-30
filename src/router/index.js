@@ -15,8 +15,8 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
-      path: '/6jbuilders/book',
-      name: 'book',
+      path: '/6jbuilders/book-now',
+      name: 'book-now',
       component: () => import('../views/BookNowView.vue')
     },
     {
@@ -152,17 +152,18 @@ router.beforeEach((to, from, next) => {
   const routeName = (to.params.menuItem || to.name || 'Home')
     .split('-')
     .map((word) => capitalize(word))
-    .join(' ')
+    .join(' ')  
 
   document.title = `6J Builders - ${routeName}`
-  const accessToken = localStorage.getItem('accessToken')
+  const sessionToken = sessionStorage.getItem('accessToken')
+
   const isAdminRoute = to.matched.some((record) => record.path.startsWith('/6jbuilders/admin'))
 
-  if (isAdminRoute && !accessToken) {
+  if (isAdminRoute && !sessionToken) {
     return next('/6jbuilders/login')
   }
 
-  if (to.name === 'login' && accessToken) {
+  if (to.name === 'login' && sessionToken) {
     return next('/6jbuilders/admin/dashboard')
   }
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="header">
-      <h1 class="dashboard-title">Services</h1>
+      <h1 class="dashboard-title">Data Subjects</h1>
     </header>
     <div class="loading-container" v-if="isLoading">
       <v-progress-circular
@@ -38,7 +38,7 @@
         </div>
       </div>
       <div class="mb-6 mr-8 text-end">
-        <v-btn @click="handleAddService" color="primary">Add Service</v-btn>
+        <v-btn @click="handleAddPosition" color="primary">Add Data Type</v-btn>
       </div>
       <table class="table">
         <thead style="font-size: 13px">
@@ -48,23 +48,21 @@
             <th>Short Title</th>
             <th>Created Date</th>
             <th>Updated Date</th>
-            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody style="font-size: 13px">
-          <template v-if="displayedServices.length > 0">
-            <tr v-for="service in displayedServices" :key="service._id">
-              <td>{{ service._id }}</td>
-              <td>{{ service.title }}</td>
-              <td>{{ service.short_title }}</td>
-              <td>{{ formatDate(service.createdDate) }}</td>
-              <td>{{ formatDate(service.updatedDate) }}</td>
-              <td>{{ service.status }}</td>
+          <template v-if="displayedType.length > 0">
+            <tr v-for="position in displayedType" :key="position._id">
+              <td>{{ position._id }}</td>
+              <td>{{ position.title }}</td>
+              <td>{{ position.description }}</td>
+              <td>{{ formatDate(position.date_created) }}</td>
+              <td>{{ formatDate(position.date_updated) }}</td>
               <td>
                 <v-btn
                   size="small"
-                  @click="handleEditService(service._id)"
+                  @click="handleEditType(position._id)"
                   color="secondary"
                   flat
                   class="mr-6"
@@ -72,7 +70,7 @@
                 >
                 <v-btn
                   size="small"
-                  @click="handleDeleteService(service._id)"
+                  @click="handleDeleteType(position._id)"
                   color="error"
                   variant="outlined"
                   flat
@@ -83,7 +81,7 @@
           </template>
           <template v-else>
             <tr>
-              <td colspan="6" class="not-found">Not Service found</td>
+              <td colspan="6" class="not-found">Not Data type found</td>
             </tr>
           </template>
         </tbody>
@@ -97,59 +95,72 @@
       <v-dialog v-model="showAddDialog" max-width="500px">
         <v-card>
           <v-card-title>
-            <span class="headline">Add Service</span>
+            <span class="headline">Add Data Type</span>
           </v-card-title>
           <v-card-text>
+            <v-alert
+              class="mb-4"
+              type="info"
+              color="#2196F3"
+              theme="dark"
+              icon="mdi-information"
+              text="Please provide the necessary details for adding a new data type. The data type
+              represents the specific category or classification of data."
+              variant="tonal"
+              prominent
+            ></v-alert>
             <v-text-field
-              v-model="newService.title"
+              v-model="newType.title"
               label="Title *"
               variant="outlined"
               dense
               :error-messages="titleErrorMessage"
+              hint="Enter the title for the data type"
               required
             ></v-text-field>
             <v-text-field
               class="mt-4"
-              v-model="newService.short_title"
+              v-model="newType.description"
               label="Short Title"
               variant="outlined"
+              hint="Enter a short title (optional)"
               dense
             ></v-text-field>
-            <v-card-actions>
-              <v-btn color="primary" @click="createService">Create</v-btn>
-              <v-btn @click="cancelAddService">Cancel</v-btn>
-            </v-card-actions>
           </v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" @click="addType">Create</v-btn>
+            <v-btn @click="showAddDialog = false">Cancel</v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
       <v-dialog v-model="showDeleteConfirmation" max-width="500px">
         <v-card>
           <v-card-title>
-            <span class="headline">Delete Service</span>
+            <span class="headline">Delete Data Type</span>
           </v-card-title>
           <v-card-text>
-            <p>Are you sure you want to delete the following service?</p>
-            <p><strong>Title:</strong> {{ deleteServiceData.title }}</p>
-            <p><strong>Short Title:</strong> {{ deleteServiceData.short_title }}</p>
+            <p>Are you sure you want to delete the following data type?</p>
+            <p><strong>Title:</strong> {{ deleteTypeData.title }}</p>
+            <p><strong>Short Title:</strong> {{ deleteTypeData.description }}</p>
             <v-alert class="mt-4" type="warning" variant="tonal" outlined dense>
-              Deleting this service will permanently remove all associated data and cannot be
+              Deleting this data type will permanently remove all associated data and cannot be
               undone.
             </v-alert>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" @click="confirmDeleteService">Continue</v-btn>
-            <v-btn @click="cancelDeleteService">Cancel</v-btn>
+            <v-btn color="primary" @click="confirmDeleteType">Continue</v-btn>
+            <v-btn @click="showDeleteConfirmation = false">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
       <v-dialog v-model="showEditDialog" max-width="500px">
         <v-card>
           <v-card-title>
-            <span class="headline">Edit Service</span>
+            <span class="headline">Edit Position</span>
           </v-card-title>
           <v-card-text>
             <v-text-field
-              v-model="editServiceData.title"
+              v-model="editTypeData.title"
               label="Title *"
               variant="outlined"
               dense
@@ -158,23 +169,24 @@
             ></v-text-field>
             <v-text-field
               class="mt-4"
-              v-model="editServiceData.short_title"
+              v-model="editTypeData.description"
               label="Short Title"
               variant="outlined"
               dense
             ></v-text-field>
-            <v-select
+            <v-textarea
               class="mt-4"
-              v-model="editServiceData.status"
-              label="Status"
-              :items="['available', 'soon', 'unavailable']"
+              v-model="editTypeData.job_description"
+              label="Short Title"
               variant="outlined"
+              rows="5"
+              row-height="50"
               dense
-            ></v-select>
+            ></v-textarea>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" @click="saveEditedService">Save</v-btn>
-            <v-btn @click="cancelEditService">Cancel</v-btn>
+            <v-btn color="primary" @click="saveEditedType">Save</v-btn>
+            <v-btn @click="this.showEditDialog = false">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -195,19 +207,13 @@
 </template>
 
 <script>
-import {
-  addService,
-  getAllServices,
-  updateService,
-  deleteService,
-  updateServiceStatus
-} from '../../apirequests/service'
+import { addType, getAllTypes, updateType, deleteType } from '../../apirequests/data_type'
 
 export default {
   data() {
     return {
       search: '',
-      services: [],
+      types: [],
       itemsPerPage: 10,
       currentPage: 1,
       options: [10, 20, 50, 100],
@@ -217,166 +223,150 @@ export default {
       popupTitle: '',
       popupMessage: '',
       showAddDialog: false,
-      newService: {
+      newType: {
         title: '',
-        short_title: ''
+        description: ''
       },
       titleErrorMessage: '',
       showDeleteConfirmation: false,
-      deleteServiceData: {
+      deleteTypeData: {
         id: null,
         title: '',
-        short_title: ''
+        description: ''
       },
       showEditDialog: false,
-      editServiceData: {
+      editTypeData: {
         id: null,
         title: '',
-        short_title: '',
-        status: '',
-        updatedDate: null
+        description: '',
+        date_updated: null
       }
     }
   },
   computed: {
-    filteredServices() {
+    filteredTypes() {
       const searchTerm = this.search.toLowerCase().trim()
-      return this.services.filter((service) => {
+      return this.types.filter((type) => {
         return (
-          service.title.toLowerCase().includes(searchTerm) ||
-          service.short_title.toLowerCase().includes(searchTerm) ||
-          service._id.toLowerCase().includes(searchTerm)
+          type.title.toLowerCase().includes(searchTerm) ||
+          type.description.toLowerCase().includes(searchTerm)
         )
       })
     },
-    displayedServices() {
+    displayedType() {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage
       const endIndex = startIndex + this.itemsPerPage
-      return this.filteredServices.slice(startIndex, endIndex)
+      return this.filteredTypes.slice(startIndex, endIndex)
     },
     totalPages() {
-      return Math.ceil(this.filteredServices.length / this.itemsPerPage)
+      return Math.ceil(this.filteredTypes.length / this.itemsPerPage)
     }
   },
   mounted() {
-    this.fetchServices()
+    this.fetchTypes()
   },
   methods: {
-    async fetchServices() {
+    async fetchTypes() {
       try {
         this.isLoading = true
-        // await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000))
-        const response = await getAllServices()
-        this.services = response.data
+        const response = await getAllTypes()
+        this.types = response.data
       } catch (error) {
         console.error(error)
-        // Handle error
       } finally {
         this.isLoading = false
       }
     },
-    handleAddService() {
-      this.newService.title = ''
-      this.newService.short_title = ''
+    handleAddPosition() {
+      this.newType.title = ''
+      this.newType.description = ''
       this.titleErrorMessage = ''
-
       this.showAddDialog = true
     },
-    async createService() {
-      const titleExists = this.services.some((service) => service.title === this.newService.title)
+    async addType() {
+      const titleExists = this.types.some((position) => position.title === this.newType.title)
       if (titleExists) {
         this.titleErrorMessage = 'Title already exists. Please use another title.'
         return
       }
       try {
-        await addService(this.newService)
+        await addType(this.newType)
 
-        this.showPopupMessage('success', 'Created', 'Service added successfully.')
+        this.showPopupMessage('success', 'Created', 'Data type added successfully.')
 
-        this.fetchServices()
+        this.fetchtypes()
       } catch (error) {
         console.error(error)
       } finally {
         this.showAddDialog = false
       }
     },
-    cancelAddService() {
-      this.showAddDialog = false
-    },
-    async handleEditService(serviceId) {
-      const serviceToEdit = this.services.find((service) => service._id === serviceId)
+    async handleEditType(typeId) {
+      const typeToEdit = this.types.find((type) => type._id === typeId)
 
-      this.editServiceData = {
-        id: serviceId,
-        title: serviceToEdit.title,
-        short_title: serviceToEdit.short_title,
-        status: serviceToEdit.status,
-        updatedDate: serviceToEdit.updatedDate
+      this.editTypeData = {
+        id: typeId,
+        title: typeToEdit.title,
+        description: typeToEdit.description,
+        job_description: typeToEdit.job_description,
+        date_updated: typeToEdit.date_updated
       }
 
       this.showEditDialog = true
     },
-    async saveEditedService() {
-      const serviceIndex = this.services.findIndex(
-        (service) => service._id === this.editServiceData.id
-      )
+    async saveEditedType() {
+      const typeIndex = this.types.findIndex((type) => type._id === this.editTypeData.id)
 
-      if (serviceIndex !== -1) {
-        const existingService = this.services.find(
-          (service, index) =>
-            service.title.toLowerCase() === this.editServiceData.title.toLowerCase() &&
-            index !== serviceIndex
+      if (typeIndex !== -1) {
+        const existingType = this.types.find(
+          (type, index) =>
+            type.title.toLowerCase() === this.editTypeData.title.toLowerCase() &&
+            index !== typeIndex
         )
-        if (existingService) {
+        if (existingType) {
           this.titleErrorMessage = 'Title already exists. Please use another title.'
           return
         }
 
-        this.services[serviceIndex].title = this.editServiceData.title
-        this.services[serviceIndex].short_title = this.editServiceData.short_title
-        this.services[serviceIndex].status = this.editServiceData.status
-        this.services[serviceIndex].updatedDate = new Date()
+        this.types[typeIndex].title = this.editTypeData.title
+        this.types[typeIndex].description = this.editTypeData.description
+        this.types[typeIndex].date_updated = new Date()
       }
 
       try {
         await Promise.all([
-          updateService(this.editServiceData.id, {
-            title: this.editServiceData.title,
-            short_title: this.editServiceData.short_title
-          }),
-          updateServiceStatus(this.editServiceData.id, this.editServiceData.status)
+          updateType(this.editTypeData.id, {
+            title: this.editTypeData.title,
+            description: this.editTypeData.description
+          })
         ])
 
-        await this.fetchServices()
+        await this.fetchTypes()
       } catch (error) {
         console.error(error)
       } finally {
         this.showEditDialog = false
-        this.showPopupMessage('success', 'Updated', 'Service updated successfully.')
+        this.showPopupMessage('success', 'Updated', 'Data type updated successfully.')
       }
     },
-    cancelEditService() {
-      this.showEditDialog = false
-    },
-    async handleDeleteService(serviceId) {
+    async handleDeleteType(typeId) {
       try {
-        const serviceToDelete = this.services.find((service) => service._id === serviceId)
-        this.deleteServiceData = {
-          id: serviceId,
-          title: serviceToDelete.title,
-          short_title: serviceToDelete.short_title
+        const typeToDelete = this.types.find((type) => type._id === typeId)
+        this.deleteTypeData = {
+          id: typeId,
+          title: typeToDelete.title,
+          description: typeToDelete.description
         }
         this.showDeleteConfirmation = true
       } catch (error) {
         console.error(error)
       }
     },
-    async confirmDeleteService() {
+    async confirmDeleteType() {
       try {
-        await deleteService(this.deleteServiceData.id)
-        this.fetchServices()
-        this.services = this.services.filter((service) => service._id !== this.deleteServiceData.id)
-        const successMessage = 'The service has been successfully deleted.'
+        await deleteType(this.deleteTypeData.id)
+        this.types = this.types.filter((type) => type._id !== this.deleteTypeData.id)
+        const successMessage = 'The data type has been successfully deleted.'
         this.showPopupMessage('success', 'Deleted', successMessage)
       } catch (error) {
         console.error(error)
@@ -384,9 +374,7 @@ export default {
         this.showDeleteConfirmation = false
       }
     },
-    cancelDeleteService() {
-      this.showDeleteConfirmation = false
-    },
+
     formatDate(dateString) {
       const date = new Date(dateString)
       const year = date.getFullYear()

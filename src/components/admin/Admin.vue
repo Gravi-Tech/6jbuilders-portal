@@ -1,33 +1,36 @@
 <template>
   <div>
-    <v-skeleton-loader
-      v-if="loading"
-      boilerplate
-      type="list-item-avatar, list-item-title, list-item-subtitle, card, chip"
-    ></v-skeleton-loader>
+    <div v-if="loading">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="24"
+        :width="3"
+      ></v-progress-circular>
+    </div>
     <template v-else>
-      <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
+      <v-navigation-drawer
+        :width="320"
+        v-model="drawer"
+        :rail="rail"
+        permanent
+        @click="rail = false"
+      >
         <v-list-item>
           <div class="flex-container">
-            <div class="avatar">
-              <v-list-item-avatar>
-                <v-avatar size="x-small" :color="getAvatarColor(admin.firstname)">
-                  <span class="white--text">{{ getInitials(admin.firstname) }}</span>
-                </v-avatar>
-              </v-list-item-avatar>
+            <div class="avatar mr-2">
+              <v-avatar size="x-small" :color="getAvatarColor(admin.firstname)">
+                <span class="white--text">{{ getInitials(admin.firstname) }}</span>
+              </v-avatar>
             </div>
             <div class="fullname">
-              <v-list-item-content>
-                <v-list-item-title>{{ getFullName(admin) }}</v-list-item-title>
-                <v-list-item-subtitle>{{ admin.role }}</v-list-item-subtitle>
-              </v-list-item-content>
+              <v-list-item-title>{{ getFullName(admin) }}</v-list-item-title>
+              <v-list-item-subtitle>{{ admin.role }}</v-list-item-subtitle>
             </div>
             <div class="actions">
-              <v-list-item-action>
-                <v-btn variant="text" icon @click.stop="rail = !rail">
-                  <v-icon>mdi-chevron-left</v-icon>
-                </v-btn>
-              </v-list-item-action>
+              <v-btn variant="text" icon @click.stop="rail = !rail">
+                <v-icon>mdi-chevron-left</v-icon>
+              </v-btn>
             </div>
           </div>
         </v-list-item>
@@ -80,14 +83,16 @@
   </div>
 </template>
 
-<script scoped>
-import Dashboard from './DashboardDetails.vue'
+<script>
+import Dashboard from './Dashboard.vue'
 import Service from './Service.vue'
-import Booking from './BookingRequest.vue'
-import Setting from './SettingsDetails.vue'
-import Task from './TaskDetails.vue'
-import Worker from './WorkerDetails.vue'
-import Project from './ProjectDetails.vue'
+import Booking from './Booking.vue'
+import Profile from './Profile.vue'
+import Task from './Task.vue'
+import Employees from './Employees.vue'
+import Records from './Records.vue'
+import Project from './Project.vue'
+import Feedback from './Feedbacks.vue'
 import { getAdmin } from '../../apirequests/admin'
 
 export default {
@@ -100,12 +105,14 @@ export default {
       activeItem: 'dashboard',
       menuItems: [
         { title: 'Dashboard', value: 'dashboard', icon: 'mdi-view-dashboard-outline' },
-        { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-check-outline' },
-        { title: 'Task', value: 'task', icon: 'mdi-checkbox-multiple-outline' },
-        { title: 'Project', value: 'projects', icon: 'mdi-folder-outline' },
-        { title: 'Service', value: 'services', icon: 'mdi-wrench' },
-        { title: 'Workers', value: 'workers', icon: 'mdi-account-multiple-outline' },
-        { title: 'Settings', value: 'setting', icon: 'mdi-cog-outline' },
+        { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-clock' },
+        { title: 'Task', value: 'task', icon: 'mdi-checkbox-marked-circle-outline' },
+        { title: 'Project', value: 'projects', icon: 'mdi-folder-multiple-outline' },
+        { title: 'Records', value: 'records', icon: 'mdi-text-box-outline' },
+        { title: 'Services', value: 'services', icon: 'mdi-hammer-wrench' },
+        { title: 'Employees', value: 'employees', icon: 'mdi-account-group-outline' },
+        { title: 'Feedbacks', value: 'feedback', icon: 'mdi-message' },
+        { title: 'Profile', value: 'profile', icon: 'mdi-account-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }
       ],
       logoutDialog: false
@@ -120,20 +127,22 @@ export default {
           return Client
         case 'request':
           return Booking
-        case 'materials':
-          return Material
+        case 'feedbacks':
+          return Feedback
         case 'projects':
           return Project
+        case 'records':
+          return Records
         case 'services':
           return Service
-        case 'workers':
-          return Worker
+        case 'employees':
+          return Employees
         case 'task':
           return Task
         case 'feedback':
           return Feedback
-        case 'setting':
-          return Setting
+        case 'profile':
+          return Profile
         default:
           return Dashboard
       }
@@ -163,10 +172,14 @@ export default {
       history.replaceState(currentState, '', url)
 
       this.$router.push({ name: 'admin', params: { menuItem: this.activeItem } })
+
+      // setTimeout(() => {
+      //   this.rail = true
+      // }, Math.floor(Math.random() * 1000) + 3000)
     },
     async fetchAdminData() {
       try {
-        const adminId = localStorage.getItem('id')
+        const adminId = sessionStorage.getItem('adminId')
         const adminData = await getAdmin(adminId)
         this.admin = adminData.data
         this.loading = false
@@ -196,8 +209,8 @@ export default {
       return colors[index]
     },
     logout() {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('id')
+      sessionStorage.removeItem('adminId')
+      sessionStorage.removeItem('accessToken')
       window.location.href = '/6jbuilders/login'
     }
   }
