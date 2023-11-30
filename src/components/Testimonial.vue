@@ -1,7 +1,7 @@
 <template>
   <section class="feedback-section">
     <v-container>
-      <h1 class="text-center mb-6">Feedbacks</h1>
+      <h1 class="text-center mb-6">Testimonials</h1>
       <v-carousel
         cycle
         hide-delimiter-background

@@ -140,12 +140,10 @@ export default {
       this.dialog = true
       const feedbackId = this.displayedFeedbacks[index]._id
       this.selectedFeedbackId = feedbackId
-      alert(this.selectedFeedbackId)
     },
     async confirmPostTestimonial() {
       try {
         const id = this.selectedFeedbackId
-        alert(id)
         await postFeedbackAsTestimonial(id)
         this.snackbarMessage = 'Feedback posted as testimonial.'
         this.snackbar = true
