@@ -9,7 +9,7 @@ const api = axios.create({
 })
 
 const getAccessToken = () => {
-  return localStorage.getItem('accessToken')
+  return sessionStorage.getItem('accessToken')
 }
 
 export const login = async (accountNumber, password) => {
@@ -98,7 +98,7 @@ export const checkAccountNumber = async (accountNumber) => {
   } catch (error) {
     console.error('Failed to check account number:', error)
     throw error
-}
+  }
 }
 export const checkEmail = async (email) => {
   try {

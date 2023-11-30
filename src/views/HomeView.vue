@@ -5,7 +5,7 @@
       <div class="d-flex w-50 pa-2">
         <div class="captivated d-block">
           <p class="tag ml-10 mt-12">
-            We <span class=" build accent-color">BUILD</span> and
+            We <span class="build accent-color">BUILD</span> and
             <span id="repair" class="accent-color">REPAIR</span> your Home
           </p>
           <p class="tag2 ml-10">
@@ -29,10 +29,14 @@
           Looking for a quality and affordable constructor for your home?
         </div>
         <div class="btn pa-1">
-          <v-btn variant="flat" color="blue" class="mr-4">Get a Quote</v-btn>
+          <v-btn variant="flat" color="blue" class="mr-4" @click="navigateToBooking"
+            >Get a Quote</v-btn
+          >
         </div>
         <div class="btn pa-1">
-          <v-btn variant="outlined" color="blue">Check Our Projects</v-btn>
+          <v-btn variant="outlined" color="blue" @click="navigateToProjects"
+            >Check Our Projects</v-btn
+          >
         </div>
       </v-col>
     </section>
@@ -48,6 +52,14 @@ export default {
   components: {
     Header,
     Footer
+  },
+  methods: {
+    navigateToBooking() {
+      this.$router.push('/6jbuilders/book-now')
+    },
+    navigateToProjects() {
+      this.$router.push('/6jbuilders/projects')
+    }
   }
 }
 </script>
@@ -83,7 +95,6 @@ p {
 }
 
 @media only screen and (min-width: 365px) and (max-width: 425px) {
-
   main {
     width: 100%;
     overflow-x: hidden;
@@ -108,11 +119,10 @@ p {
     margin-top: 0px;
     margin-left: 0px;
   }
-  .section{
+  .section {
     grid-row: auto;
   }
 }
-
 
 @media only screen and (max-width: 320px) {
   main {
@@ -135,7 +145,7 @@ p {
     margin-top: 0px;
     margin-left: 0px;
   }
-  .section{
+  .section {
     grid-row: auto;
   }
 }

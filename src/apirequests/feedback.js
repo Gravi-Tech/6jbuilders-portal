@@ -1,5 +1,4 @@
 import axios from 'axios'
-
 const baseUrl = 'http://localhost:3000/api'
 
 const api = axios.create({
@@ -13,10 +12,20 @@ const getAccessToken = () => {
   return sessionStorage.getItem('accessToken')
 }
 
-export const addType = async (data) => {
+export const addFeedback = async (feedbackData) => {
+  try {
+    const response = await api.post('/feedbacks', feedbackData)
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const getFeedback = async (feedbackId) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.post('/data_types', data, {
+    const response = await api.get(`/feedbacks/${feedbackId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -28,10 +37,10 @@ export const addType = async (data) => {
   }
 }
 
-export const getType = async (typeId) => {
+export const getAllFeedbacks = async () => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.get(`/data_types/${typeId}`, {
+    const response = await api.get('/feedbacks', {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -43,10 +52,20 @@ export const getType = async (typeId) => {
   }
 }
 
-export const getAllTypes = async () => {
+export const getAllPublicFeedbacks = async () => {
+  try {
+    const response = await api.get('/public-feedbacks')
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const updateFeedback = async (feedbakcId, updatedData) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.get('/data_types', {
+    const response = await api.put(`${baseUrl}/feedbacks/${feedbakcId}`, updatedData, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -58,10 +77,10 @@ export const getAllTypes = async () => {
   }
 }
 
-export const updateType = async (typeId, data) => {
+export const deleteFeedback = async (feedbackId) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.put(`/data_types/${typeId}`, data, {
+    const response = await api.delete(`${baseUrl}/feedbacks/${feedbackId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -73,15 +92,18 @@ export const updateType = async (typeId, data) => {
   }
 }
 
-export const deleteType = async (typeId) => {
+export const postFeedbackAsTestimonial = async (feedbackId) => {
   try {
     const accessToken = getAccessToken()
-    const response = await api.delete(`/data_types/${typeId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
+    const response = await api.put(
+      `${baseUrl}/feedbacks/${feedbackId}/post-testimonial`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
       }
-    })
-    console.log(response)
+    )
     return response.data
   } catch (error) {
     console.error(error)

@@ -64,11 +64,11 @@
           <v-col cols="12">
             <v-alert
               closable
-              outlined
+              vairant="tonal"
               color="grey"
               icon="mdi-information-outline"
               elevation="2"
-              text="Service Type is read-only due to the pre-selected service. You can add an additional service."
+              text="Service Type is read-only due to the pre-selected service."
             ></v-alert>
           </v-col>
         </v-row>
@@ -130,7 +130,7 @@
 <script>
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { serviceTypes } from '@/dataUtils/serviceType'
-import { getAllTypes } from '@/apirequests/data_type';
+import { getAllTypes } from '@/apirequests/data_type'
 import { addBooking } from '@/apirequests/bookings'
 export default {
   name: 'BookingForm',
@@ -139,7 +139,15 @@ export default {
   },
   computed: {
     isReadOnlyService() {
-      return this.preSelectedService === this.serviceType
+      return this.preSelectedService && this.preSelectedService === this.serviceType
+    },
+    formattedDate() {
+      if (this.schedule_date) {
+        const date = new Date(this.schedule_date)
+        const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }
+        return date.toLocaleDateString(undefined, options)
+      }
+      return null
     }
   },
   components: {
@@ -148,6 +156,7 @@ export default {
   data() {
     return {
       serviceTypes: serviceTypes,
+      serviceType: this.preSelectedService || 'Home Renovation',
       showDatePicker: false,
       schedule_date: null,
       showPopup: false,
@@ -163,22 +172,11 @@ export default {
       contact_number: null,
       location: null,
       email: null,
-      serviceType: this.preSelectedService || 'Home Repair Services',
       note: null,
       rules: {
         email: (v) => !!(v || '').match(/@/) || 'Please enter a valid email',
         required: (v) => !!v || 'This field is required'
       }
-    }
-  },
-  computed: {
-    formattedDate() {
-      if (this.schedule_date) {
-        const date = new Date(this.schedule_date)
-        const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }
-        return date.toLocaleDateString(undefined, options)
-      }
-      return null
     }
   },
   created() {
@@ -242,7 +240,7 @@ export default {
           note: this.note
         }
 
-        const res = await addBooking(data)
+        await addBooking(data)
         const successMessage =
           'The booking has been successfully booked. You will receive a call within 24 hours.'
         this.showPopupMessage('success', 'Success', successMessage)
@@ -263,6 +261,7 @@ export default {
       }
     },
     cancelBooking() {
+      this.$emit('close');
       this.first_name = null
       this.middle_name = null
       this.last_name = null

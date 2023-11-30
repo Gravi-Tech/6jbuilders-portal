@@ -9,7 +9,13 @@
       ></v-progress-circular>
     </div>
     <template v-else>
-      <v-navigation-drawer :width="320" v-model="drawer" :rail="rail" permanent @click="rail = false">
+      <v-navigation-drawer
+        :width="320"
+        v-model="drawer"
+        :rail="rail"
+        permanent
+        @click="rail = false"
+      >
         <v-list-item>
           <div class="flex-container">
             <div class="avatar mr-2">
@@ -78,14 +84,15 @@
 </template>
 
 <script>
-import Dashboard from './DashboardDetails.vue'
+import Dashboard from './Dashboard.vue'
 import Service from './Service.vue'
-import Booking from './BookingRequest.vue'
+import Booking from './Booking.vue'
 import Profile from './Profile.vue'
-import Task from './TaskDetails.vue'
+import Task from './Task.vue'
 import Employees from './Employees.vue'
 import Records from './Records.vue'
-import Project from './ProjectDetails.vue'
+import Project from './Project.vue'
+import Feedback from './Feedbacks.vue'
 import { getAdmin } from '../../apirequests/admin'
 
 export default {
@@ -104,6 +111,7 @@ export default {
         { title: 'Records', value: 'records', icon: 'mdi-text-box-outline' },
         { title: 'Services', value: 'services', icon: 'mdi-hammer-wrench' },
         { title: 'Employees', value: 'employees', icon: 'mdi-account-group-outline' },
+        { title: 'Feedbacks', value: 'feedback', icon: 'mdi-message' },
         { title: 'Profile', value: 'profile', icon: 'mdi-account-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }
       ],
@@ -119,11 +127,11 @@ export default {
           return Client
         case 'request':
           return Booking
-        case 'materials':
-          return Material
+        case 'feedbacks':
+          return Feedback
         case 'projects':
           return Project
-          case 'records':
+        case 'records':
           return Records
         case 'services':
           return Service
@@ -171,7 +179,7 @@ export default {
     },
     async fetchAdminData() {
       try {
-        const adminId = localStorage.getItem('id')
+        const adminId = sessionStorage.getItem('adminId')
         const adminData = await getAdmin(adminId)
         this.admin = adminData.data
         this.loading = false
@@ -201,8 +209,8 @@ export default {
       return colors[index]
     },
     logout() {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('id')
+      sessionStorage.removeItem('adminId')
+      sessionStorage.removeItem('accessToken')
       window.location.href = '/6jbuilders/login'
     }
   }

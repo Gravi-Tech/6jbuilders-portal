@@ -60,7 +60,7 @@
               </div>
             </template>
             <v-card>
-              <BookingForm />
+              <BookingForm @close="handleCancel" />
             </v-card>
           </v-dialog>
         </div>
@@ -608,7 +608,6 @@ export default {
       statusOptions: ['Pending'],
       selectedTimeRange: null,
       cancelFormManuallyClosed: false,
-      addMaterials: false,
       showPopup: false,
       popupType: '',
       popupTitle: '',
@@ -1094,6 +1093,9 @@ export default {
       this.showAcceptButton = showAcceptButton
       this.closePreviewBtn = closePreviewBtn
       this.previewDetails = true
+    },
+    handleCancel(){
+      this.manualBooking = false;
     }
   }
 }

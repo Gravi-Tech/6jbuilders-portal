@@ -21,7 +21,6 @@
                   variant="outlined"
                   density="compact"
                   v-model="admin.accountNumber"
-
                 ></v-text-field>
               </span>
             </div>
@@ -142,9 +141,9 @@ export default {
         email: '',
         phone: '',
         address: '',
-        update_date: null,
+        update_date: null
       },
-      oldEmail: '',
+      oldEmail: ''
     }
   },
   created() {
@@ -153,10 +152,9 @@ export default {
   methods: {
     async fetchAdminData() {
       try {
-        const adminId = localStorage.getItem('id')
+        const adminId = sessionStorage.getItem('adminId')
         const adminData = await getAdmin(adminId)
         this.admin = adminData.data
-        this.oldEmail = adminData.data.email
         this.loading = false
       } catch (error) {
         console.error(error)
@@ -187,7 +185,7 @@ export default {
         const errorMessage = 'Please fill in all required fields.'
         this.showPopupMessage('error', 'Empty.', errorMessage)
       } else {
-        const adminId = localStorage.getItem('id')
+        const adminId = sessionStorage.getItem('adminId')
         checkAccountNumber(this.admin.accountNumber)
           .then((response) => {
             if (response.exists) {
@@ -195,7 +193,7 @@ export default {
               return
             } else {
               this.admin.update_date = new Date()
-              updateAdmin(adminId, {...this.admin, oldEmail: this.oldEmail})
+              updateAdmin(adminId, { ...this.admin, oldEmail: this.oldEmail })
                 .then((response) => {
                   const successMessage = 'The profile has been successfully updated.'
                   this.showPopupMessage('success', 'Updated', successMessage)
@@ -247,7 +245,6 @@ export default {
 .v-text-field {
   width: 300px;
 }
-
 .profile-settings {
   align-items: center;
   margin-top: 50px;

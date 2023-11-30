@@ -374,6 +374,7 @@ export default {
     async confirmDeleteService() {
       try {
         await deleteService(this.deleteServiceData.id)
+        this.fetchServices()
         this.services = this.services.filter((service) => service._id !== this.deleteServiceData.id)
         const successMessage = 'The service has been successfully deleted.'
         this.showPopupMessage('success', 'Deleted', successMessage)
