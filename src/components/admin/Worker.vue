@@ -117,8 +117,8 @@
             class="mt-4"
             v-model="newWorker.position"
             :items="positionOptions"
-            label="Select Position"
-            outlined
+            label="Select Position *"
+            variant="outlined"
             dense
           ></v-select>
           <v-text-field
@@ -255,7 +255,7 @@ export default {
       showAddDialog: false,
       newWorker: {
         fullName: '',
-        position: '',
+        position: 'General Worker',
         contact: '',
         address: '',
         experience: '',
@@ -324,8 +324,8 @@ export default {
     },
     async Positions() {
   try {
-    const response = await getAllPositions() // Call the API function to get all positions
-    this.positionOptions = response.data; // Access the 'data' property of the response
+    const response = await getAllPositions() 
+    this.positionOptions = response.data;
 
   } catch (error) {
     console.error(error);
@@ -333,7 +333,6 @@ export default {
 },
     handleAddWorker() {
       this.newWorker.fullName = ''
-      this.newWorker.position = ''
       this.newWorker.address = ''
       this.newWorker.contact = ''
       this.newWorker.experience = ''
