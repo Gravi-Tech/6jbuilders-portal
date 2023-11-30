@@ -130,7 +130,7 @@
 <script>
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { serviceTypes } from '@/dataUtils/serviceType'
-import { getAllTypes } from '@/apirequests/data_type'
+import { getAllPublicTypes } from '@/apirequests/data_type'
 import { addBooking } from '@/apirequests/bookings'
 export default {
   name: 'BookingForm',
@@ -192,7 +192,7 @@ export default {
     async fetchDataTypes() {
       try {
         this.loading = true
-        const response = await getAllTypes()
+        const response = await getAllPublicTypes()
         this.types = response.data.map((type) => type.title)
       } catch (error) {
         console.error(error)

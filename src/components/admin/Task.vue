@@ -126,7 +126,7 @@
                     @click="addAssignee = true"
                     >add assignee</v-btn
                   >
-                  <v-dialog v-model="addAssignee" max-width="700">
+                  <v-dialog persistent v-model="addAssignee" max-width="700">
                     <v-card>
                       <v-container>
                         <v-card-text>
@@ -177,7 +177,7 @@
                   >
                     cancel task
                   </v-btn>
-                  <v-dialog v-model="showCancellationForm" max-width="500px">
+                  <v-dialog persistent v-model="showCancellationForm" max-width="500px">
                     <v-card>
                       <v-card-title>
                         <span class="headline">Cancellation Details</span>
@@ -240,7 +240,7 @@
                     </template>
                     <span>Delete Task</span>
                   </v-tooltip>
-                  <v-dialog v-model="showCompleteTaskDialog" max-width="400px">
+                  <v-dialog persistent v-model="showCompleteTaskDialog" max-width="400px">
                     <v-card>
                       <v-card-title>Complete Task</v-card-title>
                       <v-card-subtitle>Provide amount to complete a task</v-card-subtitle>
@@ -350,7 +350,7 @@
                         {{ editingEnabled ? 'Editing Mode' : 'View Mode' }}
                       </v-chip>
                     </div>
-                    <v-dialog v-model="previewDetails" max-width="900" max-height="100%">
+                    <v-dialog persistent v-model="previewDetails" max-width="900" max-height="100%">
                       <v-card>
                         <v-container>
                           <v-card-title>Preview</v-card-title>

@@ -1,6 +1,56 @@
 <template>
   <div class="profile-settings">
-    <h1 class="profile-settings-title">Profile Settings</h1>
+    <div class="header">
+      <h1 class="profile-settings-title">Account Settings</h1>
+      <div>
+        <v-row justify="space-around">
+          <v-col cols="auto">
+            <v-dialog persistent transition="dialog-top-transition" width="auto">
+              <template v-slot:activator="{ props }">
+                <v-btn variant="flat" color="grey" v-bind="props">change password</v-btn>
+              </template>
+              <template v-slot:default="{ isActive }">
+                <v-card>
+                  <v-card-title>Update Password</v-card-title>
+                  <v-card-text class="pa-12">
+                    <v-text-field
+                      v-model="currentPassword"
+                      label="Current Password"
+                      variant="outlined"
+                      :type="showPassword ? 'text' : 'password'"
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="newPassword"
+                      label="New Password"
+                      variant="outlined"
+                      :type="showPassword ? 'text' : 'password'"
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="verifyPassword"
+                      label="Verify New Password"
+                      variant="outlined"
+                      :error-messages="titleErrorMessage"
+                      :type="showPassword ? 'text' : 'password'"
+                    ></v-text-field>
+                    <v-checkbox
+                      v-model="showPassword"
+                      label="Show Password"
+                      color="primary"
+                    ></v-checkbox>
+                  </v-card-text>
+                  <v-card-actions class="justify-end">
+                    <v-btn variant="text" @click="isActive.value = false">Close</v-btn>
+                    <v-btn variant="text" color="primary" @click="handleUpdatePassword"
+                      >Update</v-btn
+                    >
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+          </v-col>
+        </v-row>
+      </div>
+    </div>
     <v-card variant="flat" class="w-100">
       <div class="profile-settings-form">
         <div class="profile-avatar">
@@ -21,6 +71,7 @@
                   variant="outlined"
                   density="compact"
                   v-model="admin.accountNumber"
+                  :readonly="this.admin.role !== 'superadmin'"
                 ></v-text-field>
               </span>
             </div>
@@ -95,15 +146,17 @@
               ></v-text-field>
             </span>
           </div>
+
           <div class="actions">
-            <!-- <v-btn color="primary" variant="flat">Update Password</v-btn> -->
             <v-btn color="primary" variant="flat" @click="editing ? saveProfile() : toggleEdit()">
               {{ editing ? 'Save Profile' : 'Edit Profile' }}
             </v-btn>
+            <v-btn v-if="editing" color="red" variant="outlined" @click="cancelEdit">cancel</v-btn>
           </div>
         </div>
       </div>
     </v-card>
+
     <v-alert
       class="popup-message"
       v-if="showPopup"
@@ -116,17 +169,26 @@
     >
       {{ popupMessage }}
     </v-alert>
+    <v-snackbar v-model="snackbar">{{ snackbarMessage }}</v-snackbar>
   </div>
 </template>
 
 <script>
-import { getAdmin, updateAdmin, checkAccountNumber } from '../../apirequests/admin'
+import {
+  addAdmin,
+  getAdmin,
+  updateAdmin,
+  checkAccountNumber,
+  updatePassword
+} from '../../apirequests/admin'
 
 export default {
   data() {
     return {
       editing: false,
+      snackbar: false,
       showPopup: false,
+      snackbarMessage: '',
       popupType: '',
       popupTitle: '',
       popupMessage: '',
@@ -143,7 +205,12 @@ export default {
         address: '',
         update_date: null
       },
-      oldEmail: ''
+      oldEmail: '',
+      currentPassword: '',
+      newPassword: '',
+      verifyPassword: '',
+      showPassword: false,
+      titleErrorMessage: ''
     }
   },
   created() {
@@ -158,6 +225,27 @@ export default {
         this.loading = false
       } catch (error) {
         console.error(error)
+      }
+    },
+    async handleUpdatePassword() {
+      if (this.newPassword !== this.verifyPassword) {
+        this.titleErrorMessage = 'New password and verify password do not match'
+        return
+      }
+
+      try {
+        const adminId = sessionStorage.getItem('adminId')
+        await updatePassword(adminId, this.currentPassword, this.newPassword)
+        this.snackbarMessage = 'The password has been successfully updated.'
+        this.snackbar = true
+        this.currentPassword = ''
+        this.newPassword = ''
+        this.verifyPassword = ''
+        this.fetchAdminData()
+        this.isActive.value = false
+      } catch (error) {
+        this.snackbarMessage = 'Invalid current account.'
+        this.snackbar = true
       }
     },
     getFullName(admin) {
@@ -221,6 +309,10 @@ export default {
     toggleEdit() {
       this.editing = true
     },
+    cancelEdit() {
+      this.editing = false
+      this.fetchAdminData()
+    },
     showPopupMessage(type, title, message) {
       this.popupType = type
       this.popupTitle = title
@@ -244,6 +336,12 @@ export default {
 <style scoped>
 .v-text-field {
   width: 300px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .profile-settings {
   align-items: center;

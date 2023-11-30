@@ -91,7 +91,7 @@ import Profile from './Profile.vue'
 import Task from './Task.vue'
 import Employees from './Employees.vue'
 import Records from './Records.vue'
-import Project from './Project.vue'
+// import Project from './Project.vue'
 import Feedback from './Feedbacks.vue'
 import { getAdmin } from '../../apirequests/admin'
 
@@ -107,12 +107,12 @@ export default {
         { title: 'Dashboard', value: 'dashboard', icon: 'mdi-view-dashboard-outline' },
         { title: 'Booking Request', value: 'request', icon: 'mdi-calendar-clock' },
         { title: 'Task', value: 'task', icon: 'mdi-checkbox-marked-circle-outline' },
-        { title: 'Project', value: 'projects', icon: 'mdi-folder-multiple-outline' },
+        // { title: 'Project', value: 'projects', icon: 'mdi-folder-multiple-outline' },
         { title: 'Records', value: 'records', icon: 'mdi-text-box-outline' },
         { title: 'Services', value: 'services', icon: 'mdi-hammer-wrench' },
         { title: 'Employees', value: 'employees', icon: 'mdi-account-group-outline' },
         { title: 'Feedbacks', value: 'feedback', icon: 'mdi-message' },
-        { title: 'Profile', value: 'profile', icon: 'mdi-account-cog-outline' },
+        { title: 'Account', value: 'profile', icon: 'mdi-account-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }
       ],
       logoutDialog: false
@@ -129,8 +129,8 @@ export default {
           return Booking
         case 'feedbacks':
           return Feedback
-        case 'projects':
-          return Project
+        // case 'projects':
+        //   return Project
         case 'records':
           return Records
         case 'services':

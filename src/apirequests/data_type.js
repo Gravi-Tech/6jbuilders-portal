@@ -58,6 +58,16 @@ export const getAllTypes = async () => {
   }
 }
 
+export const getAllPublicTypes = async () => {
+  try {
+    const response = await api.get('/public-data_types')
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
 export const updateType = async (typeId, data) => {
   try {
     const accessToken = getAccessToken()

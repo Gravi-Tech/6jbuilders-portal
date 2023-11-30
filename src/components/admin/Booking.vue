@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="text-end mb-6 mr-8">
-          <v-dialog v-model="manualBooking" max-width="900">
+          <v-dialog persistent v-model="manualBooking" max-width="900">
             <template v-slot:activator="{ on }">
               <div class="add-request">
                 <v-btn
@@ -181,7 +181,7 @@
                       </v-chip>
                     </div>
 
-                    <v-dialog v-model="previewDetails" max-width="800" max-height="100%">
+                    <v-dialog persistent v-model="previewDetails" max-width="800" max-height="100%">
                       <v-card>
                         <v-container>
                           <v-card-title>{{ dialogTitle }}</v-card-title>

@@ -92,7 +92,7 @@
         @input="handlePageChange"
         class="mt-4"
       ></v-pagination>
-      <v-dialog v-model="showAddDialog" max-width="500px">
+      <v-dialog persistent v-model="showAddDialog" max-width="500px">
         <v-card>
           <v-card-title>
             <span class="headline">Add Data Type</span>
@@ -133,7 +133,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model="showDeleteConfirmation" max-width="500px">
+      <v-dialog persistent v-model="showDeleteConfirmation" max-width="500px">
         <v-card>
           <v-card-title>
             <span class="headline">Delete Data Type</span>
@@ -153,7 +153,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model="showEditDialog" max-width="500px">
+      <v-dialog persistent v-model="showEditDialog" max-width="500px">
         <v-card>
           <v-card-title>
             <span class="headline">Edit Position</span>

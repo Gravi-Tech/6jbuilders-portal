@@ -94,7 +94,7 @@
         @input="handlePageChange"
         class="mt-4"
       ></v-pagination>
-      <v-dialog v-model="showAddDialog" max-width="500px">
+      <v-dialog persistent v-model="showAddDialog" max-width="500px">
         <v-card>
           <v-card-title>
             <span class="headline">Add Service</span>
@@ -122,7 +122,7 @@
           </v-card-text>
         </v-card>
       </v-dialog>
-      <v-dialog v-model="showDeleteConfirmation" max-width="500px">
+      <v-dialog persistent v-model="showDeleteConfirmation" max-width="500px">
         <v-card>
           <v-card-title>
             <span class="headline">Delete Service</span>
@@ -142,7 +142,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model="showEditDialog" max-width="500px">
+      <v-dialog persistent v-model="showEditDialog" max-width="500px">
         <v-card>
           <v-card-title>
             <span class="headline">Edit Service</span>

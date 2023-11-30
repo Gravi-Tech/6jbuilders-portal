@@ -82,6 +82,25 @@ export const updateAdmin = async (adminId, updatedAdminData) => {
   }
 }
 
+export const updatePassword = async (adminId, currentPassword, newPassword) => {
+  try {
+    const accessToken = getAccessToken()
+    const response = await api.put(
+      `${baseUrl}/admins/update-password/${adminId}`,
+      { currentPassword, newPassword },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
 export const checkAccountNumber = async (accountNumber) => {
   try {
     const accessToken = getAccessToken()
