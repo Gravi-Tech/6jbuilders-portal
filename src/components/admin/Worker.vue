@@ -116,9 +116,9 @@
           <v-select
             class="mt-4"
             v-model="newWorker.position"
-            label="Select Position *"
-            :items="position"
-            variant="outlined"
+            :items="positionOptions"
+            label="Select Position"
+            outlined
             dense
           ></v-select>
           <v-text-field
@@ -186,7 +186,7 @@
             class="mt-4"
             v-model="editWorkerData.position"
             label="Position"
-            :items="['Manager', 'Foreman', 'General Worker', 'Painter', 'Electrician', 'Plumber']"
+            :items="positionOptions"
             variant="outlined"
             dense
           ></v-select>
@@ -235,12 +235,15 @@
 
 <script>
 import { createWorker, getAllWorkers, updateWorker, deleteWorker } from '../../apirequests/workers'
+import { getAllPositions } from '../../apirequests/position'
+
 export default {
   data() {
     return {
       search: '',
       workers: [],
-      position:[],
+      positionOptions: [],
+      position: [],
       itemsPerPage: 10,
       currentPage: 1,
       options: [10, 20, 50, 100],
@@ -303,6 +306,7 @@ export default {
   },
   mounted() {
     this.fetchWorkers()
+    this.Positions()
   },
   methods: {
     async fetchWorkers() {
@@ -318,6 +322,15 @@ export default {
         this.isLoading = false
       }
     },
+    async Positions() {
+  try {
+    const response = await getAllPositions() // Call the API function to get all positions
+    this.positionOptions = response.data; // Access the 'data' property of the response
+
+  } catch (error) {
+    console.error(error);
+  }
+},
     handleAddWorker() {
       this.newWorker.fullName = ''
       this.newWorker.position = ''
@@ -359,8 +372,8 @@ export default {
         created_date: workerToEdit.created_date,
         updated_date: workerToEdit.updated_date
       }
-     
-      this.showEditDialog = true;
+
+      this.showEditDialog = true
     },
     async saveEditedWorker() {
       const workerIndex = this.workers.findIndex((worker) => worker._id === this.editWorkerData.id)
@@ -444,7 +457,7 @@ export default {
     handleItemsPerPageChange() {
       this.currentPage = 1
     },
-    showPopupMessage(type, title  , message) {
+    showPopupMessage(type, title, message) {
       this.popupType = type
       this.popupTitle = title
       this.popupMessage = message
