@@ -16,7 +16,7 @@
         <div class="login-buttons">
           <v-card-title class="text-center">ADMIN PORTAL</v-card-title>
           <v-card-text>
-            <v-form v-model="form" style="width: 450px;">
+            <v-form v-model="form" style="width: 450px">
               <v-text-field
                 density="compact"
                 prepend-inner-icon="mdi-account-box-outline"
@@ -65,8 +65,14 @@
             </v-form>
           </v-card-text>
           <v-card-actions class="justify-space-around">
-            <v-btn color="success" variant="tonal" :loading="loading" @click="handleLogin"
-             style="width: 300px;" size="large" >Sign In</v-btn
+            <v-btn
+              color="success"
+              variant="tonal"
+              :loading="loading"
+              @click="handleLogin"
+              style="width: 300px"
+              size="large"
+              >Sign In</v-btn
             >
           </v-card-actions>
           <v-btn class="mt-6" size="small" variant="outlined" @click="navTo('home')"
@@ -82,6 +88,7 @@
 import axios from 'axios'
 import { defineComponent } from 'vue'
 import { login } from '@/apirequests/admin'
+import { useAuthStore } from '@/stores/auth'
 
 export default defineComponent({
   data() {
@@ -105,13 +112,17 @@ export default defineComponent({
     async handleLogin() {
       try {
         const response = await login(this.adminId, this.adminPassword)
-
         const accessToken = response.accessToken
         const id = response.id
 
-        localStorage.setItem('accessToken', accessToken)
-        localStorage.setItem('id', id)
         axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+
+        const adminStore = useAuthStore()
+        adminStore.setAdminId(id)
+        adminStore.setAccessToken(accessToken)
+
+        sessionStorage.setItem('accessToken', accessToken)
+        sessionStorage.setItem('adminId', id)
 
         this.$router.push('/6jbuilders/admin/dashboard')
       } catch (error) {
@@ -128,7 +139,7 @@ export default defineComponent({
     },
     required(v) {
       return !!v || 'Field is required'
-    },
+    }
     // initiatePasswordRecovery() {
     //   this.$router.push('/6jbuilders/password-recovery')
     // }

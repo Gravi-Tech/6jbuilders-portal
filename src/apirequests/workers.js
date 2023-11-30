@@ -9,7 +9,7 @@ const api = axios.create({
 })
 
 const getAccessToken = () => {
-  return localStorage.getItem('accessToken')
+  return sessionStorage.getItem('accessToken')
 }
 
 export const createWorker = async (workerData) => {

@@ -2,6 +2,28 @@
   <div class="dashboard">
     <header class="header">
       <h1 class="dashboard-title">Dashboard</h1>
+      <v-menu transition="scale-transition">
+        <template v-slot:activator="{ props }">
+          <v-btn variant="text" color="primary" size="large" icon="mdi-bell-ring" v-bind="props">
+          </v-btn>
+        </template>
+        <v-list max-height="500" max-width="300">
+          <v-list lines="two">
+            <v-list-subheader>Latest Feedback</v-list-subheader>
+            <v-list-item
+              v-for="feedback in latestFeedbacks"
+              :key="feedback.id"
+              prepend-avatar="/src/assets/images/user-default.png"
+            >
+              <template v-slot:subtitle>
+                <span class="font-weight-bold">{{ feedback.fullName }}</span> <br />
+                &mdash;
+                {{ feedback.message }}
+              </template>
+            </v-list-item>
+          </v-list>
+        </v-list>
+      </v-menu>
     </header>
     <div class="card-row">
       <v-card class="overview-card" v-for="(card, index) in overviewCards" :key="index">
@@ -125,6 +147,7 @@ import { getAllWorkers } from '../../apirequests/workers'
 import { getAllTask } from '../../apirequests/task'
 import { getAllServices } from '../../apirequests/service'
 import { getAllBooking } from '../../apirequests/bookings'
+import { getAllFeedbacks } from '../../apirequests/feedback'
 
 import Doughnut from '../Doughnut.vue'
 import Bar from '../Bar.vue'
@@ -139,6 +162,7 @@ export default {
       bookingRequests: [],
       task: [],
       workers: [],
+      latestFeedbacks: [],
       latestBookings: [],
       displayedNotifications: [],
       isLoadingData: [],
@@ -186,8 +210,19 @@ export default {
   mounted() {
     this.loadData()
     this.loadLatestBookings()
+    this.loadFeedbacks()
   },
   methods: {
+    async loadFeedbacks() {
+      try {
+        const response = await getAllFeedbacks()
+        const feedbacks = response.data
+        feedbacks.sort((a, b) => new Date(b.date_created) - new Date(a.date_created))
+        this.latestFeedbacks = feedbacks.slice(0, 3)
+      } catch (error) {
+        console.error(error)
+      }
+    },
     async loadData() {
       try {
         this.isLoadingData = Array(this.overviewCards.length).fill(true)
@@ -320,6 +355,9 @@ export default {
 }
 .header {
   margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .dashboard-title {
   font-size: 24px;

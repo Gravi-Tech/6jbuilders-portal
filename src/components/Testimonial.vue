@@ -1,74 +1,98 @@
 <template>
-    <section class="testimonial-section">
-        <v-container>
-            <h1 class="text-center mb-6">Testimonials</h1>
-            <v-carousel cycle hide-delimiter-background height="300" interval="8000" show-arrows-on-hover
-                class="testimonial-carousel">
-                <v-carousel-item v-for="(testimonial, index) in testimonials" :key="index" class="testimonial-slide">
-                    <v-card elevation="6" class="testimonial-card">
-                        <v-avatar class="testimonial-avatar" size="120">
-                            <v-img :src="testimonial.image" cover class="circle"></v-img>
-                        </v-avatar>
-                        <v-card-title class="testimonial-name">{{ testimonial.name }}</v-card-title>
-                        <v-card-subtitle class="testimonial-job">{{ testimonial.job }}</v-card-subtitle>
-                        <v-card-text class="testimonial-text">{{ testimonial.testimonial }}</v-card-text>
-                    </v-card>
-                </v-carousel-item>
-            </v-carousel>
-        </v-container>
-    </section>
+  <section class="feedback-section">
+    <v-container>
+      <h1 class="text-center mb-6">Feedbacks</h1>
+      <v-carousel
+        cycle
+        hide-delimiter-background
+        height="500"
+        interval="8000"
+        show-arrows-on-hover
+        class="feedback-carousel"
+      >
+        <v-carousel-item v-for="(feedback, index) in feedbacks" :key="index" class="feedback-slide">
+          <v-card variant="text" class="feedback-card">
+            <v-avatar class="feedback-avatar" size="120">
+              <v-img src="/src/assets/images/user-default.png" cover class="circle"></v-img>
+            </v-avatar>
+            <v-card-title class="feedback-name">{{ feedback.fullName }}</v-card-title>
+            <v-card-subtitle class="feedback-job">{{ feedback.job_description }}</v-card-subtitle>
+            <v-card-text class="feedback-text">{{ feedback.message }}</v-card-text>
+          </v-card>
+        </v-carousel-item>
+      </v-carousel>
+    </v-container>
+  </section>
 </template>
-  
+
 <script>
-import { testimonials } from '../dataUtils/testimonialData';
+import { getAllPublicFeedbacks } from '@/apirequests/feedback'
 
 export default {
-    data() {
-        return {
-            testimonials: testimonials,
-        };
-    },
-};
+  data() {
+    return {
+      feedbacks: []
+    }
+  },
+  async created() {
+    await this.fetchFeedbacks()
+  },
+  methods: {
+    async fetchFeedbacks() {
+      try {
+        const response = await getAllPublicFeedbacks()
+        const feedback = response.data
+        this.feedbacks = feedback.filter((feedback) => feedback.isPosted === true)
+      } catch (error) {
+        console.error('Failed to fetch feedbacks:', error)
+      }
+    }
+  }
+}
 </script>
-  
+
 <style scoped>
-.testimonial-carousel {
-    max-width: 800px;
-    margin: 0 auto;
+.feedback-carousel {
+  max-width: 800px;
+  margin: 0 auto;
 }
-.testimonial-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.testimonial-card {
-    padding: 1rem;
-    text-align: center;
-    margin: 0 auto;
-    border-radius: 10px;
-    transition: transform 0.5s ease-in-out;
+.feedback-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.testimonial-card:hover {
-    transform: scale(1.05);
+.feedback-card {
+  padding: 1rem;
+  text-align: center;
+  margin: 0 auto;
+  border-radius: 10px;
+  transition: transform 0.5s ease-in-out;
+  flex: 1; 
+  min-width: 200px;
+  max-width: 100%;
 }
 
-.testimonial-avatar {
-    margin: 0 auto 1rem;
+.feedback-card:hover {
+  transform: scale(1.05);
 }
 
-.testimonial-name {
-    font-size: 22px;
-    font-weight: bold;
+.feedback-avatar {
+  margin: 0 auto 1rem;
 }
 
-.testimonial-job {
-    font-size: 16px;
-    color: #888;
+.feedback-name {
+  font-size: 22px;
+  font-weight: bold;
 }
 
-.testimonial-text {
-    font-size: 14px;
+.feedback-job {
+  font-size: 16px;
+  color: #888;
+}
+
+.feedback-text {
+  font-size: 14px;
+  white-space: pre-wrap;
 }
 </style>
