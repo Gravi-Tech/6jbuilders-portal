@@ -89,7 +89,7 @@
       <v-textarea v-model="note" label="Note"></v-textarea>
       <v-btn type="submit" color="blue" size="large" @click="validateForm">Submit</v-btn>
       <v-btn type="submit" color="blue" size="large" variant="outlined" @click="cancelBooking"
-        >Cancel</v-btn
+        >Close</v-btn
       >
     </v-card>
   </div>
