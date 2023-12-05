@@ -41,42 +41,32 @@
                   <v-card-actions class="justify-end">
                     <v-btn variant="text" @click="isActive.value = false">Close</v-btn>
                     <v-btn variant="text" color="primary" @click="handleUpdatePassword"
-                      >Update</v-btn>
+                      >Update</v-btn
+                    >
                   </v-card-actions>
                 </v-card>
               </template>
             </v-dialog>
           </v-col>
-          <v-col v-if="admin.role === 'superadmin'" cols="auto">
+          <!-- <v-col v-if="admin.role === 'superadmin'" cols="auto">
             <v-dialog persistent transition="dialog-top-transition" width="auto">
               <template v-slot:activator="{ props }">
                 <v-btn variant="flat" color="primary" v-bind="props" @click="addAdmin"
-                  >Add Admin</v-btn>
+                  >Add Admin</v-btn
+                >
               </template>
               <template v-slot:default="{ isActive }">
                 <v-card>
-                  <v-card-title>Add admin</v-card-title>
-                  <v-card-text v-if="adminAdded">
-                      <p>You have successfully added an admin</p>
-                      <!-- <p><strong>Account Number:</strong> {{ newAdmin.accountNumber }}</p>
-                      <p><strong>Password:</strong> {{ newAdmin.password }}</p> -->
-                    </v-card-text>
+                  <v-container>
+                    <v-card-title>Add admin</v-card-title>
                     <v-card-text class="pa-12">
                       <div class="d-flex-1">
-                        <v-text-field
-                          label="Account Number *"
-                          variant="outlined"
-                          density="compact"
-                          v-model="newAdmin.accountNumber"
-                          required
-                        ></v-text-field>
                         <v-select
-                          class="mt-4"
                           v-model="newAdmin.role"
                           :items="roleOptions"
                           label="Set Role *"
                           variant="outlined"
-                          dense
+                          density="compact"
                         ></v-select>
                         <v-text-field
                           label="First Name *"
@@ -87,7 +77,6 @@
                         ></v-text-field>
                         <v-text-field
                           label="Middle Name (Optional)"
-                          class="ml-4"
                           variant="outlined"
                           density="compact"
                           v-model="newAdmin.middlename"
@@ -95,7 +84,6 @@
                         ></v-text-field>
                         <v-text-field
                           label="Last Name *"
-                          class="ml-4"
                           variant="outlined"
                           density="compact"
                           v-model="newAdmin.lastname"
@@ -104,7 +92,6 @@
                         </v-text-field>
                         <v-text-field
                           label="Email Address *"
-                          class="ml-4"
                           variant="outlined"
                           density="compact"
                           v-model="newAdmin.email"
@@ -112,32 +99,24 @@
                         >
                         </v-text-field>
                         <v-text-field
-                          label="Password *"
-                          class="ml-4"
-                          variant="outlined"
-                          density="compact"
-                          v-model="newAdmin.password"
-                          required
-                        >
-                        </v-text-field>
-                        <v-text-field
                           label="Home Address *"
-                          class="ml-4"
                           variant="outlined"
                           density="compact"
                           v-model="newAdmin.address"
-                          required>
+                          required
+                        >
                         </v-text-field>
                       </div>
                     </v-card-text>
-                  <v-card-actions class="justify-end">
-                    <v-btn variant="text" @click="isActive.value = false">Close</v-btn>
-                    <v-btn variant="text" color="primary" @click="addAdmin">Add</v-btn>
-                  </v-card-actions>
+                    <v-card-actions class="justify-end">
+                      <v-btn variant="text" @click="isActive.value = false">Close</v-btn>
+                      <v-btn variant="text" color="primary" @click="addAdmin">Add</v-btn>
+                    </v-card-actions>
+                  </v-container>
                 </v-card>
               </template>
             </v-dialog>
-          </v-col>
+          </v-col> -->
         </v-row>
       </div>
     </div>
@@ -302,20 +281,18 @@ export default {
       verifyPassword: '',
       showPassword: false,
       titleErrorMessage: '',
-      newAdmin: {
-        id: null,
-        accountNumber: '',
-        role: '',
-        status: '',
-        firstname: '',
-        middlename: '',
-        lastname: '',
-        email: '',
-        phone: '',
-        address: '',
-        update_date: null
-      },
-      roleOptions: ['superadmin', 'admin']
+      // newAdmin: {
+      //   role: 'admin',
+      //   status: '',
+      //   firstname: '',
+      //   middlename: '',
+      //   lastname: '',
+      //   email: '',
+      //   phone: '',
+      //   address: '',
+      //   update_date: null
+      // },
+      // roleOptions: ['superadmin', 'admin']
     }
   },
   created() {
@@ -366,49 +343,43 @@ export default {
       }
       return fullName.trim()
     },
-    resetAdminForm() {
-      this.newAdmin.id = ''
-      this.newAdmin.accountNumber = ''
-      this.newAdmin.firstname = ''
-      this.newAdmin.middlename = ''
-      this.newAdmin.lastname = ''
-      this.newAdmin.password = ''
-      this.newAdmin.role = ''
-      this.newAdmin.status = ''
-      this.newAdmin.email = ''
-      this.newAdmin.phone = ''
-      this.newAdmin.address = ''
-      this.newAdmin.update_date = ''
-    },
+    // async addAdmin() {
+    //   if (this.admin.role === 'superadmin') {
+    //     try {
+    //       const response = await addAdmin(this.newAdmin)
 
-    async addAdmin() {
-      if (this.admin.role === 'superadmin') {
-        try {
-          const response = await addAdmin(this.newAdmin)
+    //       console.log("admin data:", response)
 
-          if (response && response.error === true) {
-            this.adminAdded = true;
-            this.showPopupMessage('success', 'Admin Added', 'Admin has been added successfully.')
-            
+    //       if (response && response.error === true) {
+    //         this.adminAdded = true
+    //         this.showPopupMessage('success', 'Admin Added', 'Admin has been added successfully.')
 
-            this.resetAdminForm()
-          } else {
-            this.adminAdded = false;
-            this.showPopupMessage('error', 'Error', 'Failed to add admin. Please try again.')
-          }
-        } catch (error) {
-          this.adminAdded = false;
-          this.showPopupMessage('error', 'Error', 'Failed to add admin. Please try again.')
-        }
-      } else {
-        this.showPopupMessage(
-          'error',
-          'Permission Denied',
-          'You do not have permission to add an admin.'
-        )
-      }
-    },
-
+    //         this.resetAdminForm()
+    //       } else {
+    //         this.adminAdded = false
+    //         this.showPopupMessage('error', 'Error', 'Failed to add admin. Please try again.')
+    //       }
+    //     } catch (error) {
+    //       this.adminAdded = false
+    //       this.showPopupMessage('error', 'Error', 'Failed to add admin. Please try again.')
+    //     }
+    //   } else {
+    //     this.showPopupMessage(
+    //       'error',
+    //       'Permission Denied',
+    //       'You do not have permission to add an admin.'
+    //     )
+    //   }
+    // },
+    // resetAdminForm() {
+    //   this.newAdmin.firstname = ''
+    //   this.newAdmin.middlename = ''
+    //   this.newAdmin.lastname = ''
+    //   this.newAdmin.role = 'admin'
+    //   this.newAdmin.email = ''
+    //   this.newAdmin.phone = ''
+    //   this.newAdmin.address = ''
+    // },
     saveProfile() {
       if (
         this.admin.firstname.trim() === '' ||

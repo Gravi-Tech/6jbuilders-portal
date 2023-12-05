@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="project_request">
     <header class="header">
       <h1 class="dashboard-title">Project</h1>
@@ -1061,4 +1061,4 @@ export default {
   margin-right: 10px;
   margin-bottom: 10px;
 }
-</style>
+</style> -->
