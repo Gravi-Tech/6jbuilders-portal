@@ -25,22 +25,6 @@ const router = createRouter({
       component: () => import('../views/ContactView.vue')
     },
     {
-      path: '/6jbuilders/legal/:page',
-      name: 'legal',
-      component: () => import('../views/LegalView.vue')
-    },
-    {
-      path: '/6jbuilders/password-recovery',
-      name: 'password-recovery',
-      meta: { requiresAuth: false },
-      component: () => import('../views/PasswordRecoveryView.vue')
-    },
-    {
-      path: '/6jbuilders/profile-infomation',
-      name: 'profile',
-      component: () => import('../views/PersonalInformationView.vue')
-    },
-    {
       path: '/6jbuilders/projects',
       name: 'projects',
       component: () => import('../views/ProjectView.vue')
@@ -109,16 +93,6 @@ const router = createRouter({
       path: '/6jbuilders/settings',
       name: 'settings',
       component: () => import('../views/SettingsView.vue')
-    },
-    {
-      path: '/6jbuilders/transaction-history',
-      name: 'transaction-history',
-      component: () => import('../views/TransactionHistoryView.vue')
-    },
-    {
-      path: '/6jbuilders/transaction-history/:id',
-      name: 'transaction-detail',
-      component: () => import('../views/TransactionDetailView.vue')
     },
     {
       path: '/6jbuilders/:pathMatch(.*)*',
