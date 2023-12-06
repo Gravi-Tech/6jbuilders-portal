@@ -13,7 +13,7 @@
             <v-list-item
               v-for="feedback in latestFeedbacks"
               :key="feedback.id"
-              prepend-avatar="/src/assets/images/user-default.png"
+              prepend-avatar="/images/user-default.png"
             >
               <template v-slot:subtitle>
                 <span class="font-weight-bold">{{ feedback.fullName }}</span> <br />

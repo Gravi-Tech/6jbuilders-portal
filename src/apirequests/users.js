@@ -1,6 +1,7 @@
 import axios from 'axios'
-require('dotenv').config();
-const baseUrl = process.env.BASE_URL;
+import { baseURL as apiUrl } from './config'
+const baseUrl = apiUrl;
+
 
 export const createUser = async (userData) => {
   try {
