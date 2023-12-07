@@ -54,7 +54,7 @@ export default {
         return {
             projects: projects,
             selectedService: 'All',
-            parallaxBackground: '/src/assets/images/6jbuilders-bg.jpg',
+            parallaxBackground: '/images/6jbuilders-bg.jpg',
         };
     },
     computed: {

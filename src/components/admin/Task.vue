@@ -754,7 +754,7 @@ import { getAllReason, getReasonById } from '../../apirequests/reason'
 import { getAllTypes } from '../../apirequests/data_type'
 import { saveAs } from 'file-saver'
 import pdfMake from 'pdfmake/build/pdfmake'
-import pdfFonts from 'pdfmake/build/vfs_fonts'
+import 'pdfmake/build/vfs_fonts'
 import PdfEmbed from 'vue-pdf-embed'
 
 import {
@@ -774,7 +774,7 @@ import {
   deleteTaskAssigneesById
 } from '../../apirequests/assignees'
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs
+// pdfMake.vfs = pdfFonts.pdfMake.vfs
 
 export default {
   components: {

@@ -13,7 +13,7 @@
         <v-carousel-item v-for="(feedback, index) in feedbacks" :key="index" class="feedback-slide">
           <v-card variant="text" class="feedback-card">
             <v-avatar class="feedback-avatar" size="120">
-              <v-img src="/src/assets/images/user-default.png" cover class="circle"></v-img>
+              <v-img src="/images/user-default.png" cover class="circle"></v-img>
             </v-avatar>
             <v-card-title class="feedback-name">{{ feedback.fullName }}</v-card-title>
             <v-card-subtitle class="feedback-job">{{ feedback.job_description }}</v-card-subtitle>
