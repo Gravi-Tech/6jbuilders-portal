@@ -139,7 +139,7 @@
                   label="Account Number *"
                   variant="outlined"
                   density="compact"
-                  v-model="admin.accountNumber"
+                  :value ="admin.accountNumber"
                   :readonly="this.admin.role !== 'superadmin'"
                 ></v-text-field>
               </span>
