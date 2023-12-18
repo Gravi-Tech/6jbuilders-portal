@@ -257,7 +257,7 @@ export default {
         const response = await getAllBooking()
         const bookings = response.data
 
-        const filteredBookings = bookings.filter((booking) => !booking.isRejected)
+        const filteredBookings = bookings.filter((booking) => !booking.isRejected && booking.status === "Pending")
         filteredBookings.sort((a, b) => new Date(b.date_created) - new Date(a.date_created))
 
         const latestBookings = filteredBookings.slice(0, 6)

@@ -38,7 +38,7 @@ export default {
 <style scoped>
 .support-button {
     position: fixed;
-    bottom: 20px;
+    bottom: 60px;
     right: 20px;
     z-index: 1000;
 }
