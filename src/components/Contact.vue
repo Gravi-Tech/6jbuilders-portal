@@ -103,7 +103,7 @@ export default {
       popupMessage: '',
       isLoading: false,
       googleMapsUrl:
-        'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15698.725616841883!2d123.92299172379796!3d10.36733884297122!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9987ef8581561%3A0xa27893ca941b1d92!2sCanduman%2C%20Cebu!5e0!3m2!1sen!2sph!4v1691392221087!5m2!1sen!2sph'
+      'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d555.786611001712!2d123.95427073981037!3d10.361362255427773!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a999398655fc7f%3A0xd0a6e6555b966cf7!2sMc%20Anden%20Construction%20Services!5e0!3m2!1sen!2sph!4v1702867082464!5m2!1sen!2sph'
     }
   },
   methods: {

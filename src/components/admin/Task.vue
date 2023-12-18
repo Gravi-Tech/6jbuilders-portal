@@ -36,7 +36,7 @@
               hide-details
               variant="solo-filled"
             ></v-text-field>
-            <v-tooltip v-model="showToolTip" location="top">
+            <!-- <v-tooltip v-model="showToolTip" location="top">
               <template v-slot:activator="{ props }">
                 <v-btn icon v-bind="props" variant="text" @click="handleDownloadTask">
                   <v-icon color="primary">mdi-tray-arrow-down</v-icon>
@@ -44,7 +44,7 @@
                 <pdf-embed :src="pdfData" v-if="pdfData"></pdf-embed>
               </template>
               <span>Download Data</span>
-            </v-tooltip>
+            </v-tooltip> -->
           </div>
         </div>
         <table class="table">
@@ -754,7 +754,7 @@ import { getAllReason, getReasonById } from '../../apirequests/reason'
 import { getAllTypes } from '../../apirequests/data_type'
 import { saveAs } from 'file-saver'
 import pdfMake from 'pdfmake/build/pdfmake'
-import pdfFonts from 'pdfmake/build/vfs_fonts'
+import 'pdfmake/build/vfs_fonts'
 import PdfEmbed from 'vue-pdf-embed'
 
 import {
@@ -774,7 +774,7 @@ import {
   deleteTaskAssigneesById
 } from '../../apirequests/assignees'
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs
+// pdfMake.vfs = pdfFonts.pdfMake.vfs
 
 export default {
   components: {
@@ -1469,7 +1469,6 @@ export default {
       try {
         const response = await getAllTask()
         const tasks = response.data
-        console.log('Fetched tasks:', tasks)
         this.generatePDF(tasks)
       } catch (error) {
         console.error('Error occurred while fetching tasks:', error)

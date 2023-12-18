@@ -18,7 +18,7 @@
         <v-img
           id="background"
           class="rounded-ts-pill"
-          src="../src/assets/images/6jbuilders-bg.jpg"
+          src="/images/6jbuilders-bg.jpg"
           width="50%"
         ></v-img>
       </div>

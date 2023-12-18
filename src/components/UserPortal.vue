@@ -12,7 +12,7 @@
     </div>
     <div class="right">
       <div class="login-box">
-        <v-img src="/src/assets/logo.png" max-height="100" alt="Logo"></v-img>
+        <v-img src="/images/logo.png" max-height="100" alt="Logo"></v-img>
         <div class="login-buttons">
           <v-card-title class="text-center">ADMIN PORTAL</v-card-title>
           <v-card-text>
@@ -110,6 +110,7 @@ export default defineComponent({
   },
   methods: {
     async handleLogin() {
+  
       try {
         const response = await login(this.adminId, this.adminPassword)
         const accessToken = response.accessToken

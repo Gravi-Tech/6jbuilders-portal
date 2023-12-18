@@ -35,7 +35,7 @@
         <v-col cols="auto">
           <v-row class="d-flex justify-center align-center">
             <a to="/home">
-              <v-img src="/src/assets/logo.png" max-height="80" alt="Logo"></v-img>
+              <v-img src="/images/logo.png" max-height="80" alt="Logo"></v-img>
             </a>
             <v-col cols="auto" v-for="(link, i) in navLinks" :key="i">
               <v-menu v-if="link.route === 'services'" open-on-hover>

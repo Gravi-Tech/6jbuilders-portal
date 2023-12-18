@@ -13,7 +13,7 @@
             <v-list-item
               v-for="feedback in latestFeedbacks"
               :key="feedback.id"
-              prepend-avatar="/src/assets/images/user-default.png"
+              prepend-avatar="/images/user-default.png"
             >
               <template v-slot:subtitle>
                 <span class="font-weight-bold">{{ feedback.fullName }}</span> <br />
@@ -257,7 +257,7 @@ export default {
         const response = await getAllBooking()
         const bookings = response.data
 
-        const filteredBookings = bookings.filter((booking) => !booking.isRejected)
+        const filteredBookings = bookings.filter((booking) => !booking.isRejected && booking.status === "Pending")
         filteredBookings.sort((a, b) => new Date(b.date_created) - new Date(a.date_created))
 
         const latestBookings = filteredBookings.slice(0, 6)
