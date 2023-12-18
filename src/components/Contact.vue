@@ -12,11 +12,11 @@
           </v-card-text>
           <v-card-text class="d-flex align-center">
             <v-icon class="info-icon" color="blue">mdi-map-marker</v-icon>
-            <span class="info-label mr-2">Address:</span> Canduman, Mandaue Cebu City
+            <span class="info-label mr-2">Address:</span>Deca Homes Prime Mandaue, Mandaue City, Cebu
           </v-card-text>
           <v-card-text class="d-flex align-center">
             <v-icon class="info-icon" color="blue">mdi-clock</v-icon>
-            <span class="info-label mr-2">Opening Hours:</span> Mon - Sat: 7:00 am - 7:00 pm
+            <span class="info-label mr-2">Business Hours:</span> Mon - Sat: 7:00 am - 7:00 pm
           </v-card-text>
         </v-card>
         <v-card class="location-card mt-6">
@@ -35,7 +35,7 @@
       </div>
       <div class="w-100 ml-6">
         <v-card class="my-4 freq">
-          <v-card-title class="mb-4">Frequently Asked</v-card-title>
+          <v-card-title class="mb-4">Frequently Asked Questions</v-card-title>
           <v-expansion-panels variant="popout" class="my-2">
             <v-expansion-panel>
               <v-expansion-panel-title expand-icon="mdi-plus" collapse-icon="mdi-minus">
@@ -64,7 +64,7 @@
         <v-card class="feedback">
           <v-card-title class="mb-4">Feedback</v-card-title>
 
-          <v-text-field v-model="name" label="Fullname *" outlined></v-text-field>
+          <v-text-field v-model="name" label="Full Name *" outlined></v-text-field>
           <v-text-field v-model="job" label="Job Title *" outlined></v-text-field>
           <v-textarea v-model="message" label="Message *" outlined></v-textarea>
 

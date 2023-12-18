@@ -1,11 +1,27 @@
 import axios from 'axios'
 import { baseURL as apiUrl } from './config'
-const baseUrl = apiUrl;
+const baseUrl = 'http://localhost:3000/api'
 
+const api = axios.create({
+  baseURL: baseUrl,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
+export const userLogin = async (mobile_number, password) => {
+  try {
+    const response = await api.post(`${baseUrl}/users/login`, { mobile_number, password })
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
 
 export const createUser = async (userData) => {
   try {
-    const response = await axios.post(`${baseUrl}/users`, userData)
+    const response = await api.post(`${baseUrl}/users`, userData)
     return response.data
   } catch (error) {
     console.error(error)
@@ -15,7 +31,17 @@ export const createUser = async (userData) => {
 
 export const getUser = async (userId) => {
   try {
-    const response = await axios.get(`${baseUrl}/users/${userId}`)
+    const response = await api.get(`${baseUrl}/users/${userId}`)
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export const getAllUsers = async () => {
+  try {
+    const response = await api.get(`${baseUrl}/users`)
     return response.data
   } catch (error) {
     console.error(error)
@@ -25,7 +51,7 @@ export const getUser = async (userId) => {
 
 export const updateUser = async (userId, updatedData) => {
   try {
-    const response = await axios.put(`${baseUrl}/users/${userId}`, updatedData)
+    const response = await api.put(`${baseUrl}/users/${userId}`, updatedData)
     return response.data
   } catch (error) {
     console.error(error)
@@ -35,7 +61,7 @@ export const updateUser = async (userId, updatedData) => {
 
 export const deleteUser = async (userId) => {
   try {
-    const response = await axios.delete(`${baseUrl}/users/${userId}`)
+    const response = await api.delete(`${baseUrl}/users/${userId}`)
     return response.data
   } catch (error) {
     console.error(error)
@@ -55,7 +81,7 @@ export const getJson = async (data) => {
 
 export const getAdminSettings = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/admin/settings`)
+    const response = await api.get(`${baseUrl}/admin/settings`)
     return response.data
   } catch (error) {
     console.error(error)
@@ -65,7 +91,7 @@ export const getAdminSettings = async () => {
 
 export const updateAdminSettings = async (updatedData) => {
   try {
-    const response = await axios.put(`${baseUrl}/admin/settings`, updatedData)
+    const response = await api.put(`${baseUrl}/admin/settings`, updatedData)
     return response.data
   } catch (error) {
     console.error(error)

@@ -20,8 +20,8 @@ const router = createRouter({
       component: () => import('../views/BookNowView.vue')
     },
     {
-      path: '/6jbuilders/contact',
-      name: 'contact',
+      path: '/6jbuilders/contact-us',
+      name: 'contact-us',
       component: () => import('../views/ContactView.vue')
     },
     {
@@ -35,8 +35,8 @@ const router = createRouter({
       component: () => import('../views/ProjectDetailsView.vue')
     },
     {
-      path: '/6jbuilders/services/cabinets',
-      name: 'cabinets',
+      path: '/6jbuilders/services/cabinet-services',
+      name: 'cabinet-services',
       component: () => import('../views/CabinetsServiceView.vue')
     },
     {
@@ -45,8 +45,8 @@ const router = createRouter({
       component: () => import('../views/DrywallInstallationServiceView.vue')
     },
     {
-      path: '/6jbuilders/services/electrical',
-      name: 'electrical',
+      path: '/6jbuilders/services/electrical-services',
+      name: 'electrical-services',
       component: () => import('../views/ElectricalServiceView.vue')
     },
     {
@@ -70,13 +70,13 @@ const router = createRouter({
       component: () => import('../views/InteriorDesignServiceView.vue')
     },
     {
-      path: '/6jbuilders/services/plumbing',
-      name: 'plumbing',
+      path: '/6jbuilders/services/plumbing-services',
+      name: 'plumbing-services',
       component: () => import('../views/PlumbingServiceView.vue')
     },
     {
-      path: '/6jbuilders/services/roofing',
-      name: 'roofing',
+      path: '/6jbuilders/services/roofing-services',
+      name: 'roofing-services',
       component: () => import('../views/RoofingServiceView.vue')
     },
     {
@@ -85,8 +85,8 @@ const router = createRouter({
       component: () => import('../views/TileInstallationServiceView.vue')
     },
     {
-      path: '/6jbuilders/services/welding',
-      name: 'welding',
+      path: '/6jbuilders/services/welding-services',
+      name: 'welding-services',
       component: () => import('../views/WeldingServiceView.vue')
     },
     {
@@ -108,6 +108,11 @@ const router = createRouter({
       path: '/6jbuilders/login',
       name: 'login',
       component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/6jbuilders/register',
+      name: 'register',
+      component: () => import('../views/RegisterView.vue')
     },
     // private url
     {

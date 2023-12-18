@@ -5,7 +5,7 @@
         <div class="align-center justify-center content">
           <div class="mb-6 txt">
             <h1 class="app-title">Welcome to 6J Builders Portal</h1>
-            <p class="app-description">Log in to get started</p>
+            <p class="app-description">Login to get started</p>
           </div>
         </div>
       </v-container>
@@ -14,18 +14,17 @@
       <div class="login-box">
         <v-img src="/images/logo.png" max-height="100" alt="Logo"></v-img>
         <div class="login-buttons">
-          <v-card-title class="text-center">ADMIN PORTAL</v-card-title>
+          <v-card-title class="text-center">USER PORTAL</v-card-title>
           <v-card-text>
             <v-form v-model="form" style="width: 450px">
               <v-text-field
                 density="compact"
                 prepend-inner-icon="mdi-account-box-outline"
                 variant="outlined"
-                label="Admin ID"
-                v-model="adminId"
+                label="Mobile Number"
+                v-model="userNumber"
                 :readonly="loading"
                 :rules="[required]"
-                placeholder="Enter Admin ID"
                 v-validate="'required'"
               ></v-text-field>
               <v-text-field
@@ -35,7 +34,7 @@
                 density="compact"
                 prepend-inner-icon="mdi-lock-outline"
                 @click:append-inner="visible = !visible"
-                v-model="adminPassword"
+                v-model="userPassword"
                 :readonly="loading"
                 :rules="[required]"
                 label="Password"
@@ -43,25 +42,10 @@
                 v-validate="'required'"
               >
               </v-text-field>
+
               <div class="errorMessage" v-if="errorMessage">
                 <p>{{ errorMessage }}</p>
               </div>
-              <!-- <div class="text-subtitle-1 text-medium-emphasis d-flex align-center mb-1">
-                <router-link
-                  to="/6jbuilders/password-recovery"
-                  class="text-caption text-decoration-none text-blue"
-                  @click="initiatePasswordRecovery"
-                >
-                  Forgot password?
-                </router-link>
-              </div> -->
-              <!-- <v-card class="mb-12" color="surface-variant" variant="tonal">
-                <v-card-text class="text-medium-emphasis text-caption">
-                  Warning: After 3 consecutive failed login attempts, your account will be
-                  temporarily locked for three hours. If you must login now, you can also click
-                  "Forgot login password?" below to reset the login password.
-                </v-card-text>
-              </v-card> -->
             </v-form>
           </v-card-text>
           <v-card-actions class="justify-space-around">
@@ -69,25 +53,87 @@
               color="success"
               variant="tonal"
               :loading="loading"
-              @click="handleLogin"
+              @click="loginAsUser"
               style="width: 300px"
               size="large"
               >Sign In</v-btn
             >
           </v-card-actions>
-          <v-btn class="mt-6" size="small" variant="outlined" @click="navTo('home')"
-            >Back to Homepage</v-btn
+          <v-btn
+            v-if="!showAdminPortal"
+            variant="text"
+            color="primary"
+            size="small"
+            @click="showAdminModal = true"
+          >
+            <span>Admin Login</span>
+          </v-btn>
+
+          <span class="mt-5"
+            >Doesn't have account?
+            <v-btn variant="text" color="primary" size="small" @click="navTo('register')">
+              Register</v-btn
+            ></span
           >
         </div>
+        <v-btn class="mt-6" size="small" variant="outlined" @click="navTo('home')"
+          >Back to Homepage</v-btn
+        >
+        <v-dialog persistent v-model="showAdminModal" max-width="600">
+          <v-card class="card-dialog">
+            <v-card-title class="text-center">ADMIN PORTAL</v-card-title>
+            <v-card-text>
+              <v-form v-model="form" @submit.prevent="onSubmit">
+                <v-text-field
+                  density="compact"
+                  prepend-inner-icon="mdi-account-box-outline"
+                  variant="outlined"
+                  label="Admin ID"
+                  v-model="adminId"
+                  :readonly="loading"
+                  :rules="[required]"
+                  placeholder="Enter Admin ID"
+                  v-validate="'required'"
+                ></v-text-field>
+                <v-text-field
+                  :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                  :type="visible ? 'text' : 'password'"
+                  variant="outlined"
+                  density="compact"
+                  prepend-inner-icon="mdi-lock-outline"
+                  @click:append-inner="visible = !visible"
+                  v-model="adminPassword"
+                  :readonly="loading"
+                  :rules="[required]"
+                  label="Password"
+                  type="password"
+                  v-validate="'required'"
+                  hint="Enter your password to access this website"
+                >
+                </v-text-field>
+              </v-form>
+            </v-card-text>
+            <v-card-actions class="justify-space-around">
+              <v-btn text @click="showAdminModal = false">Cancel</v-btn>
+              <v-btn color="success" variant="tonal" :loading="loading" @click="loginAsAdmin"
+                >Sign In</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </div>
     </div>
   </div>
+  <v-snackbar v-model="isSnackbarVisible" :color="snackbarColor" :timeout="snackbarTimeout">
+    {{ snackbarMessage }}
+  </v-snackbar>
 </template>
 
 <script>
 import axios from 'axios'
 import { defineComponent } from 'vue'
 import { login } from '@/apirequests/admin'
+import { userLogin } from '@/apirequests/users'
 import { useAuthStore } from '@/stores/auth'
 
 export default defineComponent({
@@ -95,7 +141,13 @@ export default defineComponent({
     return {
       showAdminPortal: false,
       showAdminModal: false,
+      isSnackbarVisible: false,
+      snackbarColor: '',
+      snackbarMessage: '',
+      snackbarTimeout: 3000,
       errorMessage: null,
+      userNumber: null,
+      userPassword: null,
       adminId: null,
       adminPassword: null,
       form: {},
@@ -109,8 +161,30 @@ export default defineComponent({
     }
   },
   methods: {
-    async handleLogin() {
-  
+    showSnackbar(color, message) {
+      this.snackbarColor = color
+      this.snackbarMessage = message
+      this.isSnackbarVisible = true
+    },
+    async loginAsUser() {
+      try {
+        const response = await userLogin(this.userNumber, this.userPassword)
+        const id = response.id
+        sessionStorage.setItem('userId', id)
+        this.showSnackbar('success', 'Login successfully.')
+        setTimeout(() => {
+          this.$router.push('/6jbuilders')
+        }, 3000)
+      } catch (error) {
+        console.log(error)
+        if (error.response && error.response.status === 401) {
+          this.errorMessage = 'Invalid Credentials'
+        } else {
+          this.errorMessage = 'An error occurred. Please try again.'
+        }
+      }
+    },
+    async loginAsAdmin() {
       try {
         const response = await login(this.adminId, this.adminPassword)
         const accessToken = response.accessToken

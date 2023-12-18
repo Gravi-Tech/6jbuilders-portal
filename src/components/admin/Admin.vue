@@ -90,6 +90,7 @@ import Booking from './Booking.vue'
 import Profile from './Profile.vue'
 import Task from './Task.vue'
 import Employees from './Employees.vue'
+import User from './User.vue'
 import Records from './Records.vue'
 // import Project from './Project.vue'
 import Feedback from './Feedbacks.vue'
@@ -111,6 +112,7 @@ export default {
         { title: 'Records', value: 'records', icon: 'mdi-text-box-outline' },
         { title: 'Services', value: 'services', icon: 'mdi-hammer-wrench' },
         { title: 'Employees', value: 'employees', icon: 'mdi-account-group-outline' },
+        { title: 'Users', value: 'users', icon: 'mdi-account-group' },
         { title: 'Feedbacks', value: 'feedback', icon: 'mdi-message' },
         { title: 'Account', value: 'profile', icon: 'mdi-account-cog-outline' },
         { title: 'Logout', value: 'logout', icon: 'mdi-logout' }
@@ -137,6 +139,8 @@ export default {
           return Service
         case 'employees':
           return Employees
+        case 'users':
+          return User
         case 'task':
           return Task
         case 'feedback':

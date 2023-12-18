@@ -815,7 +815,7 @@ export default {
       alertTimeout: null,
       tableColumns: [
         { key: '_id', label: 'ID', maxLength: 8 },
-        { key: 'type', label: 'Subject Type', maxLength: 8 },
+        { key: 'type', label: 'Customer Type', maxLength: 8 },
         { key: 'fullName', label: 'Full Name', maxLength: 8 },
         { key: 'mobileNumber', label: 'Mobile Number', maxLength: 8 },
         { key: 'service', label: 'Service', maxLength: 8 },

@@ -6,7 +6,7 @@
         cycle
         hide-delimiter-background
         height="500"
-        interval="8000"
+        interval="5000"
         show-arrows-on-hover
         class="feedback-carousel"
       >

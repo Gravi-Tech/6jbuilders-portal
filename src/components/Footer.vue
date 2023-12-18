@@ -28,7 +28,7 @@
         </div>
         <div class="footer-section">
           <h3>Contact Us</h3>
-          <p><v-icon>mdi-map-marker</v-icon> Canduman, Mandaue Cebu City</p>
+          <p><v-icon>mdi-map-marker</v-icon>Block 18 lot 11, Deca Homes Prime Mandaue, Mandaue City</p>
           <p><v-icon>mdi-phone</v-icon> 0926 123 7672</p>
           <p><v-icon>mdi-email</v-icon> 6jbrothers.construction@gmail.com</p>
           <p><v-icon>mdi-calendar-clock</v-icon> Mon-Fri 7:00 am - 7:00 pm</p>
@@ -57,7 +57,7 @@
 <script>
 export default {
   data: () => ({
-    quickLinks: ['Home', 'About Us', 'Contact'],
+    quickLinks: ['Home', 'About Us', 'Contact Us', 'Projects'],
     icons: ['mdi-facebook', 'mdi-twitter', 'mdi-linkedin', 'mdi-instagram']
   }),
   methods: {

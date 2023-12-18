@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="header">
-      <h1 class="dashboard-title">Workers</h1>
+      <h1 class="dashboard-title">Users</h1>
     </header>
     <div class="loading-container" v-if="isLoading">
       <v-progress-circular
@@ -38,37 +38,41 @@
         </div>
       </div>
       <div class="mb-6 mr-8 text-end">
-        <v-btn @click="handleAddWorker" color="primary">Add Worker </v-btn>
+        <v-btn @click="handleAdduser" color="primary">Add user </v-btn>
       </div>
       <table class="table">
         <thead style="font-size: 13px">
           <tr>
             <th>ID</th>
-            <th>Full Name</th>
-            <th>Position</th>
-            <th>Contact</th>
+            <th>First Name</th>
+            <th>Middle Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Mobile Number</th>
             <th>Address</th>
-            <th>Experience (mos)</th>
+            <th>Status</th>
             <th>Created At</th>
             <th>Updated On</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody style="font-size: 13px">
-          <template v-if="displayedWorkers.length > 0">
-            <tr v-for="worker in displayedWorkers" :key="worker._id">
-              <td>{{ worker._id }}</td>
-              <td>{{ worker.fullName }}</td>
-              <td>{{ worker.position }}</td>
-              <td>{{ worker.contact }}</td>
-              <td>{{ worker.address }}</td>
-              <td>{{ worker.experience }}</td>
-              <td>{{ formatDate(worker.created_date) }}</td>
-              <td>{{ formatDate(worker.updated_date) }}</td>
+          <template v-if="displayedUsers.length > 0">
+            <tr v-for="user in displayedUsers" :key="user._id">
+              <td>{{ user._id }}</td>
+              <td>{{ user.first_name }}</td>
+              <td>{{ user.middle_name }}</td>
+              <td>{{ user.last_name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.mobile_number }}</td>
+              <td>{{ user.address }}</td>
+              <td>{{ user.status }}</td>
+              <td>{{ formatDate(user.created_date) }}</td>
+              <td>{{ formatDate(user.updated_date) }}</td>
               <td>
                 <v-btn
                   size="small"
-                  @click="handleEditWorker(worker._id)"
+                  @click="handleEdituser(user._id)"
                   color="secondary"
                   flat
                   class="mr-6"
@@ -76,7 +80,7 @@
                 >
                 <v-btn
                   size="small"
-                  @click="handleDeleteWorker(worker._id)"
+                  @click="handledeleteUser(user._id)"
                   color="error"
                   variant="outlined"
                   flat
@@ -87,7 +91,7 @@
           </template>
           <template v-else>
             <tr>
-              <td colspan="6" class="not-found">No worker found</td>
+              <td colspan="6" class="not-found">No user found</td>
             </tr>
           </template>
         </tbody>
@@ -102,49 +106,64 @@
     <v-dialog v-model="showAddDialog" max-width="500px">
       <v-card>
         <v-card-title>
-          <span class="headline">Add Worker</span>
+          <span class="headline">Add User</span>
         </v-card-title>
         <v-card-text>
           <v-text-field
-            v-model="newWorker.fullName"
-            label="Fullname *"
+            v-model="newUser.first_name"
+            label="First name *"
             variant="outlined"
             dense
             :error-messages="titleErrorMessage"
             required
           ></v-text-field>
-          <v-select
-            class="mt-4"
-            v-model="newWorker.position"
-            :items="positionOptions"
-            label="Select Position *"
+          <v-text-field
+            v-model="newUser.middle_name"
+            label="Middle name (Optional)"
             variant="outlined"
             dense
-          ></v-select>
+            :error-messages="titleErrorMessage"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="newUser.last_name"
+            label="Last name *"
+            variant="outlined"
+            dense
+            :error-messages="titleErrorMessage"
+            required
+          ></v-text-field>
           <v-text-field
             class="mt-4"
-            v-model="newWorker.contact"
-            label="Contact Number"
+            v-model="newUser.address"
+            label="Address *"
             variant="outlined"
             dense
           ></v-text-field>
           <v-text-field
             class="mt-4"
-            v-model="newWorker.address"
-            label="Home Address"
+            v-model="newUser.email"
+            label="Email *"
             variant="outlined"
             dense
           ></v-text-field>
           <v-text-field
             class="mt-4"
-            v-model="newWorker.experience"
-            label="Experience(mos)"
+            v-model="newUser.mobile_number"
+            label="Mobile Number *"
+            variant="outlined"
+            dense
+          ></v-text-field>
+          <v-text-field
+            class="mt-4"
+            v-model="newUser.password"
+            label="Password *"
             variant="outlined"
             dense
           ></v-text-field>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="primary" @click="createWorker">Add</v-btn>
+          <v-btn color="primary" @click="createUser">Add</v-btn>
           <v-btn @click="this.showAddDialog = false">Cancel</v-btn>
         </v-card-actions>
       </v-card>
@@ -152,18 +171,19 @@
     <v-dialog v-model="showDeleteConfirmation" max-width="500px">
       <v-card>
         <v-card-title>
-          <span class="headline">Delete Worker</span>
+          <span class="headline">Delete User</span>
         </v-card-title>
         <v-card-text>
-          <p>Are you sure you want to delete the following worker's information?</p>
-          <p><strong>Fullname:</strong> {{ deleteWorkerData.fullName }}</p>
-          <p><strong>Position:</strong> {{ deleteWorkerData.position }}</p>
-          <p><strong>Contact:</strong> {{ deleteWorkerData.contact }}</p>
-          <p><strong>Address:</strong> {{ deleteWorkerData.address }}</p>
-          <p><strong>Experience(mos):</strong> {{ deleteWorkerData.experience }}</p>
+          <p>Are you sure you want to delete the following user's information?</p>
+          <p><strong>First Name:</strong> {{ deleteUserData.first_name }}</p>
+          <p><strong>Middle Name:</strong> {{ deleteUserData.middle_name }}</p>
+          <p><strong>Last Name:</strong> {{ deleteUserData.last_name }}</p>
+          <p><strong>Mobile Number:</strong> {{ deleteUserData.mobile_number }}</p>
+          <p><strong>Address:</strong> {{ deleteUserData.address }}</p>
+          <p><strong>email:</strong> {{ deleteUserData.email }}</p>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="primary" @click="confirmDeleteWorker">Continue</v-btn>
+          <v-btn color="primary" @click="confirmDeleteUser">Continue</v-btn>
           <v-btn @click="this.showDeleteConfirmation = false">Cancel</v-btn>
         </v-card-actions>
       </v-card>
@@ -171,49 +191,57 @@
     <v-dialog v-model="showEditDialog" max-width="500px">
       <v-card>
         <v-card-title>
-          <span class="headline">Edit Worker</span>
+          <span class="headline">Edit User</span>
         </v-card-title>
         <v-card-text>
           <v-text-field
-            v-model="editWorkerData.fullName"
-            label="Fullname"
+            v-model="editUserData.first_name"
+            label="first_name"
             variant="outlined"
             dense
             :error-messages="titleErrorMessage"
             required
           ></v-text-field>
-          <v-select
-            class="mt-4"
-            v-model="editWorkerData.position"
-            label="Position"
-            :items="positionOptions"
+          <v-text-field
+            v-model="editUserData.middle_name"
+            label="first_name"
             variant="outlined"
             dense
-          ></v-select>
+            :error-messages="titleErrorMessage"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="editUserData.last_name"
+            label="first_name"
+            variant="outlined"
+            dense
+            :error-messages="titleErrorMessage"
+            required
+          ></v-text-field>
           <v-text-field
             class="mt-4"
-            v-model="editWorkerData.address"
+            v-model="editUserData.address"
             label="Home Address"
             variant="outlined"
             dense
           ></v-text-field>
           <v-text-field
             class="mt-4"
-            v-model="editWorkerData.contact"
-            label="Contact Number"
+            v-model="editUserData.mobile_number"
+            label="mobile_number Number"
             variant="outlined"
             dense
           ></v-text-field>
           <v-text-field
             class="mt-4"
-            v-model="editWorkerData.experience"
-            label="Experience (mos)"
+            v-model="editUserData.email"
+            label="email (mos)"
             variant="outlined"
             dense
           ></v-text-field>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="primary" @click="saveEditedWorker">Save</v-btn>
+          <v-btn color="primary" @click="saveEditeduser">Save</v-btn>
           <v-btn @click="this.showEditDialog = false">Cancel</v-btn>
         </v-card-actions>
       </v-card>
@@ -234,16 +262,14 @@
 </template>
 
 <script>
-import { createWorker, getAllWorkers, updateWorker, deleteWorker } from '../../apirequests/workers'
+import { createUser, getAllUsers, updateUser, deleteUser } from '../../apirequests/users'
 import { getAllPositions } from '../../apirequests/position'
 
 export default {
   data() {
     return {
       search: '',
-      workers: [],
-      positionOptions: [],
-      position: [],
+      users: [],
       itemsPerPage: 10,
       currentPage: 1,
       options: [10, 20, 50, 100],
@@ -253,68 +279,64 @@ export default {
       popupTitle: '',
       popupMessage: '',
       showAddDialog: false,
-      newWorker: {
-        fullName: '',
-        position: 'General Worker',
-        contact: '',
+      newUser: {
+        first_name: '',
+        mobile_number: '',
         address: '',
-        experience: '',
+        email: '',
         updated_date: null
       },
       titleErrorMessage: '',
       showDeleteConfirmation: false,
-      deleteWorkerData: {
-        fullName: '',
+      deleteUserData: {
+        first_name: '',
         position: '',
-        contact: '',
-        address: '',
-        experience: ''
+        mobile_number: '',
+        address: ''
       },
       showEditDialog: false,
-      editWorkerData: {
-        fullName: '',
+      editUserData: {
+        first_name: '',
         position: '',
-        contact: '',
+        mobile_number: '',
         address: '',
-        experience: '',
         updated_date: null
       }
     }
   },
   computed: {
-    filteredWorkers() {
+    filteredUsers() {
       const searchTerm = this.search.toLowerCase().trim()
-      return this.workers.filter((worker) => {
+      return this.users.filter((user) => {
         return (
-          worker.fullName.toLowerCase().includes(searchTerm) ||
-          worker.position.toLowerCase().includes(searchTerm) ||
-          worker.address.toLowerCase().includes(searchTerm) ||
-          worker.contact.toLowerCase().includes(searchTerm) ||
-          worker.experience.toLowerCase().includes(searchTerm) ||
-          worker._id.toLowerCase().includes(searchTerm)
+          user.first_name.toLowerCase().includes(searchTerm) ||
+          user.last_name.toLowerCase().includes(searchTerm) ||
+          user.address.toLowerCase().includes(searchTerm) ||
+          user.mobile_number.toLowerCase().includes(searchTerm) ||
+          user._id.toLowerCase().includes(searchTerm)
         )
       })
     },
-    displayedWorkers() {
+    displayedUsers() {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage
       const endIndex = startIndex + this.itemsPerPage
-      return this.filteredWorkers.slice(startIndex, endIndex)
+      return this.filteredUsers.slice(startIndex, endIndex)
     },
     totalPages() {
-      return Math.ceil(this.filteredWorkers.length / this.itemsPerPage)
+      return Math.ceil(this.filteredUsers.length / this.itemsPerPage)
     }
   },
   mounted() {
-    this.fetchWorkers()
+    this.fetchusers()
     this.Positions()
   },
   methods: {
-    async fetchWorkers() {
+    async fetchusers() {
       try {
         this.isLoading = true
         // await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000))
-        const response = await getAllWorkers()
-        this.workers = response.data
+        const response = await getAllUsers()
+        this.users = response.data
       } catch (error) {
         console.error(error)
         // Handle error
@@ -323,119 +345,120 @@ export default {
       }
     },
     async Positions() {
-  try {
-    const response = await getAllPositions() 
-    this.positionOptions = response.data;
-
-  } catch (error) {
-    console.error(error);
-  }
-},
-    handleAddWorker() {
-      this.newWorker.fullName = ''
-      this.newWorker.address = ''
-      this.newWorker.contact = ''
-      this.newWorker.experience = ''
+      try {
+        const response = await getAllPositions()
+        this.positionOptions = response.data
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    handleAdduser() {
+      this.newUser.first_name = ''
+      this.newUser.address = ''
+      this.newUser.mobile_number = ''
+      this.newUser.email = ''
       this.titleErrorMessage = ''
 
       this.showAddDialog = true
     },
-    async createWorker() {
-      const titleExists = this.workers.some((worker) => worker.fullName === this.newWorker.fullName)
+    async createUser() {
+      const titleExists = this.users.some((user) => user.first_name === this.newUser.first_name)
       if (titleExists) {
         this.titleErrorMessage = 'Title already exists. Please use another title.'
         return
       }
       try {
-        await createWorker(this.newWorker)
+        await createUser(this.newUser)
 
-        this.showPopupMessage('success', 'Created', 'A new worker added successfully.')
+        this.showPopupMessage('success', 'Created', 'A new user added successfully.')
 
-        this.fetchWorkers()
+        this.fetchusers()
       } catch (error) {
         console.error(error)
       } finally {
         this.showAddDialog = false
       }
     },
-    async handleEditWorker(workerId) {
-      const workerToEdit = this.workers.find((worker) => worker._id === workerId)
+    async handleEdituser(userId) {
+      const userToEdit = this.users.find((user) => user._id === userId)
 
-      this.editWorkerData = {
-        id: workerId,
-        fullName: workerToEdit.fullName,
-        position: workerToEdit.position,
-        address: workerToEdit.address,
-        contact: workerToEdit.contact,
-        experience: workerToEdit.experience,
-        created_date: workerToEdit.created_date,
-        updated_date: workerToEdit.updated_date
+      this.editUserData = {
+        id: userId,
+        first_name: userToEdit.first_name,
+        position: userToEdit.position,
+        address: userToEdit.address,
+        mobile_number: userToEdit.mobile_number,
+        email: userToEdit.email,
+        created_date: userToEdit.created_date,
+        updated_date: userToEdit.updated_date
       }
 
       this.showEditDialog = true
     },
-    async saveEditedWorker() {
-      const workerIndex = this.workers.findIndex((worker) => worker._id === this.editWorkerData.id)
+    async saveEditeduser() {
+      const userIndex = this.users.findIndex((user) => user._id === this.editUserData.id)
 
-      if (workerIndex !== -1) {
-        const existingWorker = this.workers.find(
-          (worker, index) =>
-            worker.fullName.toLowerCase() === this.editWorkerData.fullName.toLowerCase() &&
-            index !== workerIndex
+      if (userIndex !== -1) {
+        const existinguser = this.users.find(
+          (user, index) =>
+            user.first_name.toLowerCase() === this.editUserData.first_name.toLowerCase() &&
+            index !== userIndex
         )
-        if (existingWorker) {
-          this.titleErrorMessage = 'Worker already exists. Please input other name.'
+        if (existinguser) {
+          this.titleErrorMessage = 'user already exists. Please input other name.'
           return
         }
 
-        this.workers[workerIndex].fullName = this.editWorkerData.fullName
-        this.workers[workerIndex].position = this.editWorkerData.position
-        this.workers[workerIndex].contact = this.editWorkerData.contact
-        this.workers[workerIndex].address = this.editWorkerData.address
-        this.workers[workerIndex].experience = this.editWorkerData.experience
-        this.workers[workerIndex].updatedDate = new Date()
+        this.users[userIndex].first_name = this.editUserData.first_name
+        this.users[userIndex].middle_name = this.editUserData.middle_name
+        this.users[userIndex].last_name = this.editUserData.last_name
+        this.users[userIndex].mobile_number = this.editUserData.mobile_number
+        this.users[userIndex].address = this.editUserData.address
+        this.users[userIndex].email = this.editUserData.email
+        this.users[userIndex].updatedDate = new Date()
       }
 
       try {
         await Promise.all([
-          updateWorker(this.editWorkerData.id, {
-            fullName: this.editWorkerData.fullName,
-            position: this.editWorkerData.position,
-            address: this.editWorkerData.address,
-            contact: this.editWorkerData.contact,
-            experience: this.editWorkerData.experience
+          updateUser(this.editUserData.id, {
+            first_name: this.editUserData.first_name,
+            middle_name: this.editUserData.middle_name,
+            last_name: this.editUserData.last_name,
+            address: this.editUserData.address,
+            mobile_number: this.editUserData.mobile_number,
+            email: this.editUserData.email
           })
         ])
 
-        await this.fetchWorkers()
+        await this.fetchusers()
       } catch (error) {
         console.error(error)
       } finally {
         this.showEditDialog = false
-        this.showPopupMessage('success', 'Updated', 'A worker updated successfully.')
+        this.showPopupMessage('success', 'Updated', 'A user updated successfully.')
       }
     },
-    async handleDeleteWorker(workerId) {
+    async handledeleteUser(userId) {
       try {
-        const workerToDelete = this.workers.find((worker) => worker._id === workerId)
-        this.deleteWorkerData = {
-          id: workerId,
-          fullName: workerToDelete.fullName,
-          position: workerToDelete.position,
-          contact: workerToDelete.contact,
-          address: workerToDelete.address,
-          experience: workerToDelete.experience
+        const userToDelete = this.users.find((user) => user._id === userId)
+        this.deleteUserData = {
+          id: userId,
+          first_name: userToDelete.first_name,
+          position: userToDelete.position,
+          mobile_number: userToDelete.mobile_number,
+          address: userToDelete.address,
+          email: userToDelete.email
         }
         this.showDeleteConfirmation = true
       } catch (error) {
         console.error(error)
       }
     },
-    async confirmDeleteWorker() {
+    async confirmDeleteUser() {
       try {
-        await deleteWorker(this.deleteWorkerData.id)
-        this.workers = this.workers.filter((worker) => worker._id !== this.deleteWorkerData.id)
-        const successMessage = 'A worker has been successfully deleted.'
+        await deleteUser(this.deleteUserData.id)
+        this.users = this.users.filter((user) => user._id !== this.deleteUserData.id)
+        const successMessage = 'A user has been successfully deleted.'
         this.showPopupMessage('success', 'Deleted', successMessage)
       } catch (error) {
         console.error(error)

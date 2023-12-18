@@ -1,54 +1,6 @@
 <template>
   <div class="booking-form">
     <v-card variant="text" class="form-card">
-      <v-card-title class="form-title">Book a Service</v-card-title>
-      <v-select
-        v-model="type"
-        :items="types"
-        label="Data Subject Type *"
-        variant="outlined"
-      ></v-select>
-      <v-text-field
-        :rules="[rules.required]"
-        v-model="first_name"
-        label="Firstname *"
-        placeholder="Juan"
-        variant="outlined"
-      ></v-text-field>
-      <v-text-field
-        v-model="middle_name"
-        label="Middlename (Optional)"
-        placeholder="Dela"
-        variant="outlined"
-      ></v-text-field>
-      <v-text-field
-        :rules="[rules.required]"
-        v-model="last_name"
-        label="Lastname *"
-        placeholder="Cruz"
-        variant="outlined"
-      ></v-text-field>
-      <v-text-field
-        :rules="[rules.required]"
-        v-model="contact_number"
-        label="Contact Number *"
-        placeholder="09999999999"
-        variant="outlined"
-      ></v-text-field>
-      <v-text-field
-        :rules="[rules.email]"
-        v-model="email"
-        label="Email *"
-        variant="outlined"
-        placeholder="juan.delacruz@gmail.com"
-      ></v-text-field>
-      <v-text-field
-        :rules="[rules.required]"
-        v-model="location"
-        label="Site Location *"
-        placeholder="Street/Barangay/Municipality/City/Province"
-        variant="outlined"
-      ></v-text-field>
       <div>
         <v-select
           v-model="serviceType"
@@ -73,6 +25,48 @@
           </v-col>
         </v-row>
       </div>
+      <v-select v-model="type" :items="types" label="Customer Type *" variant="outlined"></v-select>
+      <v-text-field
+        :rules="[rules.required]"
+        v-model="first_name"
+        label="First Name *"
+        placeholder="Juan"
+        variant="outlined"
+      ></v-text-field>
+      <v-text-field
+        v-model="middle_name"
+        label="Middle Name (Optional)"
+        placeholder="Dela"
+        variant="outlined"
+      ></v-text-field>
+      <v-text-field
+        :rules="[rules.required]"
+        v-model="last_name"
+        label="Last Name *"
+        placeholder="Cruz"
+        variant="outlined"
+      ></v-text-field>
+      <v-text-field
+        :rules="[rules.required]"
+        v-model="contact_number"
+        label="Contact Number *"
+        placeholder="09999999999"
+        variant="outlined"
+      ></v-text-field>
+      <v-text-field
+        :rules="[rules.email]"
+        v-model="email"
+        label="Email *"
+        variant="outlined"
+        placeholder="juan.delacruz@gmail.com"
+      ></v-text-field>
+      <v-text-field
+        :rules="[rules.required]"
+        v-model="location"
+        label="Site Location *"
+        placeholder="Street/Barangay/Municipality/City/Province"
+        variant="outlined"
+      ></v-text-field>
       <v-text-field
         v-model="schedule_date"
         label="Schedule Date *"
@@ -132,6 +126,7 @@ import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { serviceTypes } from '@/dataUtils/serviceType'
 import { getAllPublicTypes } from '@/apirequests/data_type'
 import { addBooking } from '@/apirequests/bookings'
+import { getUser } from '@/apirequests/users'
 export default {
   name: 'BookingForm',
   props: {
@@ -181,6 +176,7 @@ export default {
   },
   created() {
     this.fetchDataTypes()
+    this.getUser()
   },
   mounted() {
     const today = new Date()
@@ -189,6 +185,21 @@ export default {
     this.schedule_date = today.toISOString().substr(0, 10)
   },
   methods: {
+    async getUser() {
+      try {
+        const userId = sessionStorage.getItem('userId')
+        const response = await getUser(userId)
+        const userData = response.data
+
+        this.first_name = userData.first_name
+        this.middle_name = userData.middle_name
+        this.last_name = userData.last_name
+        this.contact_number = userData.mobile_number
+        this.email = userData.email
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+      }
+    },
     async fetchDataTypes() {
       try {
         this.loading = true
@@ -261,7 +272,7 @@ export default {
       }
     },
     cancelBooking() {
-      this.$emit('close');
+      this.$emit('close')
       this.first_name = null
       this.middle_name = null
       this.last_name = null

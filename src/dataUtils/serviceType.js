@@ -1,7 +1,7 @@
 export const serviceTypes = [
   {
     id: '1e80d0a6-82e5-4e7a-93d5-954fde8a7b1a',
-    title: 'Cabinets',
+    title: 'Cabinet Services',
     short_title: 'Cabinets',
     createdDate: '2021-01-01',
     updatedDate: '2021-01-01'
@@ -15,7 +15,7 @@ export const serviceTypes = [
   },
   {
     id: '4683e4f3-1b45-4cd8-b423-6b7e2d2c5d9a',
-    title: 'Electrical',
+    title: 'Electrical Services',
     short_title: 'Electrical',
     createdDate: '2021-01-03',
     updatedDate: '2021-01-03'
@@ -43,14 +43,14 @@ export const serviceTypes = [
   },
   {
     id: 'b1dd0e2f-7146-4c5e-85e2-6c1c6c5a1b8e',
-    title: 'Plumbing',
+    title: 'Plumbing Services',
     short_title: 'Plumbing',
     createdDate: '2021-01-07',
     updatedDate: '2021-01-07'
   },
   {
     id: 'c0c2ee5b-42c2-4d4d-8f38-d3f8a2e9a9c9',
-    title: 'Roofing',
+    title: 'Roofing Services',
     short_title: 'Roofing',
     createdDate: '2021-01-08',
     updatedDate: '2021-01-08'
@@ -64,7 +64,7 @@ export const serviceTypes = [
   },
   {
     id: 'f3a5d4b6-8a9b-4c0d-9f7e-6d2e1b3c0a9a',
-    title: 'Welding',
+    title: 'Welding Services',
     short_title: 'Welding',
     createdDate: '2021-01-10',
     updatedDate: '2021-01-10'
